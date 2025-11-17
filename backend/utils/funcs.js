@@ -1,9 +1,9 @@
-export function filterBody(keys, obj) {
-    const body = {};
+export function filterBody(keys, body) {
+    const filteredBody = {};
     keys.forEach(key => {
-        if (obj[key]) body.key = obj[key];
+        if (obj[key]) filteredBody.key = body[key];
     });
-    return body;
+    return filteredBody;
 }
 
 export function titleCase(string) {

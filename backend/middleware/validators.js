@@ -1,4 +1,5 @@
-import { filterBody, titleCase } from "../utils/funcs.js";
+import EndpointError from "../classes/EndpointError.js";
+import { titleCase } from "../utils/funcs.js";
 
 function validate(validations, req, res, next ) {
     const validationErrors = {};
@@ -95,12 +96,6 @@ const pokedexNameRules = {
     required: true
 };
 
-const pokedexUrlRules = {
-    regex: "",
-    message: "imgUrl must be a valid url.",
-    required: true
-};
-
 export function validateSignUp(req, res, next) {
     const validations = {
         name: nameRules,
@@ -119,8 +114,8 @@ export function validateLogin(req, res, next) {
     validate(validations, req, res, next);
 }
 
+// Middleware for validating req body when modifying user
 export function validateModifyUser(req, res, next) {
-    req.body = filterBody(["name", "username", "email", "profilePicUrl"], req.body)
     const validations = {
         name: {...nameRules, required: false},
         username: {...usernameRules, required: false},
@@ -129,10 +124,16 @@ export function validateModifyUser(req, res, next) {
     validate(validations, req, res, next);
 }
 
+// Middleware for validing password before changing it
+export function validatePassword(req, res, next) {
+    validate({password: passwordRules}, req, res, next);
+}
+
+// Middleware for validating pokedexEntry before adding it
 export function validatePokedexEntry(req, res, next) {
     const validations = {
         name: pokedexNameRules,
-        imgUrl: pokedexUrlRules
+        imgUrl: {required: true}
     };
     validate(validations, req, res, next);
 }
