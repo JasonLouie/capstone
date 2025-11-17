@@ -1,0 +1,23 @@
+export default function handleServerErrors(err, req, res, next) {
+    // Format errors
+    const messages = {};
+    if (err.name === "ValidationError") {
+        console.log("Mongoose ValidationError thrown")
+        for (const key in err.errors) {
+            messages[key] = err.errors[key].message;
+        }
+    } else if (err.name === "CastError") {
+        console.log(`Mongoose CastError thrown for ${err.path}`);
+        messages[err.path] = err.kind === "ObjectId" ? "Invalid user id." : err.message;
+    } else if (err.code && err.code === 11000) { // If validator fails to catch a uniqueness error from the validator, expect a MongoDB error
+        console.log("MongoDB unique error thrown");
+        const field = Object.keys(err.keyValue)[0];
+        messages[field] = `${field[0].toUpperCase() + field.slice(1)} is taken`;
+    }
+
+    if (Object.keys(messages).length > 0) {
+        res.status(400).json({errors: messages});
+    } else {
+        res.status(err.status || 500).json({ errors: err.message });
+    }
+}
