@@ -1,8 +1,7 @@
-import { filterBody } from "../utils/funcs";
+import * as userService from "../services/userService.js";
 
-
-// POST /users
-export function createUser(req, res, next) {
+// GET /users
+export function login(req, res, next) {
     try {
         
     } catch (err) {
@@ -10,12 +9,12 @@ export function createUser(req, res, next) {
     }
 }
 
-// GET /users/:id
-export function getUser(req, res, next) {
+// POST /users
+export function signUp(req, res, next) {
     try {
         
     } catch (err) {
-        
+        next(err);
     }
 }
 
@@ -26,10 +25,16 @@ export function deleteUser(req, res, next) {
 
 // PATCH /users/:id
 export function updateUser(req, res, next) {
-    const body = filterBody(["name", "username", "email", "profilePicImg"]);
+    
 
 }
 
 // PATCH /users/:id/pokedex/add
+export function addPokedexEntry(req, res, next) {
+
+}
 
 // PATCH /users/:id/pokedex/remove
+export function removePokedexEntry(req, res, next) {
+
+}

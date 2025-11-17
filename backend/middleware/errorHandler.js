@@ -10,6 +10,7 @@ export default function handleServerErrors(err, req, res, next) {
         console.log(`Mongoose CastError thrown for ${err.path}`);
         messages[err.path] = err.kind === "ObjectId" ? "Invalid user id." : err.message;
     } else if (err.code && err.code === 11000) { // If validator fails to catch a uniqueness error from the validator, expect a MongoDB error
+        console.log("Error name:", err.name);
         console.log("MongoDB unique error thrown");
         const field = Object.keys(err.keyValue)[0];
         messages[field] = `${field[0].toUpperCase() + field.slice(1)} is taken`;

@@ -1,7 +1,19 @@
-export function filterBody(keys) {
+export function filterBody(keys, obj) {
     const body = {};
     keys.forEach(key => {
-        if (keys[key]) body.key = keys[key];
+        if (obj[key]) body.key = obj[key];
     });
     return body;
 }
+
+export function titleCase(string) {
+    return string.split(" ").map(word => word[0].toUppercase() + word.slice(1));
+}
+
+// Strict validation that ensures the object only contains the expected keys
+export function validateObject(expectedKeys, obj) {
+    expectedKeys.forEach(key => {
+        if (!obj[key]) return false;
+    });
+    return expectedKeys.length === Object.keys(obj).length;
+} 

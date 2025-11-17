@@ -7,7 +7,7 @@ const pokedexEntrySchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    img: {
+    imgUrl: {
         type: String,
         required: true,
     },
@@ -15,7 +15,7 @@ const pokedexEntrySchema = new mongoose.Schema({
         type: Date,
         default: Date.now()
     }
-}, { versionKey: false });
+}, { versionKey: false, id: false });
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -58,9 +58,10 @@ const userSchema = new mongoose.Schema({
             message: "Email is taken."
         }
     },
-    password_hash: {
+    password: {
         type: String,
-        required: [true, "Password is required."]
+        required: [true, "Password is required."],
+        match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)\S+$/, "Password must contain at least one lowercase letter, at least one uppercase letter, at least one number, and cannot contain whitespace."]
     },
     profilePicUrl: {
         type: String,
