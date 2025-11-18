@@ -11,11 +11,15 @@ const pokedexEntrySchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    isShiny: {
+        type: Boolean,
+        default: false
+    },
     time_added: {
         type: Date,
         default: Date.now()
     }
-}, { versionKey: false, id: false });
+}, { versionKey: false, _id: false });
 
 const userSchema = new mongoose.Schema({
     name: {

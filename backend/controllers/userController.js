@@ -86,7 +86,7 @@ export async function resetPassword(req, res, next) {
 // GET /users/pokedex
 export async function getPokedex(req, res, next) {
     try {
-        const pokedex = await userService.pokedex(req.user._id);
+        const pokedex = await userService.getPokedexByUserId(req.user._id);
         res.json(pokedex);
     } catch (err) {
         next(err);

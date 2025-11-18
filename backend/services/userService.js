@@ -37,21 +37,29 @@ export async function modifyUser(id, body) {
     return user;
 }
 
-export async function getPokedex(id) {
+export async function modifyPassword(id, password) {
     const user = await User.findById(id);
     if (!user) throw new EndpointError(404, "User");
-    return user.pokedex;
+    user.password = password
+    user.save();
+    return user;
+}
+
+export async function getPokedexByUserId(id) {
+    const user = await User.findById(id);
+    if (!user) throw new EndpointError(404, "User");
+    return {pokedex: user.pokedex};
 }
 
 // Note: Middleware will validate the fields in the body before reaching this step.
 export async function addToPokedex(id, pokemon) {
     const user = await User.findByIdAndUpdate(id, { $addToSet: { pokedex: pokemon } }, updateOptions);
     if (!user) throw new EndpointError(404, "User");
-    return user.pokedex;
+    return {pokedex: user.pokedex};
 }
 
 export async function deletePokedex(id) {
     const user = await User.findByIdAndUpdate(id, { pokedex: [] }, updateOptions);
     if (!user) throw new EndpointError(404, "User");
-    return user.pokedex;
+    return {pokedex: user.pokedex};
 }

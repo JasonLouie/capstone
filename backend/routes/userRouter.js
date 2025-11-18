@@ -17,7 +17,7 @@ router.post("/logout", protect, userController.logout);
 
 router.post("/refresh-token", userController.generateTokens);
 
-router.post("/reset-password", protect, validatePassword, userController.resetPassword);
+router.patch("/reset-password", protect, validatePassword, userController.resetPassword);
 
 router.route("/pokedex")
     .get(protect, userController.getPokedex)
