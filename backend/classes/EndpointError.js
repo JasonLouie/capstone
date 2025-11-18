@@ -21,7 +21,7 @@ export default class EndpointError {
     }
 
     #formatMsg(status, message) {
-        const messages = {404: `${message} not found.`, 500: "Unexpected server error occurred."};
+        const messages = {404: `${message} not found.`, 500: "Internal Server Error."};
         return messages[status];
     }
 

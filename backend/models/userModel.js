@@ -76,11 +76,9 @@ const userSchema = new mongoose.Schema({
 // Hash password before saving document to the db
 userSchema.pre("save", async function (next) {
     // Only hash the password if the field was modified
-    if (!this.Modified("password")) {
-        return next();
+    if (this.Modified("password")) {
+        this.password = await bcrypt.hash(this.password, 12);
     }
-
-    this.password = await bcrypt.hash(this.password, 12);
     next();
 });
 

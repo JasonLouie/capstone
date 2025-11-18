@@ -1,5 +1,4 @@
-import EndpointError from "../classes/EndpointError.js";
-import { titleCase } from "../utils/funcs.js";
+import { titleCase } from "../utils/utils.js";
 
 function validate(validations, req, res, next ) {
     const validationErrors = {};
@@ -130,7 +129,7 @@ export function validatePassword(req, res, next) {
 }
 
 // Middleware for validating pokedexEntry before adding it
-export function validatePokedexEntry(req, res, next) {
+export function validateNewPokedexEntry(req, res, next) {
     const validations = {
         name: pokedexNameRules,
         imgUrl: {required: true}

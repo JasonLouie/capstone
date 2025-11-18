@@ -1,3 +1,5 @@
+export const timeOptions = { hour12: true, hour: "numeric", minute: "2-digit" };
+
 export function filterBody(keys, body) {
     const filteredBody = {};
     keys.forEach(key => {

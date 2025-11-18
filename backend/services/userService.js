@@ -1,31 +1,48 @@
 import User from "../models/userModel.js";
 import EndpointError from "../classes/EndpointError.js";
-import { filterBody } from "../utils/funcs.js";
+import { filterBody } from "../utils/utils.js";
 
 const updateOptions = { runValidators: true, new: true };
 
-export const createNewUser = async(body) => {
+export async function createNewUser(body) {
     const filteredBody = filterBody(["name", "username", "email", "password", "profilePicUrl"], body);
     const user = await User.create(filteredBody);
     return user;
 }
 
-export const deleteUser = async(id) => {
+export async function getUserById(id) {
+    const user = await User.findById(id);
+    if (!user) throw new EndpointError(404, "User");
+    return user;
+}
+
+export async function getUserByEmail(email) {
+    const user = await User.findOne({email});
+    if (!user) throw new EndpointError(404, "User");
+    return user;
+}
+
+export async function deleteUser(id) {
     const user = await User.findByIdAndDelete(id);
     if (!user) throw new EndpointError(404, "User");
     return user;
 }
 
 // Note: Middleware will validate the fields in the body before reaching this step.
-export const modifyUser = async(id, body) => {
+export async function modifyUser (id, body) {
     const filteredBody = filterBody(["name", "username", "email", "profilePicUrl"], body);
     const user = User.findByIdAndUpdate(id, filteredBody, updateOptions);
     if (!user) throw new EndpointError(404, "User");
     return user;
 }
 
-// Note: Middleware will validate the fields in the body before reaching this step.
-export const addToPokedex = async(id, pokemon) => await User.findById(id, { $addToSet: { pokedex: pokemon}}, updateOptions);
+export async function getPokedex(id) {
+    const user = await User.findById(id);
+    if (!user) throw new EndpointError(404, "User");
+    return user.pokedex;
+}
 
 // Note: Middleware will validate the fields in the body before reaching this step.
-export const removeFromPokedex = async(id, pokemonName) => await User.findById(id, { $pull: { pokedex: {name: pokemonName}}}, updateOptions);
+export async function addToPokedex (id, pokemon) {
+    await User.findById(id, { $addToSet: { pokedex: pokemon}}, updateOptions);
+}
