@@ -5,11 +5,9 @@ import { authenticateUser as authenticate, protect } from "../middleware/userAut
 
 const router = express.Router();
 
+router.post("/signup", validateSignUp, userController.signup);
+router.post("/login", validateLogin, authenticate, userController.login);
 router.post("/logout", protect, userController.logout);
-
-router.route("/id")
-    .get(validateLogin, authenticate, userController.login)
-    .post(validateSignUp, userController.signup);
 
 router.route("/:id")
     .patch(validateModifyUser, userController.updateUser)
@@ -18,6 +16,6 @@ router.route("/:id")
 router.route("/:id/pokedex")
     .get(userController.getPokedex)
     .patch(userController.addPokedexEntry)
-    .delete(userController.resetPokedex)
+    .delete(userController.resetPokedex);
 
 export default router;

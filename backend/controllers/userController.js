@@ -1,9 +1,11 @@
 import * as userService from "../services/userService.js";
+import * as tokenService from "../services/tokenService.js";
 
 // GET /users
 export async function login(req, res, next) {
     try {
-        res.json(req.user);
+        const tokens = await tokenService.createNewTokens(req.user._id);
+        res.json(tokens);
     } catch (err) {
         next(err);
     }
@@ -13,18 +15,39 @@ export async function login(req, res, next) {
 export async function signup(req, res, next) {
     try {
         const user = await userService.createNewUser(req.body);
-        res.status(201).json(user);
+        const tokens = await tokenService.createNewTokens(user._id);
+        res.json(tokens);
     } catch (err) {
         next(err);
     }
 }
 
 // POST /users/logout
-
 export async function logout(req, res, next) {
     try {
-        
+        const message = await tokenService.removeRefreshToken(req.body.refreshToken, req.user._id);
+        res.json(message);
     } catch (err) {
+        next(err);
+    }
+}
+
+// POST /users/refresh-token
+export async function generateTokens(req, res, next) {
+    try {
+        const tokens = await tokenService.generateNewTokens(req.body.token);
+        res.json(tokens);
+    } catch (err) {
+        next(err);
+    }
+}
+
+// GET /users/:id
+export async function getUser(req, res, next) {
+    try {
+        const user = await userService.getUserById(req.params.id);
+        
+    } catch(err) {
         next(err);
     }
 }

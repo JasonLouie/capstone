@@ -16,7 +16,6 @@ passport.use(new LocalStrategy({usernameField: "email", session: false}, async (
 
     if (await user.comparePassword(password)) {
         console.log("Successfully logged in.");
-        delete user.password; // Do not include password in the User doc
         return done(null, user);
     } else { // Incorrect password
         console.log("Failed login attempt");
