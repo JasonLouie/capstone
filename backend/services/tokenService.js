@@ -34,7 +34,7 @@ export async function removeRefreshToken(refreshToken, requestingUserId) {
 // Refreshes the user's access and generate new tokens
 export async function generateNewTokens(refreshToken) {
     if (!refreshToken) throw new EndpointError(400, "Refresh token is required.");
-    
+
     let dbToken;
     try {
         dbToken = await RefreshToken.findOne({ token: refreshToken });
@@ -48,21 +48,33 @@ export async function generateNewTokens(refreshToken) {
         throw new EndpointError(403, "Forbidden action. Invalid refresh token.");
     }
 
+    let payload;
+    try {
+        payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    } catch (err) {
+        console.error("Expired or invalid token");
+        throw new EndpointError(403, "Forbidden action. Refresh token is expired or invalid.");
+    }
+
     // A user should never have access to another user's refresh token.
     if (dbToken.userId.toString() !== payload.sub) {
-        console.warn(`User ${requestingUserId} attempted to generate new tokens using a refresh token belonging to ${dbToken.user}.`);
+        console.warn(`User ${payload.sub} attempted to generate new tokens using a refresh token belonging to ${dbToken.user}.`);
         throw new EndpointError(403, "Forbidden action. Cannot generate new tokens with another user's token.");
     }
+
+    const [tokens, resultRemove] = await Promise.all([createNewTokens(payload.sub), dbToken.deleteOne()]);
+    return tokens;
 }
 
 export async function createNewTokens(sub) {
     const payload = { sub };
     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m" });
     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
-    try {
-        await RefreshToken.create({ token: refreshToken, userId: sub });
-        return { token: accessToken, refreshToken };
-    } catch (err) {
-        throw new EndpointError(500); // Server error while storing refresh token in db.
-    }
+    await RefreshToken.create({ token: refreshToken, userId: sub });
+    return { token: accessToken, refreshToken };
+}
+
+export async function deleteAllUserTokens(id) {
+    const resultRemove = await RefreshToken.deleteMany({ userId: id });
+    return resultRemove;
 }

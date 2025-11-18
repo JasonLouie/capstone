@@ -1,21 +1,27 @@
 import express from "express";
 import * as userController from "../controllers/userController.js";
-import {validateSignUp, validateModifyUser, validateLogin} from "../middleware/validators.js";
+import {validateSignUp, validateModifyUser, validateLogin, validatePassword, validateNewPokedexEntry} from "../middleware/validators.js";
 import { authenticateUser as authenticate, protect } from "../middleware/userAuth.js";
 
 const router = express.Router();
+
+
+router.route("/")
+    .get(protect, userController.getUser)
+    .patch(protect, validateModifyUser, userController.updateUser)
+    .delete(protect, userController.removeUser);
 
 router.post("/signup", validateSignUp, userController.signup);
 router.post("/login", validateLogin, authenticate, userController.login);
 router.post("/logout", protect, userController.logout);
 
-router.route("/:id")
-    .patch(validateModifyUser, userController.updateUser)
-    .delete(userController.removeUser);
+router.post("/refresh-token", userController.generateTokens);
 
-router.route("/:id/pokedex")
-    .get(userController.getPokedex)
-    .patch(userController.addPokedexEntry)
-    .delete(userController.resetPokedex);
+router.post("/reset-password", protect, validatePassword, userController.resetPassword);
+
+router.route("/pokedex")
+    .get(protect, userController.getPokedex)
+    .patch(protect, validateNewPokedexEntry, userController.addPokedexEntry)
+    .delete(protect, userController.resetPokedex);
 
 export default router;

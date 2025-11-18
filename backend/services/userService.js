@@ -17,7 +17,7 @@ export async function getUserById(id) {
 }
 
 export async function getUserByEmail(email) {
-    const user = await User.findOne({email});
+    const user = await User.findOne({ email });
     if (!user) throw new EndpointError(404, "User");
     return user;
 }
@@ -29,8 +29,9 @@ export async function deleteUser(id) {
 }
 
 // Note: Middleware will validate the fields in the body before reaching this step.
-export async function modifyUser (id, body) {
+export async function modifyUser(id, body) {
     const filteredBody = filterBody(["name", "username", "email", "profilePicUrl"], body);
+    console.log(filteredBody);
     const user = User.findByIdAndUpdate(id, filteredBody, updateOptions);
     if (!user) throw new EndpointError(404, "User");
     return user;
@@ -43,6 +44,14 @@ export async function getPokedex(id) {
 }
 
 // Note: Middleware will validate the fields in the body before reaching this step.
-export async function addToPokedex (id, pokemon) {
-    await User.findById(id, { $addToSet: { pokedex: pokemon}}, updateOptions);
+export async function addToPokedex(id, pokemon) {
+    const user = await User.findByIdAndUpdate(id, { $addToSet: { pokedex: pokemon } }, updateOptions);
+    if (!user) throw new EndpointError(404, "User");
+    return user.pokedex;
+}
+
+export async function deletePokedex(id) {
+    const user = await User.findByIdAndUpdate(id, { pokedex: [] }, updateOptions);
+    if (!user) throw new EndpointError(404, "User");
+    return user.pokedex;
 }

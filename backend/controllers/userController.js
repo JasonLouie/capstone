@@ -35,78 +35,79 @@ export async function logout(req, res, next) {
 // POST /users/refresh-token
 export async function generateTokens(req, res, next) {
     try {
-        const tokens = await tokenService.generateNewTokens(req.body.token);
+        const tokens = await tokenService.generateNewTokens(req.body.refreshToken);
         res.json(tokens);
     } catch (err) {
         next(err);
     }
 }
 
-// GET /users/:id
+// GET /users
 export async function getUser(req, res, next) {
     try {
-        const user = await userService.getUserById(req.params.id);
-        
+        const { _id, name, username, email, profilePicUrl } = req.user;
+        res.json({ _id, name, username, email, profilePicUrl });
     } catch(err) {
         next(err);
     }
 }
 
-// DELETE /users/:id
+// DELETE /users
 export async function removeUser(req, res, next) {
     try {
-        await userService.deleteUser(req.id);
+        await userService.deleteUser(req.user._id);
+        await tokenService.deleteAllUserTokens(req.user._id);
         res.sendStatus(204);
     } catch (err) {
         next(err);
     }
 }
 
-// PATCH /users/:id - For non-sensitive fields (not password)
+// PATCH /users - For non-sensitive fields (not password)
 export async function updateUser(req, res, next) {
     try {
-        await userService.modifyUser(req.id);
+        await userService.modifyUser(req.user._id, req.body);
         res.sendStatus(204);
     } catch (err) {
         next(err);
     }
 }
 
-// PATH /users/:id/reset-password
+// PATH /users/reset-password
 export async function resetPassword(req, res, next) {
     try {
-        await userService.modifyPassword(req,params.id, req.body.password);
+        await userService.modifyPassword(req.user._id, req.body.password);
         res.sendStatus(204);
     } catch(err) {
         next(err);
     }
 }
 
-// GET /users/:id/pokedex
+// GET /users/pokedex
 export async function getPokedex(req, res, next) {
     try {
-        const pokedex = await userService.pokedex(req.params.id);
+        const pokedex = await userService.pokedex(req.user._id);
         res.json(pokedex);
     } catch (err) {
         next(err);
     }
 }
 
-// PATCH /users/:id/pokedex
+// PATCH /users/pokedex
 export async function addPokedexEntry(req, res, next) {
     try {
-        await userService.addToPokedex(req.params.id, req.body);
-        res.sendStatus(204);
+        const pokedex = await userService.addToPokedex(req.user._id, req.body);
+        res.status(204).json(pokedex);
     } catch (err) {
         next(err);
     }
 }
 
-// DELETE /users/:id/pokedex
+// DELETE /users/pokedex
 export async function resetPokedex(req, res, next) {
     try {
-        const user = await userService.deletePokedex(req.params.id);
-        res.status(204).json(user);
+        const pokedex = await userService.deletePokedex(req.user._id);
+        res.status(204).json(pokedex);
     } catch(err) {
         next(err);
     }
