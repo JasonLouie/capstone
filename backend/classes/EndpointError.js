@@ -32,4 +32,8 @@ export default class EndpointError {
     toJSON() {
         return {name: this.#name, status: this.#status, message: this.#message};
     }
+
+    toString() {
+        return `[${this.#status} ${this.#name}]: ${this.#message}`;
+    }
 }

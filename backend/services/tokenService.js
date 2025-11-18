@@ -44,7 +44,6 @@ export async function generateNewTokens(refreshToken) {
 
     // If dbToken DNE, 403 Forbidden because an attempt is made to generate a new access token with an invalid refresh token
     if (!dbToken) {
-        console.log("Invalid refresh token");
         throw new EndpointError(403, "Forbidden action. Invalid refresh token.");
     }
 
@@ -52,13 +51,12 @@ export async function generateNewTokens(refreshToken) {
     try {
         payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     } catch (err) {
-        console.error("Expired or invalid token");
         throw new EndpointError(403, "Forbidden action. Refresh token is expired or invalid.");
     }
 
     // A user should never have access to another user's refresh token.
     if (dbToken.userId.toString() !== payload.sub) {
-        console.warn(`User ${payload.sub} attempted to generate new tokens using a refresh token belonging to ${dbToken.user}.`);
+        console.warn(`[WARNING]: User ${payload.sub} attempted to generate new tokens using a refresh token belonging to ${dbToken.user}.`);
         throw new EndpointError(403, "Forbidden action. Cannot generate new tokens with another user's token.");
     }
 
