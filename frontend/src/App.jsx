@@ -1,7 +1,13 @@
+import AppRoutes from "./AppRoutes";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+
 export default function App() {
     return (
         <>
-            <h1>This is my PokeGuesser App.</h1>
+            <Header />
+            <AppRoutes />
+            <Footer />
         </>
     );
 }

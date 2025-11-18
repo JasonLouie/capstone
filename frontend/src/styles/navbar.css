@@ -1,0 +1,16 @@
+nav {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    color: var(--green);
+    margin-left: 10px;
+    gap: 10px;
+}
+
+.button.top.nav {
+    font-size: 24px;
+}
+
+.button.top.nav:hover {
+    color: var(--light-green);
+}
