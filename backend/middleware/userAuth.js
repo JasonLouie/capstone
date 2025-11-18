@@ -1,4 +1,5 @@
 import EndpointError from "../classes/EndpointError.js";
+import passport from "passport";
 
 export function authenticateUser(req, res, next) {
     passport.authenticate("local", { session: false }, (err, user, info) => {
@@ -7,7 +8,10 @@ export function authenticateUser(req, res, next) {
 
         // Handle user not found or wrong password
         if (!user) return res.status(401).json(new EndpointError(401, info.message || "Invalid credentials."));
-
+        
+        // User is valid and found. Attach the user to the request and move onto the next middleware.
+        req.user = user;
+        next();
     })(req, res, next);
 }
 

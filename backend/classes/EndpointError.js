@@ -1,11 +1,15 @@
+const errorNames = {400: "BadRequest", 401: "Unauthorized", 403: "Forbidden", 404: "NotFound", 409: "Conflict", 500: "ServerError"};
+
 export default class EndpointError {
     #status;
     #message;
-    #name = "CustomError";
+    #name;
 
     constructor(status, message) {
         this.#status = status;
-        this.#message = message.split(" ").length === 1 ? this.#formatMsg : message;
+        
+        this.#message = typeof message === "string" && message.split(" ").length === 1 ? this.#formatMsg : message;
+        this.#name = errorNames[status];
     }
 
     get status() {

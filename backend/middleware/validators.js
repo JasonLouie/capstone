@@ -1,6 +1,8 @@
+import EndpointError from "../classes/EndpointError.js";
 import { titleCase } from "../utils/utils.js";
 
 function validate(validations, req, res, next ) {
+    if (!req.body) return res.status(400).json(new EndpointError(400, "Request body is required."));
     const validationErrors = {};
 
     for (const field in validations) {
@@ -30,9 +32,9 @@ function validate(validations, req, res, next ) {
         }
 
         // Handle exact value matches
-        if (value && value !== rules.match) {
-            errors.push(`Both ${field}s must match.`);
-
+        if (value && rules.match !== undefined) {
+            // If confirmPassword is an empty string or doesn't password doesn't match confirm password
+            if (!rules.match || value !== rules.match) errors.push(`Both ${field}s must match.`);
         }
 
         if (errors.length > 0) {
@@ -42,7 +44,7 @@ function validate(validations, req, res, next ) {
 
     if (Object.keys(validationErrors).length > 0) {
         console.log("Validation Error!");
-        res.status(400).json({name: "CustomValidationError", errors: validationErrors});
+        res.status(400).json(new EndpointError(400, validationErrors));
     } else {
         console.log("Validation passed!");
         next();
@@ -96,11 +98,12 @@ const pokedexNameRules = {
 };
 
 export function validateSignUp(req, res, next) {
+    const confirmPassword = req.body?.confirmPassword || "";
     const validations = {
         name: nameRules,
         username: usernameRules,
         email: emailRules,
-        password: {...passwordRules, match: req.body.confirmPassword}
+        password: {...passwordRules, match: confirmPassword}
     };
     validate(validations, req, res, next);
 }

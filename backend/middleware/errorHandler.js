@@ -1,10 +1,13 @@
+import EndpointError from "../classes/EndpointError.js";
+
 export default function handleServerErrors(err, req, res, next) {
     // Format errors
     const messages = {};
     if (err.name === "ValidationError") {
-        console.log("Mongoose ValidationError thrown")
+        console.log("Mongoose ValidationError thrown");
+        // Must store errors as an array to be consistent with the middleware validate functions
         for (const key in err.errors) {
-            messages[key] = err.errors[key].message;
+            messages[key] = [err.errors[key].message];
         }
     } else if (err.name === "CastError") {
         console.log(`Mongoose CastError thrown for ${err.path}`);
@@ -17,8 +20,9 @@ export default function handleServerErrors(err, req, res, next) {
     }
 
     if (Object.keys(messages).length > 0) {
-        res.status(400).json({errors: messages});
+        res.status(400).json(new EndpointError(400, messages));
     } else {
-        res.status(err.status || 500).json({ errors: err.message });
+        const status = err.status || 500;
+        res.status(status).json(new EndpointError(status, err.message || "Unspecified error occurred."));
     }
 }
