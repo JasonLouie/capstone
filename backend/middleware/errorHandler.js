@@ -23,7 +23,7 @@ export default function handleServerErrors(err, req, res, next) {
         res.status(400).json(new EndpointError(400, messages));
     } else {
         const status = err.status || 500;
-        console.log(err.toString());
+        console.log(err instanceof EndpointError ? err.toString() : err);
         res.status(status).json(new EndpointError(status, err.message || "Unspecified error occurred."));
     }
 }

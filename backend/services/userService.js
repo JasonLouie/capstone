@@ -31,7 +31,6 @@ export async function deleteUser(id) {
 // Note: Middleware will validate the fields in the body before reaching this step.
 export async function modifyUser(id, body) {
     const filteredBody = filterBody(["name", "username", "email", "profilePicUrl"], body);
-    console.log(filteredBody);
     const user = User.findByIdAndUpdate(id, filteredBody, updateOptions);
     if (!user) throw new EndpointError(404, "User");
     return user;
