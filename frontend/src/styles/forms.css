@@ -1,0 +1,97 @@
+.form {
+    color: white;
+}
+
+.form-container.auth {
+    background-color: #0000008a;
+    margin: auto;
+    padding: 15px 20px;
+    width: 350px;
+    border-radius: 14px;
+}
+
+img.logo.medium {
+    height: 140px;
+}
+
+.auth > .logo-container {
+    width: max-content;
+    margin: auto;
+}
+
+.form.auth {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.form-title.auth {
+    text-align: center;
+    margin: 4px;
+}
+
+.field {
+    display: block;
+    width: 250px;
+    height: 25px;
+    margin-top: 4px;
+    border-radius: 8px;
+    padding-left: 6px
+}
+
+.form-label {
+    margin-bottom: 10px;
+}
+
+.form-label.password {
+    position: relative;
+}
+
+.password-icon-btn {
+    position: absolute;
+    right: 5px;
+    bottom: 3px;
+    height: 18px;
+    width: 28px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 40px;
+}
+
+.password-icon {
+    cursor: pointer;
+    aspect-ratio: 1/1;
+    height: 30px;
+}
+
+.line::after {
+    position: absolute;
+    content: "";
+    bottom: -4px;
+    right: 14px;
+    width: 2px;
+    height: 27px;
+    border-radius: 1px;
+    background-color: #444;
+    z-index: 4;
+    rotate: -60deg;
+}
+
+.form-submit {
+    margin-top: 10px;
+    width: 80px;
+    height: 30px;
+    border-radius: 5px;
+    border: 2px solid white;
+    cursor: pointer;
+}
+
+.form-navigate {
+    display: block;
+    width: max-content;
+    margin: auto;
+    margin-top: 20px;
+}

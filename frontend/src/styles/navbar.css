@@ -4,7 +4,7 @@ nav {
     align-items: center;
     color: var(--green);
     margin-left: 10px;
-    gap: 10px;
+    column-gap: 30px;
 }
 
 .button.top.nav {
