@@ -29,10 +29,13 @@
     row-gap: 8px;
 }
 
-.form-title.auth {
-    font-size: 45px;
+.form-title {
     text-align: center;
     margin: 4px;
+}
+
+.form-title.auth {
+    font-size: 45px;
 }
 
 .field {

@@ -6,6 +6,8 @@ import { getPokemon } from "../api/pokeApiCalls";
 import { useEffect, useState } from "react";
 import "../styles/game.css";
 import Guess from "../components/game/Guess";
+import GameError from "../components/game/GameError";
+import { titleCase } from "../utils/funcs";
 
 const staticPokemon = {
     generation: "Kanto",
@@ -20,6 +22,7 @@ const staticPokemon = {
 export default function Game() {
     useDocumentTitle("Game");
     const [answer, setAnswer] = useState(staticPokemon);
+    const [invalidGuesses, setInvalidGuesses] = useState([]);
     const [guesses, setGuesses] = useState([]);
     const [hidden, setHidden] = useState(true);
     const [input, setInput] = useState("");
@@ -39,6 +42,7 @@ export default function Game() {
                     console.log(err);
                     // Overlay display error that the pokemon is invalid
                     if (err.status === 404) {
+                        setInvalidGuesses([...invalidGuesses, input]);
                         setHidden(false);
                         setTimeout(() => setHidden(true), 3000);
                     }
@@ -67,26 +71,29 @@ export default function Game() {
     }, []);
 
     return (
-        <Main>
+        <Main className="game-container">
             <h1>Game</h1>
             <GameForm {...props} />
-            <table className="game-table">
-                <thead>
-                    <tr>
-                        <th>Picture</th>
-                        <th>Name</th>
-                        <th>Generation</th>
-                        <th>Types</th>
-                        <th>Colors</th>
-                        <th>Stage</th>
-                        <th>Height</th>
-                        <th>Weight</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {guesses.map(guess => <Guess key={guess.id} {...guess}/>)}
-                </tbody>
-            </table>
+            <div className="table-container">
+                <table className="game-table">
+                    <thead>
+                        <tr>
+                            <th className="info-th pokemon-img">Picture</th>
+                            <th className="info-th pokemon-name">Name</th>
+                            <th className="info-th pokemon-generation">Generation</th>
+                            <th className="info-th pokemon-types">Types</th>
+                            <th className="info-th pokemon-colors">Colors</th>
+                            <th className="info-th pokemon-stage">Stage</th>
+                            <th className="info-th pokemon-height">Height</th>
+                            <th className="info-th pokemon-weight">Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {guesses.map(guess => <Guess key={guess.id} answer={answer} {...guess}/>)}
+                    </tbody>
+                </table>
+                {!hidden && <GameError title="Invalid Pokemon" message={`${titleCase(invalidGuesses[invalidGuesses.length-1])} is not a valid pokemon.`}/>}
+            </div>
         </Main>
     );
 }

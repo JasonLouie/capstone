@@ -34,3 +34,41 @@ export function findGeneration(id) {
 export function chooseRandomPokemon(min = 1, max = 1025) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export function compareGuessAndAnswer(answerTypes, guessedTypes) {
+    const styles = [];
+    // Answer is duo type or monotype
+
+    // Duo types:
+    if (answerTypes.length > 1) {
+        // Check if any types are correct
+        guessedTypes.forEach((g, i) => {
+            if (g === answerTypes[i]) {
+                styles[i] = "correct";
+            } else if (answerTypes.includes(g)) {
+                styles[i] = "partial";
+            } else {
+                styles[i] = "wrong";
+            }
+        });
+
+    } else {
+        // Monotype answer:
+        // Compare length
+        if (answerTypes.length === guessedTypes.length) {
+            styles[0] = answerTypes[0] === guessedTypes[0] ? "correct" : "wrong";
+        } else {
+            // Check if any of the guessed types are correct
+            guessedTypes.forEach((g, i) => {
+                styles[i] = g === answerTypes[0] ? "correct" : "wrong";
+            });
+        }
+    }
+    return styles;
+}
+
+export function compareMeasurements(answer, guess) {
+    if (answer === guess) return "correct";
+    else if (answer > guess) return "wrong lower";
+    else if (answer < guess) return "wrong higher";
+}
