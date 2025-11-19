@@ -22,7 +22,7 @@ nav {
     align-items: center;
     margin-left: auto;
     position: relative;
-    height: 60px;
+    border-radius: 50%;
 }
 
 .button.nav.login {
@@ -43,7 +43,7 @@ nav {
 
 .menu {
     right: -9px;
-    bottom: -62px;
+    bottom: -118px;
     position: absolute;
     display: flex;
     flex-wrap: wrap;
@@ -53,12 +53,16 @@ nav {
     position: relative;
 }
 
+.menu-item:first-child:hover::before {
+    border-color: transparent transparent #444 transparent;
+}
+
 .menu-item:first-child::before {
     position: absolute;
-    right: 20px;
-    top: -20px;
+    right: 11px;
+    top: -38px;
     content: " ";
-    border-width: 10px;
+    border-width: 20px;
     border-style: solid;
     border-color: transparent transparent #3d3d3d transparent;
     z-index: 4;
