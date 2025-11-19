@@ -4,7 +4,12 @@
     margin-bottom: 20px;
 }
 
+.game-container > h1 {
+    text-align: center;
+}
+
 .field.game-input {
+    border-radius: 8px 0 0 8px;
     width: 300px;
     display: inline;
     outline: none;
@@ -16,9 +21,31 @@
     margin-bottom: 20px;
 }
 
+.form-game {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
 .form-container.game:focus-within {
     outline: 2px solid var(--light-green);
     border-radius: 8px;
+}
+
+.submit-guess {
+    color: #999;
+    background-color: #101010;
+    height: 36px;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #333;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+}
+
+.submit-guess:hover {
+    color: white;
 }
 
 .table-container {
@@ -125,18 +152,18 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    border-width: 40px;
+    border-width: 30px 40px;
     border-style: solid;
     z-index: -1;
 }
 
 .lower::before {
-    top: -35px;
+    top: -25px;
     border-color: transparent transparent #772626 transparent;
 }
 
 .higher::before {
-    bottom: -35px;
+    bottom: -25px;
     border-color: #772626 transparent transparent transparent;
 }
 
@@ -145,7 +172,7 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    height: 50px;
+    height: 55px;
     width: 50px;
     background-color: #772626 ;
     z-index: -1;
@@ -162,9 +189,10 @@
 /* Game error styling */
 
 .game-error {
-    position: absolute;
+    position: fixed;
     left: 50%;
     transform: translate(-50%);
+    background-color: #000000CC;
 }
 
 .game-error > * {

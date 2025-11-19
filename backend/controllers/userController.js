@@ -45,9 +45,9 @@ export async function generateTokens(req, res, next) {
 // GET /users
 export async function getUser(req, res, next) {
     try {
-        const { password, ...user } = req.user;
-        res.json({ user });
-    } catch(err) {
+        const { username, email, profilePicUrl, pokedex } = req.user;
+        res.json({ username, email, profilePicUrl, pokedex });
+    } catch (err) {
         next(err);
     }
 }
@@ -55,7 +55,7 @@ export async function getUser(req, res, next) {
 // DELETE /users
 export async function removeUser(req, res, next) {
     try {
-        await userService.deleteUser(req.user._id);
+        await req.user.deleteOne();
         await tokenService.deleteAllUserTokens(req.user._id);
         res.sendStatus(204);
     } catch (err) {
@@ -66,7 +66,7 @@ export async function removeUser(req, res, next) {
 // PATCH /users - For non-sensitive fields (not password)
 export async function updateUser(req, res, next) {
     try {
-        await userService.modifyUser(req.user._id, req.body);
+        await userService.modifyUser(req.user, req.body);
         res.sendStatus(204);
     } catch (err) {
         next(err);
@@ -76,9 +76,9 @@ export async function updateUser(req, res, next) {
 // PATH /users/reset-password
 export async function resetPassword(req, res, next) {
     try {
-        await userService.modifyPassword(req.user._id, req.body.password);
+        await userService.modifyPassword(req.user, req.body.password);
         res.sendStatus(204);
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 }
@@ -86,8 +86,7 @@ export async function resetPassword(req, res, next) {
 // GET /users/pokedex
 export async function getPokedex(req, res, next) {
     try {
-        const pokedex = await userService.getPokedexByUserId(req.user._id);
-        res.json(pokedex);
+        res.json(req.user.pokedex);
     } catch (err) {
         next(err);
     }
@@ -96,8 +95,8 @@ export async function getPokedex(req, res, next) {
 // PATCH /users/pokedex
 export async function addPokedexEntry(req, res, next) {
     try {
-        const pokedex = await userService.addToPokedex(req.user._id, req.body);
-        res.status(204).json(pokedex);
+        await userService.addToPokedex(req.user.pokedex, req.body);
+        res.sendStatus(204);
     } catch (err) {
         next(err);
     }
@@ -106,9 +105,9 @@ export async function addPokedexEntry(req, res, next) {
 // DELETE /users/pokedex
 export async function resetPokedex(req, res, next) {
     try {
-        const pokedex = await userService.deletePokedex(req.user._id);
-        res.status(204).json(pokedex);
-    } catch(err) {
+        await userService.resetUserPokedex(req.user);
+        res.sendStatus(204);
+    } catch (err) {
         next(err);
     }
 }

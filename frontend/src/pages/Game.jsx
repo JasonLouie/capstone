@@ -23,8 +23,8 @@ export default function Game() {
     useDocumentTitle("Game");
     const [answer, setAnswer] = useState(staticPokemon);
     const [invalidGuesses, setInvalidGuesses] = useState([]);
+    const [error, setError] = useState("");
     const [guesses, setGuesses] = useState([]);
-    const [hidden, setHidden] = useState(true);
     const [input, setInput] = useState("");
     const [disabled, setDisabled] = useState(false);
     const props = { handleSubmit, disabled, input, setInput };
@@ -35,20 +35,26 @@ export default function Game() {
             setDisabled(true);
             // Add element to the table of guesses
             if (input.toLowerCase() !== answer.name.toLowerCase()) {
-                try {
-                    const guess = await getPokemon(input);
-                    setGuesses(prev => [...prev, guess]);
-                } catch (err) {
-                    console.log(err);
-                    // Overlay display error that the pokemon is invalid
-                    if (err.status === 404) {
-                        setInvalidGuesses([...invalidGuesses, input]);
-                        setHidden(false);
-                        setTimeout(() => setHidden(true), 3000);
-                    }
-                } finally {
+                const invalidGuess = invalidGuesses.find(g => g === input);
+                if (invalidGuess) {
+                    setError(invalidGuess);
+                    setTimeout(() => setError(""), 3000);
                     setDisabled(false);
+                } else {
+                    try {
+                        const guess = await getPokemon(input);
+                        setGuesses(prev => [...prev, guess]);
+                    } catch (err) {
+                        console.log(err);
+                        // Overlay display error that the pokemon is invalid
+                        if (err.status === 404) {
+                            setInvalidGuesses([...invalidGuesses, input]);
+                            setError(input);
+                            setTimeout(() => setError(""), 3000);
+                        }
+                    }
                 }
+                setDisabled(false);
             } else { // User guessed the correct pokemon
                 console.log("Correct!");
                 setGuesses(prev => [...prev, answer]);
@@ -72,8 +78,8 @@ export default function Game() {
 
     return (
         <Main className="game-container">
-            <h1>Game</h1>
-            <GameForm {...props} />
+            <h1>Guess the pokemon!</h1>
+            <GameForm inputState={guesses[guesses.length - 1]?.name === answer.name} {...props} />
             <div className="table-container">
                 <table className="game-table">
                     <thead>
@@ -89,10 +95,10 @@ export default function Game() {
                         </tr>
                     </thead>
                     <tbody>
-                        {guesses.map(guess => <Guess key={guess.id} answer={answer} {...guess}/>)}
+                        {guesses.map(guess => <Guess key={guess.id} answer={answer} {...guess} />)}
                     </tbody>
                 </table>
-                {!hidden && <GameError title="Invalid Pokemon" message={`${titleCase(invalidGuesses[invalidGuesses.length-1])} is not a valid pokemon.`}/>}
+                {error && <GameError title="Invalid Pokemon" message={`${titleCase(error)} is not a valid pokemon.`} />}
             </div>
         </Main>
     );
