@@ -5,7 +5,7 @@ import { filterBody } from "../utils/utils.js";
 const updateOptions = { runValidators: true, new: true };
 
 export async function createNewUser(body) {
-    const filteredBody = filterBody(["name", "username", "email", "password", "profilePicUrl"], body);
+    const filteredBody = filterBody(["username", "email", "password", "profilePicUrl"], body);
     const user = await User.create(filteredBody);
     return user;
 }
@@ -30,7 +30,7 @@ export async function deleteUser(id) {
 
 // Note: Middleware will validate the fields in the body before reaching this step.
 export async function modifyUser(id, body) {
-    const filteredBody = filterBody(["name", "username", "email", "profilePicUrl"], body);
+    const filteredBody = filterBody(["username", "email", "profilePicUrl"], body);
     const user = User.findByIdAndUpdate(id, filteredBody, updateOptions);
     if (!user) throw new EndpointError(404, "User");
     return user;

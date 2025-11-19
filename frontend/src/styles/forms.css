@@ -6,12 +6,12 @@
     background-color: #0000008a;
     margin: auto;
     padding: 15px 20px;
-    width: 350px;
+    width: 400px;
     border-radius: 14px;
 }
 
 img.logo.medium {
-    height: 140px;
+    height: 90px;
 }
 
 .auth > .logo-container {
@@ -34,24 +34,21 @@ img.logo.medium {
 .field {
     display: block;
     width: 250px;
-    height: 25px;
+    height: 34px;
     margin-top: 4px;
     border-radius: 8px;
     padding-left: 6px
 }
 
-.form-label {
+.form-input {
     margin-bottom: 10px;
-}
-
-.form-label.password {
     position: relative;
 }
 
 .password-icon-btn {
     position: absolute;
     right: 5px;
-    bottom: 3px;
+    bottom: 7px;
     height: 18px;
     width: 28px;
     overflow: hidden;
@@ -80,7 +77,13 @@ img.logo.medium {
     rotate: -60deg;
 }
 
+.btn-container {
+    width: 100%;
+}
+
 .form-submit {
+    display: block;
+    margin: auto;
     margin-top: 10px;
     width: 80px;
     height: 30px;

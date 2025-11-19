@@ -4,7 +4,7 @@ import Main from "../components/Main";
 
 export default function Signup() {
 
-    const [formData, setFormData] = useState({name: "", username: "", email: "", password: "", confirmPassword: ""});
+    const [formData, setFormData] = useState({username: "", email: "", password: "", confirmPassword: ""});
     const [formErrors, setFormErrors] = useState({});
     const formInfo = { formData, setFormData, formErrors };
 

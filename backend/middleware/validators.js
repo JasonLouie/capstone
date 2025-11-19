@@ -51,17 +51,11 @@ function validate(validations, req, res, next ) {
     }
 }
 
-const nameRules = {
-    regex: !/^[a-zA-Z0-9_.\s]+$/,
-    message: "Name can only contain letters, numbers, underscores, periods, and whitespaces.",
-    required: true
-};
-
 const usernameRules = {
     regex: !/^[a-zA-Z0-9_.]+$/,
     message: "Username can only contain letters, numbers, underscores, and periods.",
     required: true,
-    minLength: 5
+    minLength: 3
 };
 
 const emailRules = {
@@ -100,7 +94,6 @@ const pokedexNameRules = {
 export function validateSignUp(req, res, next) {
     const confirmPassword = req.body?.confirmPassword || "";
     const validations = {
-        name: nameRules,
         username: usernameRules,
         email: emailRules,
         password: {...passwordRules, match: confirmPassword}
@@ -119,7 +112,6 @@ export function validateLogin(req, res, next) {
 // Middleware for validating req body when modifying user
 export function validateModifyUser(req, res, next) {
     const validations = {
-        name: {...nameRules, required: false},
         username: {...usernameRules, required: false},
         email: {...emailRules, required: false}
     };

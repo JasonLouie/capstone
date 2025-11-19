@@ -9,10 +9,9 @@ export default function Field({ fieldName, formData, setFormData, formErrors }) 
 
     return (
         <>
-            <label htmlFor={fieldName} className={`form-label${fieldName === "password" ? " password" : ""}`}>
-                {label}
-                {fieldName === "password" ? <PasswordInput handleChange={handleChange} value={formData[fieldName]}/> : <input type={inputTypes[fieldName]} className="field" name={fieldName} id={fieldName} value={formData[fieldName]} onChange={handleChange} />}
-            </label>
+            <div className="form-input">
+                {fieldName === "password" ? <PasswordInput handleChange={handleChange} value={formData[fieldName]}/> : <input type={inputTypes[fieldName]} className="field" name={fieldName} id={fieldName} value={formData[fieldName]} onChange={handleChange} placeholder={label}/>}
+            </div>
             {formErrors[fieldName]?.length > 0 && <FieldErrors errors={formErrors[fieldName]}/>}
         </>
     );

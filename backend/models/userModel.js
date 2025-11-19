@@ -22,18 +22,12 @@ const pokedexEntrySchema = new mongoose.Schema({
 }, { versionKey: false, _id: false });
 
 const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        trim: true,
-        required: [true, "Name is required."],
-        match: [/^[a-zA-Z0-9_.\s]+$/, "Name can only contain letters, numbers, underscores, periods, and whitespaces."]
-    },
     username: {
         type: String,
         unique: true,
         required: [true, "Username is required."],
         lowercase: true,
-        minLength: [5, "Username must be at least 5 characters long"],
+        minLength: [3, "Username must be at least 3 characters long"],
         match: [/^[a-zA-Z0-9_.]+$/, "Username can only contain letters, numbers, underscores, and periods."],
         validate: {
             validator: function (v) {

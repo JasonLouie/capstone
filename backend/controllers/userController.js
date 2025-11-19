@@ -45,8 +45,8 @@ export async function generateTokens(req, res, next) {
 // GET /users
 export async function getUser(req, res, next) {
     try {
-        const { _id, name, username, email, profilePicUrl } = req.user;
-        res.json({ _id, name, username, email, profilePicUrl });
+        const { password, ...user } = req.user;
+        res.json({ user });
     } catch(err) {
         next(err);
     }
