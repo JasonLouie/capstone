@@ -6,7 +6,7 @@ import Legal from "./Legal";
 import { useUserStore } from "../../store";
 
 export default function Navbar({top}) {
-    const isLoggedIn = useUserStore(state => state.isLoggedIn);
+    const isLoggedIn = useUserStore(state => state.tokens);
     const classes = `${top ? "top" : "bottom"} nav`;
 
     const renderElements = () => top ? (isLoggedIn ? <Menu /> : <Button path="/login" className="nav login">Login</Button>) : <Legal classes={classes}/>;

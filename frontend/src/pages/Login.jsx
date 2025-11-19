@@ -3,14 +3,12 @@ import AuthForm from "../components/forms/AuthForm";
 import Main from "../components/Main";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { validateLogin } from "../utils/validate";
-import { setAuthHeader } from "../configs/userApi";
-import { updateTokens } from "../utils/storage";
 import { useNavigate } from "react-router";
 import { login } from "../api/userApiCalls";
 import { useUserStore } from "../store";
 
 export default function Login() {
-    const { loginUser } = useUserStore(state => state);
+    const { loginUser, initUserImg } = useUserStore(state => state);
     useDocumentTitle("Login");
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: "", password: "" });
@@ -26,11 +24,10 @@ export default function Login() {
         if (Object.keys(validationErrors).length > 0) return;
 
         try {
-            const tokens = await login(formData);
-            updateTokens(tokens);
-            setAuthHeader(tokens?.token);
-            loginUser();
-            navigate("/profile");
+            const {img, ...tokens} = await login(formData);
+            loginUser(tokens);
+            initUserImg(img);
+            navigate("/users/profile");
         } catch (err) {
             console.log(err);
             if (err.status === 400) {

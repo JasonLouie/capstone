@@ -7,7 +7,7 @@ import Game from "./pages/Game";
 import Profile from "./pages/Profile";
 
 export default function AppRoutes() {
-    const loggedIn = useUserStore(state => state.loggedIn);
+    const loggedIn = useUserStore(state => state.tokens);
 
     return (
         <Routes>

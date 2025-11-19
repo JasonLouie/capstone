@@ -4,11 +4,11 @@ import Main from "../components/Main";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { validateSignUp } from "../utils/validate";
 import { signup } from "../api/userApiCalls";
-import { updateTokens } from "../utils/storage";
-import { setAuthHeader } from "../configs/userApi";
 import { useNavigate } from "react-router";
+import { useUserStore } from "../store";
 
 export default function Signup() {
+    const { loginUser } = useUserStore(state => state);
     useDocumentTitle("Sign Up");
     const navigate = useNavigate();
     const [formData, setFormData] = useState({username: "", email: "", password: "", confirmPassword: ""});
@@ -25,12 +25,11 @@ export default function Signup() {
 
         try {
             const tokens = await signup(formData);
-            updateTokens(tokens);
-            setAuthHeader(tokens?.token);
-            navigate("/");
+            loginUser(tokens);
+            navigate("/users/profile");
         } catch (err) {
             console.log(err);
-            if (err.status === 400) {
+            if (err.status === 400 || err.status === 409) {
                 setFormErrors(err);
             } else { // Handle server or frontend error
                 console.log("Server error");

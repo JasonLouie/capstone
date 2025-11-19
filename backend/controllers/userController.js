@@ -5,6 +5,7 @@ import * as tokenService from "../services/tokenService.js";
 export async function login(req, res, next) {
     try {
         const tokens = await tokenService.createNewTokens(req.user._id);
+        tokens.img = req.user.profilePicUrl;
         res.json(tokens);
     } catch (err) {
         next(err);
@@ -16,6 +17,7 @@ export async function signup(req, res, next) {
     try {
         const user = await userService.createNewUser(req.body);
         const tokens = await tokenService.createNewTokens(user._id);
+        tokens.img = user.profilePicUrl;
         res.json(tokens);
     } catch (err) {
         next(err);
