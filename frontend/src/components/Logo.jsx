@@ -1,10 +1,11 @@
 import logo from "../assets/logo.png";
+import Image from "./Image";
 
 export default function Logo({size, text}) {
     return (
         <div className="logo-container">
-            <img src={logo} alt="PokeGuesser Logo" className={`logo ${size}`} />
-            {text && <h1 className="logo">PokeGuesser</h1>}
+            <Image src={logo} alt="PokéGuesser Logo" size={size}/>
+            {text && <h1 className="logo">PokéGuesser</h1>}
         </div>
     )
 }

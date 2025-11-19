@@ -1,0 +1,23 @@
+.home {
+    flex-wrap: wrap;
+}
+
+.section-info {
+    width: 80vh;
+}
+
+.start-btn {
+    padding: 7px 9px;
+    border-radius: 7px;
+    display: block;
+    margin: auto;
+    background-color: #000000AA;
+    color: var(--green);
+    border: 2px solid var(--green);
+    transition: border-color 0.3s ease;
+}
+
+.start-btn:hover {
+    color: var(--light-green);
+    border-color: var(--light-green);
+}

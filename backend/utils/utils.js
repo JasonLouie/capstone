@@ -11,7 +11,7 @@ export function filterBody(keys, body) {
 }
 
 export function titleCase(string) {
-    return string.split(" ").map(word => word[0].toUpperCase() + word.slice(1));
+    return string.split(" ").map(word => word[0].toUpperCase() + word.slice(1)).join("");
 }
 
 // Strict validation that ensures the object only contains the expected keys

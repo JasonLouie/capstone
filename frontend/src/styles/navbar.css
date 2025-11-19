@@ -2,8 +2,10 @@ nav {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
+    width: 100%;
     color: var(--green);
     margin-left: 10px;
+    margin-right: 20px;
     column-gap: 30px;
 }
 
@@ -11,6 +13,70 @@ nav {
     font-size: 24px;
 }
 
-.button.top.nav:hover {
+.button.nav:hover {
     color: var(--light-green);
+}
+
+.menu-container {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    position: relative;
+    height: 60px;
+}
+
+.button.nav.login {
+    background-color: #333;
+    padding: 7px 9px;
+    border-radius: 7px;
+    margin-left: auto;
+}
+
+.show-menu-btn {
+    background-color: #444;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.menu {
+    right: -9px;
+    bottom: -62px;
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.menu-item:first-child {
+    position: relative;
+}
+
+.menu-item:first-child::before {
+    position: absolute;
+    right: 20px;
+    top: -20px;
+    content: " ";
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent #3d3d3d transparent;
+    z-index: 4;
+}
+
+.menu-item {
+    color: #6b866f;
+    width: 130px;
+    background-color: #3d3d3d;
+    text-align: left;
+    height: 36px;
+    border-bottom: 1px solid #222;
+    z-index: 4;
+    padding-left: 8px;
+    transition: color background-color 0.3 ease-in;
+}
+
+.menu-item:hover {
+    color: var(--light-green);
+    background-color: #444;
 }
