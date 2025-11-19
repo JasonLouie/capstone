@@ -1,4 +1,5 @@
 import { camelCaseToTitleCase } from "../../utils/funcs";
+import FieldErrors from "./FieldErrors";
 import PasswordInput from "./PasswordInput";
 
 const inputTypes = { name: "text", username: "text", email: "email", confirmPassword: "password" };

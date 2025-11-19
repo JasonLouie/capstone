@@ -89,11 +89,18 @@ export function validateSignUp(formData) {
 }
 
 export function validateLogin(formData) {
+    const requiredErrors = {};
+    if (!formData?.email) requiredErrors.email = ["Email is required"];
+    if (!formData?.password) requiredErrors.password = ["Password is required"];
+    if (Object.keys(requiredErrors).length > 0) return requiredErrors;
+
     const validations = {
-        email: emailRules,
-        password: passwordRules
+        email: {...emailRules, required: false},
+        password: {...passwordRules, required: false}
     };
-    return validate(validations, formData);
+    const validationErrors = validate(validations, formData);
+    // Don't attempt to make the api call for logging in if either field fails validation
+    return (validationErrors.email || validationErrors.password) ? {email: ["Invalid email or password"]} : {};
 }
 
 export function validateModifyUser(formData) {

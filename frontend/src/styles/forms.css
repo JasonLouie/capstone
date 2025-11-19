@@ -63,7 +63,13 @@
     position: relative;
 }
 
+.field-errors {
+    flex-wrap: wrap;
+}
+
 .field-error {
+    margin-top: 0;
+    margin-bottom: 5px;
     color: red;
 }
 

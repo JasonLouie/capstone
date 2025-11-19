@@ -9,4 +9,12 @@ const userApi = axios.create({
     }
 });
 
+export function setAuthHeader(accessToken) {
+    if (accessToken) {
+        userApi.defaults.headers["Authorization"] = `bearer ${accessToken}`;
+    } else {
+        delete userApi.defaults.headers["Authorization"];
+    }
+}
+
 export default userApi;

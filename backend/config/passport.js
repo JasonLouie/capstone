@@ -11,7 +11,7 @@ passport.use(new LocalStrategy({usernameField: "email", session: false}, async (
     try {
         user = await getUserByEmail(email);
     } catch { // User not found
-        return done(null, false, { message: "Incorrect email or password" });
+        return done(null, false, { message: "Invalid email or password" });
     }
 
     if (await user.comparePassword(password)) {
@@ -19,7 +19,7 @@ passport.use(new LocalStrategy({usernameField: "email", session: false}, async (
         return done(null, user);
     } else { // Incorrect password
         console.log("Failed login attempt");
-        return done(null, false, { message: "Incorrect email or password"});
+        return done(null, false, { message: "Invalid email or password"});
     }
 }));
 

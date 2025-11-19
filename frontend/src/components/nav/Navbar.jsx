@@ -3,12 +3,13 @@ import Logo from "../Logo";
 import "../../styles/navbar.css";
 import Menu from "./Menu";
 import Legal from "./Legal";
+import { useUserStore } from "../../store";
 
 export default function Navbar({top}) {
-    const user = true;
+    const isLoggedIn = useUserStore(state => state.isLoggedIn);
     const classes = `${top ? "top" : "bottom"} nav`;
 
-    const renderElements = () => top ? (user ? <Menu /> : <Button path="/login" className="nav login">Login</Button>) : <Legal classes={classes}/>;
+    const renderElements = () => top ? (isLoggedIn ? <Menu /> : <Button path="/login" className="nav login">Login</Button>) : <Legal classes={classes}/>;
 
     return (
         <nav className={top ? null : "flex-center"}>

@@ -63,7 +63,7 @@ const userSchema = new mongoose.Schema({
     },
     profilePicUrl: {
         type: String,
-        default: "/images/default-avatar.png"
+        default: ""
     },
     pokedex: {
         type: [pokedexEntrySchema],
