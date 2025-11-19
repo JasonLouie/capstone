@@ -104,6 +104,7 @@ img.pic.medium {
 
 .content {
     padding: 0 8%;
+    position: relative;
 }
 
 .hidden {
