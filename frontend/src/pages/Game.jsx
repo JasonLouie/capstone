@@ -1,7 +1,7 @@
 import GameForm from "../components/game/GameForm";
 import Main from "../components/Main";
 import useDocumentTitle from "../hooks/useDocumentTitle";
-import { chooseRandomPokemon } from "../game";
+import { randomPokemon } from "../game";
 import { getPokemon } from "../api/pokeApiCalls";
 import { useEffect, useState } from "react";
 import "../styles/game.css";
@@ -9,6 +9,7 @@ import GameError from "../components/game/GameError";
 import { titleCase } from "../utils/funcs";
 import GameTable from "../components/game/GameTable";
 import { useGameStore } from "../store";
+import Button from "../components/Button";
 
 const staticPokemon = {
     generation: "Kanto",
@@ -23,8 +24,8 @@ const staticPokemon = {
 
 export default function Game() {
     useDocumentTitle("Game");
-    const {answer, setAnswer, guesses, addToGuesses} = useGameStore(state => state);
-    const [invalidGuesses, setInvalidGuesses] = useState([]);
+    const {answer, setAnswer, guesses, addToGuesses, settings, resetGame} = useGameStore(state => state);
+    const [invalidGuesses, setInvalidGuesses] = useState([]); // Save API calls! If the API already said the name was invalid, do not allow guessing it again
     const [error, setError] = useState("");
     const [input, setInput] = useState("");
     const [disabled, setDisabled] = useState(false);
@@ -68,7 +69,8 @@ export default function Game() {
     useEffect(() => {
         async function generateAnswer() {
             try {
-                const pokemon = await getPokemon(chooseRandomPokemon());
+                const randomId = settings.all ? randomPokemon() : randomPokemon(settings.generations);
+                const pokemon = await getPokemon(randomId);
                 console.log(pokemon);
                 setAnswer(pokemon);
             } catch (err) {
@@ -81,8 +83,9 @@ export default function Game() {
 
     return (
         <Main className="game-container">
-            <h1>Guess the pokemon!</h1>
+            <h1>{guesses[0]?.name === answer?.name ? "Congratulations! You Guessed the Pokémon!" : "Guess the Pokémon"}</h1>
             <GameForm inputState={guesses[0]?.name === answer?.name} {...props} />
+            <Button onClick={() => resetGame()} className="game-btn">{guesses[0]?.name === answer?.name ? "New Game" : "Reset Game"}</Button>
             <GameTable />
             {error && <GameError title="Invalid Pokemon" message={`${titleCase(error)} is not a valid pokemon.`} />}
         </Main>

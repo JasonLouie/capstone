@@ -2,6 +2,14 @@ import pokeApi from "../configs/pokeApi";
 import { findGeneration } from "../game";
 import { titleCase } from "../utils/funcs";
 
+
+export function inchesToFeet(inches) {
+    const newInches = Math.floor(inches);
+    if (newInches < 12) return `${newInches}"`;
+    const feet = Math.floor(inches/12);
+    return `${feet}' ${newInches-(feet*12)}"`;
+}
+
 async function filterPokemonData(info, species) {
     const pokemon = {
         id: info.id,
@@ -9,8 +17,8 @@ async function filterPokemonData(info, species) {
         name: titleCase(info.name, "-"),
         generation: findGeneration(info.id),
         color: titleCase(species.color.name),
-        height: info.height,
-        weight: info.weight,
+        height: info.height * 3.937,
+        weight: Math.floor(info.weight/4.536),
         types: [titleCase(info.types[0]?.type.name || "None"), titleCase(info.types[1]?.type.name || "None")]
     };
 

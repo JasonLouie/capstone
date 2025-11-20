@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useGameStore } from "../../store";
 
 export default function Dropdown({ children, name, type }) {

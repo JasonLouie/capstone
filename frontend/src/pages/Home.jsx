@@ -4,9 +4,19 @@ import Section from "../components/Section";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import "../styles/home.css";
 import GameSettings from "../components/game/GameSettings";
+import { useGameStore } from "../store";
+import { useNavigate } from "react-router";
 
 export default function Home() {
     useDocumentTitle("Home");
+    const navigate = useNavigate();
+    const {resetGame} = useGameStore(state => state);
+
+    function handleClick() {
+        resetGame();
+        navigate("/play");
+    }
+
     return (
         <Main className="flex-center home">
             <Section title="Welcome to PokéGuesser!">
@@ -17,7 +27,7 @@ export default function Home() {
             </Section>
             <Section title="Options">
                 <GameSettings />
-                <Button buttonType="button" className="start-btn">Start Game</Button>
+                <Button buttonType="button" className="game-btn" onClick={handleClick}>Start Game</Button>
             </Section>
         </Main>
     );

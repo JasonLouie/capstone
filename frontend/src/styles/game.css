@@ -93,6 +93,7 @@
 }
 
 .info-th {
+    height: 42px;
     background-color: #444;
     padding: 4px 6px;
 }

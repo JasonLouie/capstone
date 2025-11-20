@@ -10,7 +10,7 @@ export function findGeneration(id) {
     return "";
 }
 
-export function chooseRandomPokemon(generations = ["all"]) {
+export function randomPokemon(generations = ["all"]) {
     const [min, max] = handleGeneration(generations);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }

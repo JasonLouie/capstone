@@ -1,3 +1,3 @@
-export default function Image({src, alt, size}) {
-    return <img src={src} alt={alt} className={`pic ${size}`} />
+export default function Image({src, alt, size, className}) {
+    return <img src={src} alt={alt} className={`pic ${size}${className ? (" " + className) : ""}`} />
 }

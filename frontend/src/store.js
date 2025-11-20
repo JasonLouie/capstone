@@ -35,8 +35,8 @@ export const useUserStore = create((set) => ({
 
 export const useGameStore = create((set) => ({
     resetGame: () => {
-        ["gameSettings", "answer", "guesses"].forEach(key => storage.clear(key));
-        set({settings: null, answer: null, guesses: null})
+        ["answer", "guesses"].forEach(key => storage.clear(key));
+        set(state => ({...state.settings, answer: null, guesses: []}))
     },
     settings: storage.getJSON("gameSettings", settingTypes.game),
     setGameSettings: (newSettings) => {

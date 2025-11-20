@@ -1,3 +1,4 @@
+import { inchesToFeet } from "../../api/pokeApiCalls";
 import { compareGenerations, compareGuessAndAnswer, compareMeasurements } from "../../game";
 import Image from "../Image";
 
@@ -17,8 +18,8 @@ export default function Guess({answer, name, img, generation, types, color, stag
             <td className={`info-td pokemon-types ${typeClasses[1]}`}>{types[1]}</td>
             <td className={`info-td pokemon-color ${answer.color === color ? "correct" : "wrong"}`}>{color}</td>
             <td className={`info-td pokemon-stage ${stageClasses}`}>{stage || "Stage"}</td>
-            <td className={`info-td pokemon-height ${heightClasses}`}>{height}</td>
-            <td className={`info-td pokemon-weight ${weightClasses}`}>{weight}</td>
+            <td className={`info-td pokemon-height ${heightClasses}`}>{inchesToFeet(height)}</td>
+            <td className={`info-td pokemon-weight ${weightClasses}`}>{`${weight} lbs`}</td>
         </tr>
     );
 }
