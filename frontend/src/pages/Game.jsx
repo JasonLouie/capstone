@@ -8,6 +8,7 @@ import "../styles/game.css";
 import GameError from "../components/game/GameError";
 import { titleCase } from "../utils/funcs";
 import GameTable from "../components/game/GameTable";
+import { useGameStore } from "../store";
 
 const staticPokemon = {
     generation: "Kanto",
@@ -22,10 +23,9 @@ const staticPokemon = {
 
 export default function Game() {
     useDocumentTitle("Game");
-    const [answer, setAnswer] = useState();
+    const {answer, setAnswer, guesses, addToGuesses} = useGameStore(state => state);
     const [invalidGuesses, setInvalidGuesses] = useState([]);
     const [error, setError] = useState("");
-    const [guesses, setGuesses] = useState([]);
     const [input, setInput] = useState("");
     const [disabled, setDisabled] = useState(false);
     const props = { handleSubmit, disabled, input, setInput };
@@ -45,7 +45,7 @@ export default function Game() {
                 } else {
                     try {
                         const guess = await getPokemon(queryName);
-                        setGuesses(prev => [guess, ...prev]);
+                        addToGuesses(guess);
                     } catch (err) {
                         console.log(err);
                         // Overlay display error that the pokemon is invalid
@@ -59,7 +59,7 @@ export default function Game() {
                 setDisabled(false);
             } else { // User guessed the correct pokemon
                 console.log("Correct!");
-                setGuesses(prev => [answer, ...prev]);
+                addToGuesses(answer);
             }
             setInput("");
         }
@@ -69,20 +69,21 @@ export default function Game() {
         async function generateAnswer() {
             try {
                 const pokemon = await getPokemon(chooseRandomPokemon());
+                console.log(pokemon);
                 setAnswer(pokemon);
             } catch (err) {
                 console.log("Error fetching data on random pokemon:", err);
                 setAnswer(staticPokemon);
             }
         }
-        generateAnswer();
-    }, []);
+        if (!answer) generateAnswer();
+    }, [answer]);
 
     return (
         <Main className="game-container">
             <h1>Guess the pokemon!</h1>
             <GameForm inputState={guesses[0]?.name === answer?.name} {...props} />
-            <GameTable answer={answer} guesses={guesses} />
+            <GameTable />
             {error && <GameError title="Invalid Pokemon" message={`${titleCase(error)} is not a valid pokemon.`} />}
         </Main>
     );

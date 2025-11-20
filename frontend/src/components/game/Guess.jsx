@@ -13,7 +13,8 @@ export default function Guess({answer, name, img, generation, types, color, stag
             <td className={`info-td pokemon-img ${answer.img === img ? "correct" : "wrong"}`}><Image src={img} size="medium"/></td>
             <td className={`info-td pokemon-name ${answer.name === name ? "correct" : "wrong"}`}>{name}</td>
             <td className={`info-td pokemon-generation ${generationClasses}`}>{generation}</td>
-            {types.map((t, i) => <td key={`${name}-${t}`} className={`info-td pokemon-types ${typeClasses[i]}`}>{t}</td>)}
+            <td className={`info-td pokemon-types ${typeClasses[0]}`}>{types[0]}</td>
+            <td className={`info-td pokemon-types ${typeClasses[1]}`}>{types[1]}</td>
             <td className={`info-td pokemon-color ${answer.color === color ? "correct" : "wrong"}`}>{color}</td>
             <td className={`info-td pokemon-stage ${stageClasses}`}>{stage || "Stage"}</td>
             <td className={`info-td pokemon-height ${heightClasses}`}>{height}</td>

@@ -1,41 +1,41 @@
-export function updateTokens(tokens = null) {
-    if (tokens) localStorage.setItem("tokens", JSON.stringify(tokens));
-    else localStorage.removeItem("tokens");
-}
-
-export function getTokens() {
-    const tokens = localStorage.getItem("tokens");
-    return tokens ? JSON.parse(tokens) : null;
-}
-
-export function addEntryToPokedex(pokemon) {
-    const pokedex = getPokedex();
-    const exists = pokedex.find(p => p.name === pokemon.name);
+export function addPokemonEntry(key, pokemon) {
+    const array = getJSON(key) || [];
+    const exists = array.find(p => p.name === pokemon.name);
     if (!exists) {
-        pokedex.push(pokemon);
-        updatePokedex(pokedex);
+        if (key === "pokedex") array.push(pokemon);
+        else array.unshift(pokemon);
+        updateJSON(key, array);
     }
 }
 
-export function clearPokedex() {
-    localStorage.removeItem("pokedex");
+export function changeSetting(key, setting, value) {
+    const settings = getJSON(key);
+
 }
 
-export function updatePokedex(newPokedex = null) {
-    if (newPokedex) localStorage.setItem("pokedex", JSON.stringify(newPokedex));
-    else localStorage.removeItem("pokedex");
-};
+export function getJSON(key, fallback = null) {
+    const value = localStorage.getItem(key);
+    if (value) return JSON.parse(value);
 
-export function getPokedex() {
-    const pokedex = localStorage.getItem("pokedex");
-    return pokedex ? JSON.parse(pokedex) : null;
+    if (fallback) {
+        updateJSON(key, fallback);
+        return fallback;
+    }
+    return null;
 }
 
-export function getUserImg() {
-    return localStorage.getItem("userImg");
+export function updateJSON(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
 }
 
-export function updateUserImg(newImg = null) {
-    if (newImg) localStorage.setItem("userImg", newImg);
-    else localStorage.removeItem("userImg");
+export function getString(key) {
+    return localStorage.getItem(key);
+}
+
+export function updateString(key, value) {
+    localStorage.setItem(key, value);
+}
+
+export function clear(key) {
+    localStorage.removeItem(key);
 }

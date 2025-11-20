@@ -1,6 +1,8 @@
+import { useGameStore } from "../../store";
 import Guess from "./Guess";
 
-export default function GameTable({ answer, guesses }) {
+export default function GameTable() {
+    const {answer, guesses } = useGameStore(state => state);
     return (
         <div className="table-container">
             <table className="game-table">
