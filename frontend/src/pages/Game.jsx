@@ -5,13 +5,14 @@ import { chooseRandomPokemon } from "../game";
 import { getPokemon } from "../api/pokeApiCalls";
 import { useEffect, useState } from "react";
 import "../styles/game.css";
-import Guess from "../components/game/Guess";
 import GameError from "../components/game/GameError";
 import { titleCase } from "../utils/funcs";
+import GameTable from "../components/game/GameTable";
 
 const staticPokemon = {
     generation: "Kanto",
     height: 13,
+    color: "Brown",
     id: 141,
     img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/141.png",
     name: "Kabutops",
@@ -21,7 +22,7 @@ const staticPokemon = {
 
 export default function Game() {
     useDocumentTitle("Game");
-    const [answer, setAnswer] = useState(staticPokemon);
+    const [answer, setAnswer] = useState();
     const [invalidGuesses, setInvalidGuesses] = useState([]);
     const [error, setError] = useState("");
     const [guesses, setGuesses] = useState([]);
@@ -31,7 +32,8 @@ export default function Game() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        if (input) {
+        const queryName = input.split(" ").join("-").toLowerCase();
+        if (input && !guesses.find(g => g.name === titleCase(queryName))) {
             setDisabled(true);
             // Add element to the table of guesses
             if (input.toLowerCase() !== answer.name.toLowerCase()) {
@@ -42,8 +44,8 @@ export default function Game() {
                     setDisabled(false);
                 } else {
                     try {
-                        const guess = await getPokemon(input);
-                        setGuesses(prev => [...prev, guess]);
+                        const guess = await getPokemon(queryName);
+                        setGuesses(prev => [guess, ...prev]);
                     } catch (err) {
                         console.log(err);
                         // Overlay display error that the pokemon is invalid
@@ -57,7 +59,7 @@ export default function Game() {
                 setDisabled(false);
             } else { // User guessed the correct pokemon
                 console.log("Correct!");
-                setGuesses(prev => [...prev, answer]);
+                setGuesses(prev => [answer, ...prev]);
             }
             setInput("");
         }
@@ -73,33 +75,15 @@ export default function Game() {
                 setAnswer(staticPokemon);
             }
         }
-        // generateAnswer();
+        generateAnswer();
     }, []);
 
     return (
         <Main className="game-container">
             <h1>Guess the pokemon!</h1>
-            <GameForm inputState={guesses[guesses.length - 1]?.name === answer.name} {...props} />
-            <div className="table-container">
-                <table className="game-table">
-                    <thead>
-                        <tr>
-                            <th className="info-th pokemon-img">Picture</th>
-                            <th className="info-th pokemon-name">Name</th>
-                            <th className="info-th pokemon-generation">Generation</th>
-                            <th className="info-th pokemon-types">Types</th>
-                            <th className="info-th pokemon-colors">Colors</th>
-                            <th className="info-th pokemon-stage">Stage</th>
-                            <th className="info-th pokemon-height">Height</th>
-                            <th className="info-th pokemon-weight">Weight</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {guesses.map(guess => <Guess key={guess.id} answer={answer} {...guess} />)}
-                    </tbody>
-                </table>
-                {error && <GameError title="Invalid Pokemon" message={`${titleCase(error)} is not a valid pokemon.`} />}
-            </div>
+            <GameForm inputState={guesses[0]?.name === answer?.name} {...props} />
+            <GameTable answer={answer} guesses={guesses} />
+            {error && <GameError title="Invalid Pokemon" message={`${titleCase(error)} is not a valid pokemon.`} />}
         </Main>
     );
 }

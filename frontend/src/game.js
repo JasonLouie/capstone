@@ -72,3 +72,10 @@ export function compareMeasurements(answer, guess) {
     else if (answer > guess) return "wrong lower";
     else if (answer < guess) return "wrong higher";
 }
+
+export function compareGenerations(answer, guess) {
+    const generations = {Kanto: 1, Johto: 2, Hoenn: 3, Sinnoh: 4, Unova: 5, Kalos: 6, Alola: 7, "Galar/Hisui": 8, Paldea: 9};
+    if (answer === guess) return "correct";
+    else if (generations[answer] > generations[guess]) return "wrong lower";
+    else if (generations[answer] < generations[guess]) return "wrong higher";
+}

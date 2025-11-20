@@ -50,11 +50,12 @@
 
 .table-container {
     overflow-x: auto;
+    overflow-y: hidden;
     width: 100%;
 }
 
 .game-table {
-    width: 792px;
+    width: fit-content;
     margin: auto;
 }
 
@@ -74,12 +75,16 @@
     width: 110px;
 }
 
-.pokemon-colors {
+.pokemon-color {
     width: 100px;
 }
 
-.pokemon-stage, .pokemon-height, .pokemon-weight {
+.pokemon-stage {
     width: 80px;
+}
+
+.pokemon-height, .pokemon-weight {
+    width: 90px;
 }
 
 .info-th {
@@ -157,6 +162,10 @@
     z-index: -1;
 }
 
+.pokemon-generation:is(.lower, .higher)::before {
+    border-width: 30px 52px;
+}
+
 .lower::before {
     top: -25px;
     border-color: transparent transparent #772626 transparent;
@@ -176,6 +185,10 @@
     width: 50px;
     background-color: #772626 ;
     z-index: -1;
+}
+
+.pokemon-generation:is(.lower, .higher)::after {
+    width: 64px;
 }
 
 .lower::after {

@@ -9,7 +9,7 @@ export function camelCaseToTitleCase(camelCaseString) {
     return tempString;
 }
 
-export function titleCase(string) {
+export function titleCase(string, delimiter= " ") {
     if (!string) return string;
-    return string.split(" ").map(word => word[0].toUpperCase() + word.slice(1)).join(" ");
+    return string.split(delimiter).map(word => word[0].toUpperCase() + word.slice(1)).join(" ");
 }
