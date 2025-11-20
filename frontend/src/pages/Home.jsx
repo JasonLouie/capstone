@@ -3,9 +3,10 @@ import Main from "../components/Main";
 import Section from "../components/Section";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import "../styles/home.css";
+import GameSettings from "../components/game/GameSettings";
 
 export default function Home() {
-    useDocumentTitle();
+    useDocumentTitle("Home");
     return (
         <Main className="flex-center home">
             <Section title="Welcome to PokéGuesser!">
@@ -15,6 +16,7 @@ export default function Home() {
                 <p>PokéGuesser</p>
             </Section>
             <Section title="Options">
+                <GameSettings />
                 <Button buttonType="button" className="start-btn">Start Game</Button>
             </Section>
         </Main>

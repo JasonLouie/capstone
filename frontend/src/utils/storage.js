@@ -1,3 +1,8 @@
+export const settingTypes = {
+    user: {},
+    game: {mode: "regular", generations: [], time: "unlimited", all: true}
+};
+
 export function addPokemonEntry(key, pokemon) {
     const array = getJSON(key) || [];
     const exists = array.find(p => p.name === pokemon.name);
@@ -10,7 +15,8 @@ export function addPokemonEntry(key, pokemon) {
 
 export function changeSetting(key, setting, value) {
     const settings = getJSON(key);
-
+    if (Object.keys(settingTypes[key.replace("Settings", "")]).includes(setting)) settings[setting] = value;
+    updateJSON(key, settings);
 }
 
 export function getJSON(key, fallback = null) {
@@ -19,6 +25,7 @@ export function getJSON(key, fallback = null) {
 
     if (fallback) {
         updateJSON(key, fallback);
+        console.log(localStorage.getItem(key));
         return fallback;
     }
     return null;

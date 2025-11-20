@@ -78,6 +78,8 @@ nav {
     z-index: 4;
     padding-left: 8px;
     transition: color background-color 0.3 ease-in;
+    display: flex;
+    align-items: center;
 }
 
 .menu-item:hover {

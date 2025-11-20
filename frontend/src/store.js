@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import * as storage from "./utils/storage";
-
-const settingTypes = {user: {}, game: {mode: "regular", generations: ["all"], time: "unlimited"}};
+import { settingTypes } from "./utils/storage";
 
 // Create the store and generate the hook
 export const useUserStore = create((set) => ({
@@ -11,9 +10,7 @@ export const useUserStore = create((set) => ({
         set(state => ({ ...state, tokens: newTokens }));
     },
     logoutUser: () => {
-        storage.clear("tokens"); // Clears token in local storage
-        storage.clear("pokedex"); // Clears pokedex in local storage
-        storage.clear("userImg"); // Clears user img stored in local storage
+        ["tokens", "userImg", "pokedex"].forEach(key => storage.clear(key));
         set({ tokens: null, pokedex: null });
     },
     userImg: storage.getString() || null,
@@ -37,13 +34,17 @@ export const useUserStore = create((set) => ({
 }));
 
 export const useGameStore = create((set) => ({
+    resetGame: () => {
+        ["gameSettings", "answer", "guesses"].forEach(key => storage.clear(key));
+        set({settings: null, answer: null, guesses: null})
+    },
     settings: storage.getJSON("gameSettings", settingTypes.game),
     setGameSettings: (newSettings) => {
         storage.updateJSON("gameSettings", newSettings);
         set(state => ({...state, settings: {...newSettings}}));
     },
-    modifyGameSettings: (setting, newValue) => {
-        storage.changeSetting("gameSettings", setting, value);
+    modifyGameSetting: (setting, newValue) => {
+        storage.changeSetting("gameSettings", setting, newValue);
         set(state => ({...state, settings: {...state.settings, [setting]: newValue}}));
     },
     answer: storage.getJSON("answer") || null,

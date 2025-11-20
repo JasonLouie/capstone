@@ -32,8 +32,8 @@ export default function Menu() {
         <div className="menu-container" onClick={() => setHidden(!hidden) } ref={divRef}>
             <Button className="show-menu-btn"><Image src={userImg || defaultAvatar} alt="User's profile picture" size="smaller" /></Button>
             <div inert={hidden} className={`menu${hidden ? " hidden" : ""}`}>
-                <Button className="menu-item" buttonType="button" >Profile</Button>
-                <Button className="menu-item" buttonType="button" >Settings</Button>
+                <Button path="/users/profile" className="menu-item" buttonType="button" >Profile</Button>
+                <Button path="/users/settings" className="menu-item" buttonType="button" >Settings</Button>
                 <Button className="menu-item" buttonType="button" onClick={logout}>Logout</Button>
             </div>
         </div>
