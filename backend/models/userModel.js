@@ -36,11 +36,7 @@ const userSchema = new mongoose.Schema({
     },
     gamesPlayed: { type: Number, default: 0 },
     totalGuesses: { type: Number, default: 0 },
-    version: {
-        type: Number,
-        default: 1
-    }
-}, { versionKey: false, timestamps: true });
+}, { optimisticConcurrency: true, versionKey: "version" });
 
 const User = mongoose.model("User", userSchema, "users");
 export default User;

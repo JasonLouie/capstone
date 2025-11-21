@@ -1,3 +1,4 @@
+import EndpointError from "../classes/EndpointError.js";
 import Auth from "../models/authModel.js";
 
 export async function createNewAuth(body) {
@@ -19,8 +20,29 @@ export async function getAuthByEmail(email) {
 }
 
 // Middleware validates the password before reaching this step. Hashing is accomplished in the save hook.
-export async function modifyPassword(auth, body) {
-    if (auth.version != body.version) throw new EndpointError(409, "Request's version field is behind. Changes will be ignored.");
-    auth.password = body.password;
-    await req.user.save();
+export async function modifyPassword(userId, body) {
+    const user = await getAuthById(userId);
+    const { oldPassword, newPassword } = body;
+
+    const correct = await user.comparePassword(oldPassword);
+    if(!correct) throw new EndpointError(401, "Invalid password.");
+
+    const same = await user.comparePassword(newPassword);
+    if (same) throw new EndpointError(400, "New password cannot be the same as old password.");
+    user.password = newPassword;
+    await user.save();
+}
+
+// Middleware validates the email before reaching this step.
+export async function modifyEmail(userId, body) {
+    const user = await getAuthById(userId);
+    const { password, newEmail } = body;
+
+    const correct = await user.comparePassword(password);
+    if(!correct) throw new EndpointError(401, "Invalid password.");
+    
+    const emailTaken = await getAuthByEmail(newEmail);
+    if (emailTaken) throw new EndpointError(400, "Email is taken.");
+    user.email = newEmail;
+    await user.save();
 }

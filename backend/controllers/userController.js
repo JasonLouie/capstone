@@ -3,13 +3,15 @@ import * as userService from "../services/userService.js";
 // GET /users/me
 export async function getUser(req, res, next) {
     try {
-        
+        const userDoc = await userService.getUserById(req.user._id);
+        const { username, profilePicUrl, gamesPlayed, totalGuesses, pokedex } = userDoc;
+        res.json({ username, profilePicUrl, gamesPlayed, totalGuesses, pokedex });
     } catch (err) {
         next(err);
     }
 }
 
-// PATCH /users/me - For non-sensitive fields (not password)
+// PATCH /users/me - Only modify username or profile pic
 export async function updateUser(req, res, next) {
     try {
         await userService.modifyUser(req.user._id, req.body);
@@ -19,10 +21,70 @@ export async function updateUser(req, res, next) {
     }
 }
 
-// PATCH /users/reset-password
-export async function resetPassword(req, res, next) {
+// GET /users/me/settings
+export async function getUserSettings(req, res, next) {
     try {
-        await userService.modifyPassword(req.user, req.body.password);
+        const settings = await userService.getUserField(req.user._id, "settings");
+        res.json(settings);
+    } catch (err) {
+        next(err);
+    }
+}
+
+// PATCH /users/me/settings
+export async function updateBasicSettings(req, res, next) {
+    try {
+        await userService.modifySettings(req.user._id, req.body);
+        res.sendStatus(204);
+    } catch (err) {
+        next(err);
+    }
+}
+
+// POST /users/me/settings/generations/add
+export async function addGeneration(req, res, next) {
+    try {
+        await userService.addToGenerations(req.user._id, req.body.generation);
+        res.sendStatus(204);
+    } catch (err) {
+        next(err);
+    }
+}
+
+// DELETE /users/me/settings/generations/:generation
+export async function removeGeneration(req, res, next) {
+    try {
+        await userService.deleteFromGenerations(req.user._id, req.params.generation);
+        res.sendStatus(204);
+    } catch (err) {
+        next(err);
+    }
+}
+
+// GET /users/me/pokedex
+export async function getUserPokedex(req, res, next) {
+    try {
+        const pokedex = await userService.getUserField(req.user._id, "pokedex");
+        res.json(pokedex);
+    } catch (err) {
+        next(err);
+    }
+}
+
+// POST /users/me/pokedex
+export async function addPokedexEntry(req, res, next) {
+    try {
+        await userService.addToPokedex(req.user._id, req.body);
+        res.sendStatus(204);
+    } catch (err) {
+        next(err);
+    }
+}
+
+// DELETE /users/me/pokedex
+export async function resetPokedex(req, res, next) {
+    try {
+        await userService.resetUserPokedex(req.user._id);
         res.sendStatus(204);
     } catch (err) {
         next(err);

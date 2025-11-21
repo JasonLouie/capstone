@@ -54,14 +54,15 @@ export async function generateNewTokens(cookie) {
     }
 
     const [tokens, resultRemove] = await Promise.all([createNewTokens(payload.sub), dbToken.deleteOne()]);
-    return {tokens, userId: payload};
+    console.log(payload.sub);
+    return {tokens, userId: payload.sub};
 }
 
 export async function createNewTokens(sub) {
     const payload = { sub };
     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m" });
     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
-    await RefreshToken.create({ token: refreshToken, userId: sub });
+    await RefreshToken.create({ refreshToken, userId: sub });
     return { accessToken, refreshToken };
 }
 

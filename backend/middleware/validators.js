@@ -56,7 +56,7 @@ function validate(validations, req, res, next ) {
                 errors.push(`${fieldName} must be greater than or equal to ${rules.min}`);
             }
     
-            if (rules.min && value < rules.max) {
+            if (rules.min && value > rules.max) {
                 errors.push(`${fieldName} must be less than or equal to ${rules.max}`);
             }
         }
@@ -111,6 +111,7 @@ const passwordRules = {
     required: true
 };
 
+// Settings/Pokemon related rules
 const modeRules = {
     enum: ["regular", "silhouette"]
 };
@@ -119,8 +120,15 @@ const generationRules = {
     enum: ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar/Hisui", "Paldea"]
 };
 
-const allRules = {
+const allGenerationsRules = {
     enum: ["true", "false"]
+};
+
+const pokemonIdRules = {
+    required: true,
+    isNum: true,
+    min: 1,
+    max: 1025
 };
 
 const typeRules = {
@@ -139,10 +147,11 @@ const measurementRules = {
     isNum: true
 };
 
+// Needed for validating game state changes
 const versionRules = {
     isNum: true,
     min: 1
-}
+};
 
 export function validateSignUp(req, res, next) {
     const confirmPassword = req.body?.confirmPassword || "";
@@ -165,8 +174,7 @@ export function validateLogin(req, res, next) {
 // Middleware for validating req body when modifying user
 export function validateModifyUser(req, res, next) {
     const validations = {
-        username: {...usernameRules, required: false},
-        version: versionRules
+        username: {...usernameRules, required: false}
     };
     validate(validations, req, res, next);
 }
@@ -174,15 +182,24 @@ export function validateModifyUser(req, res, next) {
 // Middleware for validing password before changing it
 export function validatePassword(req, res, next) {
     const validations = {
-        password: passwordRules,
-        version: versionRules
-    }
+        oldPassword: {required: true},
+        newPassword: passwordRules
+    };
+    validate(validations, req, res, next);
+}
+
+export function validateEmail(req, res, next) {
+    const validations = {
+        newEmail: emailRules,
+        password: {required: true}
+    };
     validate(validations, req, res, next);
 }
 
 // Middleware for validating pokemon before adding it
 export function validatePokemon(req, res, next) {
     const validations = {
+        id: pokemonIdRules,
         name: {required: true},
         img: {required: true},
         generation: {...generationRules, required: true},
@@ -195,19 +212,27 @@ export function validatePokemon(req, res, next) {
     validate(validations, req, res, next);
 }
 
+// Middleware for validating pokemon before adding
+export function validatePokedexEntry(req, res, next) {
+    const validations = {
+        id: pokemonIdRules,
+        name: {required: true},
+        img: {required: true}
+    };
+    validate(validations, req, res, next);
+}
+
 export function validateBasicGameSettings(req, res, next) {
     const validations = {
         mode: modeRules,
-        all: allRules,
-        version: versionRules
+        allGenerations: allGenerationsRules
     };
     validate(validations, req, res, next);
 }
 
 export function validateGeneration(req, res, next) {
     const validations = {
-        generation: generationRules,
-        version: versionRules
-    }
+        generation: generationRules
+    };
     validate(validations, req, res, next);
 }

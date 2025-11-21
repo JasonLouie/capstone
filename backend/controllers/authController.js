@@ -1,13 +1,13 @@
 import * as authService from "../services/authService.js";
-import { createNewGame, deleteGames } from "../services/gameService.js";
+import { createNewGame, deleteGames, getGame } from "../services/gameService.js";
 import * as tokenService from "../services/tokenService.js";
 import { createNewUser, getUserById } from "../services/userService.js";
 
 // Shared function that handles sending cookies, user, and game data upon logging in, signing in, or refreshing token
 function sendCookiesAndData(userDoc, gameDoc, tokens, res) {
     const { accessToken, refreshToken } = tokens;
-    const { _id, createdAt, updatedAt, ...user  } = userDoc;
-    const { state, userId, version } = gameDoc;
+    const { username, profilePicUrl, gamesPlayed, totalGuesses, pokedex } = userDoc;
+    const { state, version } = gameDoc;
 
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
@@ -23,8 +23,8 @@ function sendCookiesAndData(userDoc, gameDoc, tokens, res) {
         maxAge: 7 * 24 * 3600 * 1000, // 7d
         path: "/api/auth/refresh"
     });
-    
-    res.json({ user, game: { state, userId, version } });
+
+    res.json({ user: { username, profilePicUrl, gamesPlayed, totalGuesses, pokedex }, game: { state, version } });
 }
 
 // POST /auth/login
@@ -76,7 +76,7 @@ export async function generateTokens(req, res, next) {
         const { tokens, userId } = await tokenService.generateNewTokens(req.cookies);
         const { accessToken, refreshToken } = tokens;
         const userDoc = await getUserById(userId);
-        const { _id, createdAt, updatedAt, ...user  } = userDoc;
+        const { _id, createdAt, updatedAt, ...user } = userDoc;
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -92,6 +92,26 @@ export async function generateTokens(req, res, next) {
             path: "/api/auth"
         });
         res.json(user);
+    } catch (err) {
+        next(err);
+    }
+}
+
+// PUT /auth/password
+export async function updatePassword(req, res, next) {
+    try {
+        await authService.modifyPassword(req.user._id, req.body);
+        res.sendStatus(204);
+    } catch (err) {
+        next(err);
+    }
+}
+
+// PUT /auth/email
+export async function updateEmail(req, res, next) {
+    try {
+        await authService.modifyEmail(req.user._id, req.body);
+        res.sendStatus(204);
     } catch (err) {
         next(err);
     }

@@ -10,6 +10,9 @@ export default function handleServerErrors(err, req, res, next) {
         for (const key in err.errors) {
             messages[key] = [err.errors[key].message];
         }
+    } else if (err.name === "VersionError") {
+        console.log("Mongooose VersionError thrown!");
+        res.status(409).json(new EndpointError(409, "This data has been modified by another request. Refresh and try again"));
     } else if (err.name === "CastError") {
         console.log(`Mongoose CastError thrown for ${err.path}`);
         messages[err.path] = err.kind === "ObjectId" ? "Invalid user id." : err.message;

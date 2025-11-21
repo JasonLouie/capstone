@@ -1,11 +1,13 @@
 export const timeOptions = { hour12: true, hour: "numeric", minute: "2-digit" };
 
-export function filterBody(keys, body) {
+const invalid = ["", null, undefined];
+
+export function filterObject(keys, body) {
     const filteredBody = {};
     if (!body) return filteredBody;
     
     keys.forEach(key => {
-        if (body[key]) filteredBody[key] = body[key];
+        if (!invalid.includes(body[key])) filteredBody[key] = body[key];
     });
     return filteredBody;
 }

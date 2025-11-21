@@ -24,14 +24,12 @@ const authSchema = new mongoose.Schema({
         required: [true, "Password is required."],
         match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)\S+$/, "Password must contain at least one lowercase letter, at least one uppercase letter, at least one number, and cannot contain whitespace."]
     }
-}, { versionKey: false, timestamps: true });
+}, { optimisticConcurrency: true, versionKey: "version" } );
 
 // Hash password before saving document to the db
 authSchema.pre("save", async function (next) {
     // Only hash the password if the field was modified
     if (this.isModified("password")) this.password = await bcrypt.hash(this.password, 12);
-
-    if (this.isModified()) this.version++;
     next();
 });
 

@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 const generations = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar/Hisui", "Paldea"];
 const validateTypes = (v) => v.length === 2;
+const pokemonIdMin = [1, "Pokemon Id must be greater than or equal to 1."];
+const pokemonIdMax= [1025, "Pokemon Id must be less than or equal to 1025"];
 
 const typeSchema = new mongoose.Schema({
     value: {
@@ -9,16 +11,23 @@ const typeSchema = new mongoose.Schema({
         enum: ["None", "Normal", "Fighting", "Ghost", "Water", "Fire", "Grass", "Ghost", "Fairy", "Dark", "Steel", "Ground", "Dragon", "Rock", "Poison", "Ice", "Psychic", "Electric", "Bug"],
         required: true
     }
-});
+}, { versionKey: false, _id: false });
 
 const generationSchema = new mongoose.Schema({
     value: {
         type: String,
         enum: generations
     }
-});
+}, { versionKey: false, _id: false });
 
 export const pokemonSchema = new mongoose.Schema({
+    id: {
+        type: Number,
+        unique: true,
+        required: true,
+        min: pokemonIdMin,
+        max: pokemonIdMax
+    },
     name: {
         type: String,
         required: true,
@@ -44,26 +53,28 @@ export const pokemonSchema = new mongoose.Schema({
     stage: {
         type: Number,
         required: true,
-        validate: [(v) => Number.isInteger(v) && v >= 1 && v <= 3, "Stage must be a positive integer between 1 and 3 inclusively."]
+        min: [1, "Stage must be at least 1"],
+        validate: [(v) => Number.isInteger(v), "Stage must be an integer."]
     },
     height: {
         type: Number,
         required: true,
-        validate: [(v) => v > 0, "Height must be greater than 0."]
+        min: [0, "Height must be greater than 0"]
     },
     weight: {
         type: Number,
         required: true,
-        validate: [(v) => v > 0, "Weight must be greater than 0."]
+        min: [0, "Weight must be greater than 0"]
     }
-});
+}, { versionKey: false, _id: false });
 
 export const pokedexEntrySchema = new mongoose.Schema({
     id: {
         type: Number,
         unique: true,
         required: true,
-        validate: [(v) => v >= 1 && v <= 1025, "Id must be between 1 and 1025 inclusively."]
+        min: pokemonIdMin,
+        max: pokemonIdMax
     },
     name: {
         type: String,
@@ -73,11 +84,6 @@ export const pokedexEntrySchema = new mongoose.Schema({
     img: {
         type: String,
         required: true,
-    },
-    types: {
-        type: [typeSchema],
-        required: true,
-        validate: [validateTypes, "Types array must contain two pokemon types."]
     },
     isShiny: {
         type: Boolean,
@@ -100,8 +106,8 @@ export const settingsSchema = new mongoose.Schema({
         default: [],
         validate: [(val) => val.length <= 9, "Generations array can only contain at most nine generations."]
     },
-    all: {
+    allGenerations: {
         type: Boolean,
         default: true
     }
-});
+}, { versionKey: false, _id: false });
