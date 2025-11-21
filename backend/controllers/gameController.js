@@ -1,51 +1,41 @@
 import * as gameService from "../services/gameService.js";
 
-// PATCH /users/game-settings
-export async function updateGameSettings(req, res, next) {
+// GET /game/me
+export async function getGameInfo(req, res, next) {
     try {
-        await gameService.modifyGameSettings(req.user, req.body);
+        const { state } = await gameService.getGame(req.user._id);
+        res.json(state);
+    } catch(err) {
+        next(err);
+    }
+}
+
+// PUT /game/me/answer
+export async function updateAnswer(req, res, next) {
+    try {
+        await gameService.modifyAnswer(req.user, req.body);
         res.sendStatus(204);
     } catch (err) {
         next(err);
     }
 }
 
-// PATCH /users/game-settings/add-generation
-export async function addToGenerations(req, res, next) {
+// PUT /game/me/guess
+export async function addGuess(req, res, next) {
     try {
-        await gameService.addGeneration(req.user, req.body.generation);
+        await gameService.addNewGuess(req.user._id, req.body);
         res.sendStatus(204);
     } catch (err) {
         next(err);
     }
 }
 
-// PATCH /users/game-settings/remove-generation
-export async function deleteGenerations(req, res, next) {
+// DELETE /game/me
+export async function resetGame(req, res, next) {
     try {
-        await gameService.removeGeneration(req.user, req.body.generation);
+        await gameService.resetGameState(req.user._id);
         res.sendStatus(204);
-    } catch (err) {
-        next(err);
-    }
-}
-
-// PATCH /games/pokedex
-export async function addPokedexEntry(req, res, next) {
-    try {
-        await gameService.addToPokedex(req.user.pokedex, req.body);
-        res.sendStatus(204);
-    } catch (err) {
-        next(err);
-    }
-}
-
-// DELETE /games/pokedex
-export async function resetPokedex(req, res, next) {
-    try {
-        await gameService.resetUserPokedex(req.user);
-        res.sendStatus(204);
-    } catch (err) {
+    } catch(err) {
         next(err);
     }
 }
