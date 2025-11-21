@@ -54,8 +54,7 @@ export async function generateNewTokens(cookie) {
     }
 
     const [tokens, resultRemove] = await Promise.all([createNewTokens(payload.sub), dbToken.deleteOne()]);
-    console.log(payload.sub);
-    return {tokens, userId: payload.sub};
+    return tokens;
 }
 
 export async function createNewTokens(sub) {
