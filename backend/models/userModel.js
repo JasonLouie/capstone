@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+import { pokedexEntrySchema, settingsSchema } from "../schemas/schemas.js";
 
 const userSchema = new mongoose.Schema({
+    _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
     username: {
         type: String,
         unique: true,
@@ -19,50 +23,24 @@ const userSchema = new mongoose.Schema({
             message: "Username is taken."
         }
     },
-    email: {
-        type: String,
-        trim: true,
-        required: [true, "Email is required."],
-        unique: true,
-        lowercase: true,
-        match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format."],
-        validate: {
-            validator: function (v) {
-                const userModel = this.getQuery ? this.model : this.constructor;
-                const userId = this.getQuery ? this.getQuery()._id : this._id;
-
-                return userModel.findOne({ email: v, _id: { $ne: userId } }).then(user => !user);
-            },
-            message: "Email is taken."
-        }
-    },
-    password: {
-        type: String,
-        required: [true, "Password is required."],
-        match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)\S+$/, "Password must contain at least one lowercase letter, at least one uppercase letter, at least one number, and cannot contain whitespace."]
-    },
     profilePicUrl: {
         type: String,
         default: ""
     },
+    pokedex: {
+        type: [pokedexEntrySchema],
+        default: []
+    },
+    settings: {
+        type: settingsSchema
+    },
+    gamesPlayed: { type: Number, default: 0 },
+    totalGuesses: { type: Number, default: 0 },
     version: {
         type: Number,
         default: 1
     }
 }, { versionKey: false, timestamps: true });
-
-// Hash password before saving document to the db
-userSchema.pre("save", async function (next) {
-    // Only hash the password if the field was modified
-    if (this.isModified("password")) this.password = await bcrypt.hash(this.password, 12);
-
-    next();
-});
-
-// Compare password
-userSchema.methods.comparePassword = async function (comparedPassword) {
-    return await bcrypt.compare(comparedPassword, this.password);
-}
 
 const User = mongoose.model("User", userSchema, "users");
 export default User;

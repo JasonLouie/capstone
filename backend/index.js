@@ -5,8 +5,9 @@ import passport from "passport";
 import cors from "cors";
 import "./config/passport.js";
 import connectDB from "./db/conn.js";
-import userRouter from "./routes/userRouter.js";
 import { protect } from "./middleware/userAuth.js";
+import authRouter from "./routes/authRouter.js";
+import userRouter from "./routes/userRouter.js";
 import gameRouter from "./routes/gameRouter.js";
 import logRequest from "./middleware/requestLogger.js";
 import handleServerErrors from "./middleware/errorHandler.js";
@@ -26,7 +27,9 @@ app.get("/", (req, res) => {
     res.json({message: "Server is up and running!"});
 });
 
-app.use("/api/users", userRouter);
+app.use("/api/auth", authRouter);
+
+app.use("/api/users", protect, userRouter);
 
 app.use("/api/games", protect, gameRouter);
 

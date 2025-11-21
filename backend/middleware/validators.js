@@ -61,9 +61,6 @@ function validate(validations, req, res, next ) {
             }
         }
 
-
-        
-
         if (errors.length > 0) {
             validationErrors[field] = errors;
         }
@@ -142,6 +139,11 @@ const measurementRules = {
     isNum: true
 };
 
+const versionRules = {
+    isNum: true,
+    min: 1
+}
+
 export function validateSignUp(req, res, next) {
     const confirmPassword = req.body?.confirmPassword || "";
     const validations = {
@@ -164,14 +166,18 @@ export function validateLogin(req, res, next) {
 export function validateModifyUser(req, res, next) {
     const validations = {
         username: {...usernameRules, required: false},
-        email: {...emailRules, required: false}
+        version: versionRules
     };
     validate(validations, req, res, next);
 }
 
 // Middleware for validing password before changing it
 export function validatePassword(req, res, next) {
-    validate({password: passwordRules}, req, res, next);
+    const validations = {
+        password: passwordRules,
+        version: versionRules
+    }
+    validate(validations, req, res, next);
 }
 
 // Middleware for validating pokemon before adding it
@@ -192,11 +198,16 @@ export function validatePokemon(req, res, next) {
 export function validateBasicGameSettings(req, res, next) {
     const validations = {
         mode: modeRules,
-        all: allRules
+        all: allRules,
+        version: versionRules
     };
     validate(validations, req, res, next);
 }
 
 export function validateGeneration(req, res, next) {
-    validate({ generation: generationRules }, req, res, next);
+    const validations = {
+        generation: generationRules,
+        version: versionRules
+    }
+    validate(validations, req, res, next);
 }

@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as JWTStrategy } from "passport-jwt";
-import { getUserByEmail, getUserById } from "../services/userService.js";
+import { getAuthByEmail, getAuthById } from "../services/authService.js";
 import EndpointError from "../classes/EndpointError.js";
 
 // Local strategy for logging in
@@ -9,7 +9,7 @@ passport.use(new LocalStrategy({usernameField: "email", session: false}, async (
     console.log(`Attempting login for ${email}`);
     let user;
     try {
-        user = await getUserByEmail(email);
+        user = await getAuthByEmail(email);
     } catch { // User not found
         return done(null, false, { message: "Invalid email or password" });
     }
@@ -38,7 +38,7 @@ const jwtOptions = {
 
 passport.use(new JWTStrategy(jwtOptions, async(jwt_payload, done) => {
     try {
-        const user = await getUserById(jwt_payload.sub);
+        const user = await getAuthById(jwt_payload.sub);
         return done(null, user);
     } catch (err) { // err is either the custom not found error or a server error
         return err instanceof EndpointError ? done(null, false) : done(err, false);
