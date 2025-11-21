@@ -1,6 +1,6 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt";
+import { Strategy as JWTStrategy } from "passport-jwt";
 import { getUserByEmail, getUserById } from "../services/userService.js";
 import EndpointError from "../classes/EndpointError.js";
 
@@ -23,9 +23,16 @@ passport.use(new LocalStrategy({usernameField: "email", session: false}, async (
     }
 }));
 
+function cookieExtractor(req) {
+    if (req && req.cookies) {
+        return req.cookies["accessToken"];
+    }
+    return null;
+}
+
 // JWT strategy for verifying token
 const jwtOptions = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    jwtFromRequest: cookieExtractor,
     secretOrKey: process.env.ACCESS_TOKEN_SECRET
 };
 

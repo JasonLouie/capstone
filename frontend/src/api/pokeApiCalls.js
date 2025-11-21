@@ -18,7 +18,7 @@ async function filterPokemonData(info, species) {
         generation: findGeneration(info.id),
         color: titleCase(species.color.name),
         height: info.height * 3.937,
-        weight: Math.floor(info.weight/4.536),
+        weight: Math.floor((info.weight/4.536) * 10) / 10,
         types: [titleCase(info.types[0]?.type.name || "None"), titleCase(info.types[1]?.type.name || "None")]
     };
 

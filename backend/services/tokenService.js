@@ -2,13 +2,14 @@ import EndpointError from "../classes/EndpointError.js";
 import RefreshToken from "../models/refreshTokenModel.js";
 import jwt from "jsonwebtoken";
 
-export async function removeRefreshToken(requestingUserId) {
-    // Middleware is supposed to provide a requestingUserId to this function. If it is a falsy value, a server error occurred.
-    if (!requestingUserId) throw new EndpointError(500);
+// Handles removing refresh token when user is logged out
+export async function removeRefreshToken(cookie) {
+    if (!cookie?.refreshToken) return; // User is already logged out since there is no cookie.
+    const refreshToken = cookie.refreshToken;
 
     let dbToken;
     try {
-        dbToken = await RefreshToken.findOne({ userId: requestingUserId });
+        dbToken = await RefreshToken.findOne({ refreshToken });
     } catch {
         throw new EndpointError(500); // Server error during logout.
     }
@@ -16,18 +17,20 @@ export async function removeRefreshToken(requestingUserId) {
     // If the refresh token DNE, it is already invalid, so prompt the user to logout
     if (!dbToken) {
         console.log("Refresh token was already deleted. Logout success.");
-        return { message: "Logged out successfully." };
+        return;
     }
     await dbToken.deleteOne();
 }
 
 // Refreshes the user's access and generate new tokens
-export async function generateNewTokens(refreshToken) {
-    if (!refreshToken) throw new EndpointError(400, "Refresh token is required.");
+export async function generateNewTokens(cookie) {
+    if (!cookie?.refreshToken) throw new EndpointError(400, "Refresh token is required.");
+
+    const refreshToken = cookie.refreshToken;
 
     let dbToken;
     try {
-        dbToken = await RefreshToken.findOne({ token: refreshToken });
+        dbToken = await RefreshToken.findOne({ refreshToken });
     } catch {
         throw new EndpointError(500); // Server error during token refresh.
     }

@@ -4,7 +4,6 @@ import defaultAvatar from "/images/default-avatar.png";
 import Image from "../Image";
 import { useUserStore } from "../../store";
 import { useNavigate } from "react-router";
-import { getProfilePic } from "../../api/userApiCalls";
 
 export default function Menu() {
     const navigate = useNavigate();
@@ -21,14 +20,6 @@ export default function Menu() {
         logoutUser();
         navigate("/login");
     }
-
-    useEffect(() => {
-        async function profilePic() {
-            const url = await getProfilePic();
-            setUserImg(url);
-        }
-        profilePic();
-    }, []);
 
     useEffect(() => {
         if (!hidden && divRef.current) document.body.addEventListener("click", closeMenu);

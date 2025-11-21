@@ -1,13 +1,13 @@
 import User from "../models/userModel.js";
 import EndpointError from "../classes/EndpointError.js";
 import { filterBody } from "../utils/utils.js";
-
-const updateOptions = { runValidators: true, new: true };
+import { initGame } from "./gameService.js";
 
 export async function createNewUser(body) {
     const filteredBody = filterBody(["username", "email", "password", "profilePicUrl"], body);
     const user = await User.create(filteredBody);
-    return user;
+    const game = await initGame(user._id);
+    return [user, game];
 }
 
 export async function getUserById(id) {

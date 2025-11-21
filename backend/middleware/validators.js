@@ -38,9 +38,31 @@ function validate(validations, req, res, next ) {
         }
 
         // Handle enums
-        if (value && !rules.enum?.includes(value)) {
-            errors.push(`${fieldName} must be ${rules.enum.join(" or ")}`);
+        if (value && rules.enum) {
+            if (typeof value === "string" && !rules.enum.includes(value)) errors.push(`${fieldName} is an invalid ${field}.`);
+            else if (value instanceof Array) {
+                value.forEach((v, i) => {
+                    if (!rules.enum.includes(v)) errors.push(`${fieldName}[${i}] is an invalid ${field}`);
+                });
+            }
         }
+
+        if (value && rules.isNum) {
+            if (isNaN(value)) {
+                errors.push(`${fieldName} must be a number.`);
+            }
+
+            if (rules.min && value < rules.min) {
+                errors.push(`${fieldName} must be greater than or equal to ${rules.min}`);
+            }
+    
+            if (rules.min && value < rules.max) {
+                errors.push(`${fieldName} must be less than or equal to ${rules.max}`);
+            }
+        }
+
+
+        
 
         if (errors.length > 0) {
             validationErrors[field] = errors;
@@ -93,19 +115,32 @@ const passwordRules = {
 };
 
 const modeRules = {
-    required: true,
     enum: ["regular", "silhouette"]
 };
 
 const generationRules = {
-    required: true,
     enum: ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar/Hisui", "Paldea"]
 };
 
+const allRules = {
+    enum: ["true", "false"]
+};
+
 const typeRules = {
-    required: true,
     enum: ["None", "Normal", "Fighting", "Ghost", "Water", "Fire", "Grass", "Ghost", "Fairy", "Dark", "Steel", "Ground", "Dragon", "Rock", "Poison", "Ice", "Psychic", "Electric", "Bug"]
-}
+};
+
+const stageRules = {
+    required: true,
+    isNum: true,
+    min: 1,
+    max: 3
+};
+
+const measurementRules = {
+    required: true,
+    isNum: true
+};
 
 export function validateSignUp(req, res, next) {
     const confirmPassword = req.body?.confirmPassword || "";
@@ -139,16 +174,29 @@ export function validatePassword(req, res, next) {
     validate({password: passwordRules}, req, res, next);
 }
 
-// Middleware for validating pokedexEntry before adding it
-export function validateNewPokedexEntry(req, res, next) {
+// Middleware for validating pokemon before adding it
+export function validatePokemon(req, res, next) {
     const validations = {
         name: {required: true},
-        types: typeRules, // Must fix because this is an array
-        imgUrl: {required: true}
+        img: {required: true},
+        generation: {...generationRules, required: true},
+        types: typeRules,
+        color: {required: true},
+        stage: stageRules,
+        height: measurementRules,
+        weight: measurementRules
     };
     validate(validations, req, res, next);
 }
 
-export function validateGameSettings(req, res, next) {
-    
+export function validateBasicGameSettings(req, res, next) {
+    const validations = {
+        mode: modeRules,
+        all: allRules
+    };
+    validate(validations, req, res, next);
+}
+
+export function validateGeneration(req, res, next) {
+    validate({ generation: generationRules }, req, res, next);
 }
