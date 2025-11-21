@@ -22,6 +22,8 @@ export async function getUserByEmail(email) {
     return user;
 }
 
+
+
 // Note: Middleware will validate the fields in the body before reaching this step.
 export async function modifyUser(user, body) {
     const { username = "", email = "", profilePicUrl = "" } = body;
@@ -35,19 +37,4 @@ export async function modifyUser(user, body) {
 export async function modifyPassword(user, password) {
     user.password = password;
     await req.user.save();
-}
-
-// Note: Middleware will validate the fields in the body before reaching this step.
-export async function addToPokedex(user, body) {
-    const { name, imgUrl, isShiny = false } = body;
-    if (user.pokedex.includes(name)) {
-        throw new EndpointError(409, "Pokemon is already in the user's pokedex.");
-    }
-    user.pokedex.push({ name, imgUrl, isShiny });
-    await user.save();
-}
-
-export async function resetUserPokedex(user) {
-    user.pokedex = [];
-    await user.save();
 }

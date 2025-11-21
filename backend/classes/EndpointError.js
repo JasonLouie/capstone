@@ -5,11 +5,10 @@ export default class EndpointError {
     #message;
     #name;
 
-    constructor(status, message) {
+    constructor(status, message, name) {
         this.#status = status;
-        
-        this.#message = typeof message === "string" && message.split(" ").length === 1 ? this.#formatMsg : message;
-        this.#name = errorNames[status];
+        this.#message = typeof message === "string" && message.split(" ").length === 1 ? this.#formatMsg(status, message) : message;
+        this.#name = name || errorNames[status];
     }
 
     get status() {

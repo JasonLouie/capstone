@@ -1,26 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
-const pokedexEntrySchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    imgUrl: {
-        type: String,
-        required: true,
-    },
-    isShiny: {
-        type: Boolean,
-        default: false
-    },
-    time_added: {
-        type: Date,
-        default: Date.now()
-    }
-}, { versionKey: false, _id: false });
-
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -64,10 +44,6 @@ const userSchema = new mongoose.Schema({
     profilePicUrl: {
         type: String,
         default: ""
-    },
-    pokedex: {
-        type: [pokedexEntrySchema],
-        default: []
     }
 }, { versionKey: false, timestamps: true });
 

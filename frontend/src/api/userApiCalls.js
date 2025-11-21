@@ -1,26 +1,30 @@
 import userApi, { setAuthHeader } from "../configs/userApi";
+import { clear, getJSON } from "../utils/storage";
 // Base endpoint is url/api/...
 
 export async function signup(body) {
-    const response = await userApi.post(`/users/signup`, body);
-    const {img, ...tokens} = response.data;
-    setAuthHeader(tokens.token);
-    return response.data;
+    const { data } = await userApi.post(`/users/signup`, body);
+    setAuthHeader(data.token);
+    return data;
 }
 
 export async function login(body) {
-    const response = await userApi.post(`/users/login`, body);
-    const {img, ...tokens} = response.data;
-    setAuthHeader(tokens.token);
-    return response.data;
+    const { data } = await userApi.post(`/users/login`, body);
+    setAuthHeader(data.token);
+    return data;
 }
 
 export async function logout() {
-
+    await userApi.post(`/users/logout`, { refreshToken });
 }
 
-export async function refreshToken() {
-
+export async function getProfilePic() {
+    try {
+        const { data } = await userApi.get(`users/profile-pic`);
+        return data;
+    } catch (err) {
+        refreshToken();
+    }
 }
 
 export async function updateUserFields(fields) {

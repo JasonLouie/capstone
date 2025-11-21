@@ -8,7 +8,7 @@ import { login } from "../api/userApiCalls";
 import { useUserStore } from "../store";
 
 export default function Login() {
-    const { loginUser, initUserImg } = useUserStore(state => state);
+    const { setTokens } = useUserStore(state => state);
     useDocumentTitle("Login");
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: "", password: "" });
@@ -24,10 +24,9 @@ export default function Login() {
         if (Object.keys(validationErrors).length > 0) return;
 
         try {
-            const {img, ...tokens} = await login(formData);
-            loginUser(tokens);
-            initUserImg(img);
+            const tokens = await login(formData);
             navigate("/users/profile");
+            setTokens(tokens);
         } catch (err) {
             console.log(err);
             if (err.status === 400) {

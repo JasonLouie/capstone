@@ -25,7 +25,6 @@ export function getJSON(key, fallback = null) {
 
     if (fallback) {
         updateJSON(key, fallback);
-        console.log(localStorage.getItem(key));
         return fallback;
     }
     return null;

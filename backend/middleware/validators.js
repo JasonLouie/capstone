@@ -37,6 +37,11 @@ function validate(validations, req, res, next ) {
             if (!rules.match || value !== rules.match) errors.push(`Both ${field}s must match.`);
         }
 
+        // Handle enums
+        if (value && !rules.enum?.includes(value)) {
+            errors.push(`${fieldName} must be ${rules.enum.join(" or ")}`);
+        }
+
         if (errors.length > 0) {
             validationErrors[field] = errors;
         }
@@ -87,9 +92,20 @@ const passwordRules = {
     required: true
 };
 
-const pokedexNameRules = {
-    required: true
+const modeRules = {
+    required: true,
+    enum: ["regular", "silhouette"]
 };
+
+const generationRules = {
+    required: true,
+    enum: ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar/Hisui", "Paldea"]
+};
+
+const typeRules = {
+    required: true,
+    enum: ["None", "Normal", "Fighting", "Ghost", "Water", "Fire", "Grass", "Ghost", "Fairy", "Dark", "Steel", "Ground", "Dragon", "Rock", "Poison", "Ice", "Psychic", "Electric", "Bug"]
+}
 
 export function validateSignUp(req, res, next) {
     const confirmPassword = req.body?.confirmPassword || "";
@@ -126,8 +142,13 @@ export function validatePassword(req, res, next) {
 // Middleware for validating pokedexEntry before adding it
 export function validateNewPokedexEntry(req, res, next) {
     const validations = {
-        name: pokedexNameRules,
+        name: {required: true},
+        types: typeRules, // Must fix because this is an array
         imgUrl: {required: true}
     };
     validate(validations, req, res, next);
+}
+
+export function validateGameSettings(req, res, next) {
+    
 }

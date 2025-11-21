@@ -1,6 +1,6 @@
 import express from "express";
 import * as userController from "../controllers/userController.js";
-import {validateSignUp, validateModifyUser, validateLogin, validatePassword, validateNewPokedexEntry} from "../middleware/validators.js";
+import {validateSignUp, validateModifyUser, validateLogin, validatePassword, validateNewPokedexEntry, validateGameSettings} from "../middleware/validators.js";
 import { authenticateUser as authenticate, protect } from "../middleware/userAuth.js";
 
 const router = express.Router();
@@ -15,13 +15,14 @@ router.post("/signup", validateSignUp, userController.signup);
 router.post("/login", validateLogin, authenticate, userController.login);
 router.post("/logout", protect, userController.logout);
 
-router.post("/refresh-token", userController.generateTokens);
+router.post("/refresh", userController.generateTokens);
 
 router.patch("/reset-password", protect, validatePassword, userController.resetPassword);
 
-router.route("/pokedex")
-    .get(protect, userController.getPokedex)
-    .patch(protect, validateNewPokedexEntry, userController.addPokedexEntry)
-    .delete(protect, userController.resetPokedex);
+router.patch("/game-settings", protect, validateGameSettings, userController.updateGameSettings);
+
+// router.route("/pokedex")
+//     .patch(protect, validateNewPokedexEntry, userController.addPokedexEntry)
+//     .delete(protect, userController.resetPokedex);
 
 export default router;

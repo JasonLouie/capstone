@@ -5,7 +5,7 @@ import { settingTypes } from "./utils/storage";
 // Create the store and generate the hook
 export const useUserStore = create((set) => ({
     tokens: storage.getJSON("tokens"),
-    loginUser: (newTokens) => {
+    setTokens: (newTokens) => {
         storage.updateJSON("tokens", newTokens);
         set(state => ({ ...state, tokens: newTokens }));
     },

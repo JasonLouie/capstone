@@ -8,7 +8,7 @@ import { useNavigate } from "react-router";
 import { useUserStore } from "../store";
 
 export default function Signup() {
-    const { loginUser } = useUserStore(state => state);
+    const { setTokens } = useUserStore(state => state);
     useDocumentTitle("Sign Up");
     const navigate = useNavigate();
     const [formData, setFormData] = useState({username: "", email: "", password: "", confirmPassword: ""});
@@ -25,8 +25,8 @@ export default function Signup() {
 
         try {
             const tokens = await signup(formData);
-            loginUser(tokens);
             navigate("/users/profile");
+            setTokens(tokens);
         } catch (err) {
             console.log(err);
             if (err.status === 400 || err.status === 409) {

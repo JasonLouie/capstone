@@ -4,10 +4,11 @@ import defaultAvatar from "/images/default-avatar.png";
 import Image from "../Image";
 import { useUserStore } from "../../store";
 import { useNavigate } from "react-router";
+import { getProfilePic } from "../../api/userApiCalls";
 
 export default function Menu() {
     const navigate = useNavigate();
-    const {logoutUser, userImg } = useUserStore(state => state);
+    const {logoutUser, userImg, setUserImg } = useUserStore(state => state);
     const [hidden, setHidden] = useState(true);
     const divRef = useRef(null);
 
@@ -16,10 +17,18 @@ export default function Menu() {
         if (divRef.current && !divRef.current.contains(e.target)) setHidden(true);
     }
 
-    const logout = () => {
+    const handleLogout = () => {
         logoutUser();
         navigate("/login");
     }
+
+    useEffect(() => {
+        async function profilePic() {
+            const url = await getProfilePic();
+            setUserImg(url);
+        }
+        profilePic();
+    }, []);
 
     useEffect(() => {
         if (!hidden && divRef.current) document.body.addEventListener("click", closeMenu);
@@ -34,7 +43,7 @@ export default function Menu() {
             <div inert={hidden} className={`menu${hidden ? " hidden" : ""}`}>
                 <Button path="/users/profile" className="menu-item" buttonType="button" >Profile</Button>
                 <Button path="/users/settings" className="menu-item" buttonType="button" >Settings</Button>
-                <Button className="menu-item" buttonType="button" onClick={logout}>Logout</Button>
+                <Button className="menu-item" buttonType="button" onClick={handleLogout}>Logout</Button>
             </div>
         </div>
     );

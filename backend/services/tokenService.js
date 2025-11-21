@@ -2,15 +2,13 @@ import EndpointError from "../classes/EndpointError.js";
 import RefreshToken from "../models/refreshTokenModel.js";
 import jwt from "jsonwebtoken";
 
-export async function removeRefreshToken(refreshToken, requestingUserId) {
-    if (!refreshToken) throw new EndpointError(400, "Refresh token is required.");
-
+export async function removeRefreshToken(requestingUserId) {
     // Middleware is supposed to provide a requestingUserId to this function. If it is a falsy value, a server error occurred.
     if (!requestingUserId) throw new EndpointError(500);
 
     let dbToken;
     try {
-        dbToken = await RefreshToken.findOne({ token: refreshToken });
+        dbToken = await RefreshToken.findOne({ userId: requestingUserId });
     } catch {
         throw new EndpointError(500); // Server error during logout.
     }
@@ -20,15 +18,7 @@ export async function removeRefreshToken(refreshToken, requestingUserId) {
         console.log("Refresh token was already deleted. Logout success.");
         return { message: "Logged out successfully." };
     }
-
-    // A user should never have access to another user's refresh token. This is a security breach.
-    if (dbToken.userId.toString() !== requestingUserId.toString()) {
-        console.warn(`User ${requestingUserId} attempted to log out with a token belonging to ${dbToken.user}.`);
-        throw new EndpointError(403, "Forbidden action. Cannot logout with another user's token.");
-    }
-
     await dbToken.deleteOne();
-    return { message: "Logged out successfully" };
 }
 
 // Refreshes the user's access and generate new tokens
@@ -69,7 +59,7 @@ export async function createNewTokens(sub) {
     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m" });
     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
     await RefreshToken.create({ token: refreshToken, userId: sub });
-    return { token: accessToken, refreshToken };
+    return { accessToken, refreshToken };
 }
 
 export async function deleteAllUserTokens(id) {

@@ -6,10 +6,10 @@ import Legal from "./Legal";
 import { useUserStore } from "../../store";
 
 export default function Navbar({top}) {
-    const isLoggedIn = useUserStore(state => state.tokens);
+    const { tokens } = useUserStore(state => state);
     const classes = `${top ? "top" : "bottom"} nav`;
 
-    const renderElements = () => top ? (isLoggedIn ? <Menu /> : <Button path="/login" className="nav login">Login</Button>) : <Legal classes={classes}/>;
+    const renderElements = () => top ? (tokens ? <Menu /> : <Button path="/login" className="nav login">Login</Button>) : <Legal classes={classes}/>;
 
     return (
         <nav className={top ? null : "flex-center"}>
