@@ -22,6 +22,7 @@ export default function Game() {
     const [invalidGuesses, setInvalidGuesses] = useState([]); // Save API calls! If the API already said the name was invalid, do not allow guessing it again
     const [error, setError] = useState("");
     const [input, setInput] = useState("");
+    const [hidden, setHidden] = useState(true);
     const [disabled, setDisabled] = useState(false);
     const props = { handleSubmit, disabled, input, setInput };
 
@@ -69,8 +70,12 @@ export default function Game() {
         <Main className="game-container">
             <h1>{headingText[gameState]}</h1>
             <GameForm inputState={guesses[0]?.name === answer?.name} {...props} />
-            <Button onClick={() => resetGame()} className="game-btn" disabled={!settings.allGenerations && settings.generations.length === 0}>{gameState === "playing" ? "New Game" : "Reset Game"}</Button>
-            <GameSettings />
+            <div className="game-controls">
+                <Button onClick={() => resetGame()} className="game-btn" disabled={!settings.allGenerations && settings.generations.length === 0}>{gameState === "playing" ? "New Game" : "Reset Game"}</Button>
+                <Button onClick={() => setHidden(!hidden)} className="game-btn" >Settings</Button>
+                <Button onClick={() => endGame("lost")} className="game-btn" disabled={gameState !== "playing"}>Give Up</Button>
+            </div>
+            <GameSettings hidden={hidden} />
             <GameTable />
             {error && <GameError title="Invalid Pokemon" message={`${titleCase(error)} is not a valid pokemon.`} />}
         </Main>

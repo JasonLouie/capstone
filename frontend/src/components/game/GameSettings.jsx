@@ -2,10 +2,10 @@ import GameMode from "./GameMode";
 import Generations from "./Generations";
 import "../../styles/gameSettings.css";
 
-export default function GameSettings() {
+export default function GameSettings({hidden}) {
     
     return (
-        <div className="game-settings">
+        <div inert={hidden} className={`game-settings${hidden ? " hidden" : ""}`}>
             <div className="game-setting">
                 <h2 className="setting-title">Generations</h2>
                 <Generations />

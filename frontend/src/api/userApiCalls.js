@@ -28,6 +28,7 @@ export async function updateUserFields(fields) {
 // Get user data (also the way that the app knows the user is logged in)
 export async function getUserData() {
     const { data } = await userApi.get("/users/me");
+    console.log(data);
     return data;
 }
 

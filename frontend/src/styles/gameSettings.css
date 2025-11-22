@@ -7,6 +7,8 @@
 .game-settings {
     width: fit-content;
     margin: auto;
+    transition: opacity 0.3s ease-in;
+    /* transition: position 0.3s ease; */
 }
 
 .game-setting:last-child {

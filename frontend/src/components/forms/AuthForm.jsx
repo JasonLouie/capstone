@@ -10,7 +10,7 @@ export default function AuthForm({type, formInfo, handleSubmit}) {
         <div className="form-container auth">
             <h1 className="form-title auth">{type === "login" ? "Login" : "Sign Up"}</h1>
             <Logo size="medium" />
-            <form className="form auth" onSubmit={handleSubmit}>
+            <form className="form auth" onSubmit={handleSubmit} noValidate={true}>
                 {Object.keys(formData).map(field => <Field key={field} fieldName={field} {...formInfo} />)}
                 <div className="btn-container">
                     <Button className={`form-submit ${type}`} buttonType="submit">{type === "login" ? "Login" : "Sign Up"}</Button>

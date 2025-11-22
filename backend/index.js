@@ -15,7 +15,10 @@ import handleServerErrors from "./middleware/errorHandler.js";
 const app = express();
 const port = 8080;
 
-app.use(cors());
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true
+}));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded());

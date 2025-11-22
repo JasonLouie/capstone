@@ -1,6 +1,6 @@
 import * as authService from "../services/authService.js";
-import { createNewGame, deleteGames, getGame } from "../services/gameService.js";
 import * as tokenService from "../services/tokenService.js";
+import { deleteGames } from "../services/gameService.js";
 import { createNewUser, getUserById } from "../services/userService.js";
 
 const cookieOptions = {
@@ -31,8 +31,8 @@ function clearCookies(res) {
 // POST /auth/login
 export async function login(req, res, next) {
     try {
-        const [user, tokens] = await Promise.all([getUserById(req.user._id), getGame(req.user._id), tokenService.createNewTokens(req.user._id)]);
-        sendCookies(user, tokens, res);
+        const [user, tokens] = await Promise.all([getUserById(req.user._id), tokenService.createNewTokens(req.user._id)]);
+        sendCookies(tokens, res);
         const { username, profilePicUrl, gamesPlayed, totalGuesses, pokedex, settings } = user;
         res.json({ username, profilePicUrl, gamesPlayed, totalGuesses, pokedex, settings });
     } catch (err) {
@@ -42,13 +42,16 @@ export async function login(req, res, next) {
 
 // POST /auth/signup
 export async function signup(req, res, next) {
+    let auth = null;
     try {
-        const auth = await authService.createNewAuth(req.body);
-        const [user, gameDoc, tokens] = await Promise.all([createNewUser(auth._id, req.body), createNewGame(auth._id), tokenService.createNewTokens(auth._id)]);
+        auth = await authService.createNewAuth(req.body);
+        const user = await createNewUser(auth._id, req.body);
+        const tokens = await tokenService.createNewTokens(auth._id)
         sendCookies(tokens, res);
         const { username, profilePicUrl, gamesPlayed, totalGuesses, pokedex, settings } = user;
         res.json({ username, profilePicUrl, gamesPlayed, totalGuesses, pokedex, settings });
     } catch (err) {
+        if (auth) await auth.deleteOne(); // Delete auth if user creation fails.
         next(err);
     }
 }

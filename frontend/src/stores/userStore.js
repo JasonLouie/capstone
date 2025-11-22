@@ -9,11 +9,9 @@ const defaultSettings = { mode: "regular", allGenerations: true, generations: []
 export const useUserStore = create(
     persist(
         (set, get) => ({
-            // Game session state (Do not save to localStorage)
             user: null,
             authenticated: false,
-            checkingAuth: true,
-            // Data must persist for guest users
+            checkingAuth: false,
             pokedex: [],
             settings: { ...defaultSettings },
             login: (userData) => {
@@ -34,9 +32,10 @@ export const useUserStore = create(
                         authenticated: true,
                         checkingAuth: false,
                         settings: user.settings || get().settings,
-                        pokedex: data.pokedex || []
+                        pokedex: user.pokedex || []
                     });
                 } catch (err) {
+                    console.log(err);
                     // Cookie error (missing/invalid) even after refresh req was sent
                     set({ user: null, authenticated: false, checkingAuth: false });
                 }
@@ -124,12 +123,8 @@ export const useUserStore = create(
             }
         }),
         {
-            name: "guest-user-storage",
+            name: "user-preferences-storage",
             storage: createJSONStorage(() => localStorage),
-            partialize: (state) => ({
-                settings: state.settings,
-                pokedex: state.pokedex
-            })
         }
     )
 );

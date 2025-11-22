@@ -19,7 +19,7 @@ export default function handleServerErrors(err, req, res, next) {
     } else if (err.code && err.code === 11000) { // If validator fails to catch a uniqueness error from the validator, expect a MongoDB error
         console.log("MongoDB UniqueError thrown");
         const field = Object.keys(err.keyValue)[0];
-        messages[field] = `${titleCase(field)} is taken`;
+        messages[field] = [`${titleCase(field)} is taken`];
     }
 
     if (Object.keys(messages).length > 0) {

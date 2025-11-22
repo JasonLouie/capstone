@@ -8,7 +8,7 @@ import { useNavigate } from "react-router";
 import { useUserStore } from "../stores/userStore";
 
 export default function Signup() {
-    const { setTokens } = useUserStore(state => state);
+    const { login } = useUserStore(state => state);
     useDocumentTitle("Sign Up");
     const navigate = useNavigate();
     const [formData, setFormData] = useState({username: "", email: "", password: "", confirmPassword: ""});
@@ -24,13 +24,13 @@ export default function Signup() {
         if (Object.keys(validationErrors).length > 0) return;
 
         try {
-            const tokens = await signupUser(formData);
+            const user = await signupUser(formData);
+            login(user);
             navigate("/users/profile");
-            setTokens(tokens);
         } catch (err) {
-            console.log(err);
             if (err.status === 400 || err.status === 409) {
-                setFormErrors(err);
+                const { message = [] } = err.response.data;
+                setFormErrors(message);
             } else { // Handle server or frontend error
                 console.log("Server error");
             }

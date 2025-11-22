@@ -219,11 +219,16 @@
     margin: 5px 0;
 }
 
+.game-controls {
+    padding-top: 20px;
+    display: flex;
+    justify-content: center;
+    column-gap: 20px;
+}
+
 .game-btn {
     padding: 7px 9px;
     border-radius: 7px;
-    display: block;
-    margin: auto;
     margin-bottom: 20px;
     background-color: #000000AA;
     color: var(--green);
