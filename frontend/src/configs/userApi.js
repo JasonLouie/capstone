@@ -13,8 +13,8 @@ const userApi = axios.create({
 // Interceptor to refresh the access token
 userApi.interceptors.response.use((response) => response, async(err) => {
     const req = err.config;
-    if (err.response.status === 401 && req._retry) {
-        req._try = true;
+    if (err.response.status === 401 && !req._retry) {
+        req._retry = true;
 
         try {
             // Attempt to refresh the token using axios.post to prevent an infinite loop

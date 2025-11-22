@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { pokemonSchema } from "../schemas/schemas.js";
 
-const stateSchema = new mongoose.Schema({
+const gameSchema = new mongoose.Schema({
     guesses: {
         value: [pokemonSchema],
         default: []
@@ -9,19 +9,17 @@ const stateSchema = new mongoose.Schema({
     answer: {
         type: pokemonSchema,
         default: null
-    }
-}, { versionKey: false, _id: false });
-
-const gameSchema = new mongoose.Schema({
-    state: {
-        type: stateSchema,
-        default: () => ({})
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         unique: true,
         ref: "User"
+    },
+    gameState: {
+        type: String,
+        enum: ["playing", "won", "lost"],
+        default: "playing"
     }
 }, { versionKey: "version", timestamps: true });
 

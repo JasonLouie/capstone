@@ -4,12 +4,13 @@ import useDocumentTitle from "../hooks/useDocumentTitle";
 import { randomPokemon } from "../game";
 import { getPokemon } from "../api/pokeApiCalls";
 import { useEffect, useState } from "react";
-import "../styles/game.css";
-import GameError from "../components/game/GameError";
 import { titleCase } from "../utils/funcs";
+import GameError from "../components/game/GameError";
+import GameSettings from "../components/game/GameSettings";
 import GameTable from "../components/game/GameTable";
-import { useGameStore } from "../store";
+import { useGameStore } from "../stores/gameStore";
 import Button from "../components/Button";
+import "../styles/game.css";
 
 const staticPokemon = {
     generation: "Kanto",
@@ -85,7 +86,8 @@ export default function Game() {
         <Main className="game-container">
             <h1>{guesses[0]?.name === answer?.name ? "Congratulations! You Guessed the Pokémon!" : "Guess the Pokémon"}</h1>
             <GameForm inputState={guesses[0]?.name === answer?.name} {...props} />
-            <Button onClick={() => resetGame()} className="game-btn">{guesses[0]?.name === answer?.name ? "New Game" : "Reset Game"}</Button>
+            <Button onClick={() => {}} className="game-btn">{guesses[0]?.name === answer?.name ? "New Game" : "Reset Game"}</Button>
+            <GameSettings />
             <GameTable />
             {error && <GameError title="Invalid Pokemon" message={`${titleCase(error)} is not a valid pokemon.`} />}
         </Main>

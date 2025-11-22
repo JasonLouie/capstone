@@ -8,7 +8,7 @@ export async function createNewGame(userId) {
 }
 
 export async function getGame(userId) {
-    const game = await Game.findOne({ userId });
+    const game = await Game.findOne({ userId, gameState: "playing" });
     if (!game) new EndpointError(404, "Game");
     return game;
 }
@@ -31,7 +31,7 @@ async function updateGame(_id, version, updates) {
     const userUpdates = {};
 
     // Check if client added a guess to the guesses array (Increment total guesses by 1)
-    if (finalUpdate.$addToSet && finalUpdate.$addToSet["state.guesses"]) {
+    if (finalUpdate.$addToSet && finalUpdate.$addToSet["guesses"]) {
         if (!userUpdates.$inc) userUpdates.$inc = {};
         userUpdates.$inc.totalGuesses = 1;
 
@@ -51,7 +51,7 @@ async function updateGame(_id, version, updates) {
     }
 
     // Check for resetting game state (Increment games played by 1)
-    const resetGameState = finalUpdate.$set && finalUpdate.$set["state"];
+    const resetGameState = finalUpdate.$set && finalUpdate.$set["gameState"];
     if (resetGameState) {
         if (!userUpdates.$inc) userUpdates.$inc = {};
         userUpdates.$inc.gamesPlayed = 1;
@@ -65,16 +65,18 @@ async function updateGame(_id, version, updates) {
 
 export async function modifyAnswer(userId, body) {
     const { version, answer } = body;
-    await updateGame(userId, version, { $set: answer });
+    await updateGame(userId, version, { $set: { answer } });
 }
 
 export async function addNewGuess(userId, body) {
     const { version, guess } = body;
-    await updateGame(userId, version, { $addToSet: { "state.guesses": guess } });
+    await updateGame(userId, version, { $addToSet: { guesses: guess } });
 }
 
-export async function resetGameState(userId) {
-    await Game.findByIdAndUpdate(userId, { $set: { state: undefined } });
+// Runs when user gives up or wins the game
+export async function modifyGame(userId, body) {
+    const { version, guess, gameState } = body;
+    await updateGame(userId, version, { $addToSet: { guesses: guess }, $set: { gameState }});
 }
 
 // Used by auth to remove all game history of the user

@@ -32,7 +32,8 @@ const userSchema = new mongoose.Schema({
         default: []
     },
     settings: {
-        type: settingsSchema
+        type: settingsSchema,
+        default: () => ({})
     },
     gamesPlayed: { type: Number, default: 0 },
     totalGuesses: { type: Number, default: 0 },

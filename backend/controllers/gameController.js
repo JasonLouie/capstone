@@ -30,10 +30,10 @@ export async function addGuess(req, res, next) {
     }
 }
 
-// DELETE /game/me
-export async function resetGame(req, res, next) {
+// PUT /game/me (Handles winning/losing game)
+export async function updateGame(req, res, next) {
     try {
-        await gameService.resetGameState(req.user._id);
+        await gameService.modifyGame(req.user._id, req.body);
         res.sendStatus(204);
     } catch(err) {
         next(err);

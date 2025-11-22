@@ -2,14 +2,6 @@ import pokeApi from "../configs/pokeApi";
 import { findGeneration } from "../game";
 import { titleCase } from "../utils/funcs";
 
-
-export function inchesToFeet(inches) {
-    const newInches = Math.floor(inches);
-    if (newInches < 12) return `${newInches}"`;
-    const feet = Math.floor(inches/12);
-    return `${feet}' ${newInches-(feet*12)}"`;
-}
-
 async function filterPokemonData(info, species) {
     const pokemon = {
         id: info.id,

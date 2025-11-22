@@ -1,8 +1,8 @@
 import { generations } from "../../game";
-import { useGameStore } from "../../store";
+import { useUserStore } from "../../stores/userStore";
 
 export default function Generations() {
-    const { settings, modifyGameSetting } = useGameStore(state => state);
+    const { settings, modifyGameSetting } = useUserStore(state => state);
 
     function handleChange(e) {
         // Handle removing generation
@@ -18,12 +18,12 @@ export default function Generations() {
     return (
         <div className="generations">
             <label htmlFor="all-generations" className="generation">
-                <input type="checkbox" name="all-generations" id="all-generations" checked={settings.all} onChange={(e) => modifyGameSetting("all", e.target.checked)} />
+                <input type="checkbox" name="all-generations" id="all-generations" checked={settings.allGenerations} onChange={(e) => modifyGameSetting("all", e.target.checked)} />
                 All
             </label>
             {Object.keys(generations).map(gen =>
                 <label key={gen} htmlFor={gen} className="generation">
-                    <input type="checkbox" name={gen} id={gen} value={gen} checked={settings.generations.includes(gen)} disabled={settings.all} onChange={handleChange} />
+                    <input type="checkbox" name={gen} id={gen} value={gen} checked={settings?.generations.includes(gen)} disabled={settings.allGenerations} onChange={handleChange} />
                     {gen}
                 </label>
             )}

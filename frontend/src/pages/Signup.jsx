@@ -3,9 +3,9 @@ import AuthForm from "../components/forms/AuthForm";
 import Main from "../components/Main";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { validateSignUp } from "../utils/validate";
-import { signup } from "../api/userApiCalls";
+import { signupUser } from "../api/userApiCalls";
 import { useNavigate } from "react-router";
-import { useUserStore } from "../store";
+import { useUserStore } from "../stores/userStore";
 
 export default function Signup() {
     const { setTokens } = useUserStore(state => state);
@@ -24,7 +24,7 @@ export default function Signup() {
         if (Object.keys(validationErrors).length > 0) return;
 
         try {
-            const tokens = await signup(formData);
+            const tokens = await signupUser(formData);
             navigate("/users/profile");
             setTokens(tokens);
         } catch (err) {

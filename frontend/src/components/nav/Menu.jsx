@@ -2,12 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import Button from "../Button";
 import defaultAvatar from "/images/default-avatar.png";
 import Image from "../Image";
-import { useUserStore } from "../../store";
 import { useNavigate } from "react-router";
 
 export default function Menu() {
     const navigate = useNavigate();
-    const {logoutUser, userImg, setUserImg } = useUserStore(state => state);
+    // const {logoutUser, userImg, setUserImg } = useUserStore(state => state);
     const [hidden, setHidden] = useState(true);
     const divRef = useRef(null);
 
@@ -17,7 +16,7 @@ export default function Menu() {
     }
 
     const handleLogout = () => {
-        logoutUser();
+        // logoutUser();
         navigate("/login");
     }
 

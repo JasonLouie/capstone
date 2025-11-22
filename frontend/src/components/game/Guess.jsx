@@ -1,5 +1,4 @@
-import { inchesToFeet } from "../../api/pokeApiCalls";
-import { compareGenerations, compareGuessAndAnswer, compareMeasurements } from "../../game";
+import { compareGenerations, compareGuessAndAnswer, compareMeasurements, inchesToFeet } from "../../game";
 import Image from "../Image";
 
 export default function Guess({answer, name, img, generation, types, color, stage, height, weight}) {

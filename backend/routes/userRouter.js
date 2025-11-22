@@ -1,6 +1,6 @@
 import express from "express";
 import * as userController from "../controllers/userController.js";
-import { validateBasicGameSettings, validateGeneration, validateModifyUser, validatePokedexEntry, validatePokemon } from "../middleware/validators.js";
+import { validateBasicGameSettings, validateGeneration, validateModifyUser, validatePokedexEntry } from "../middleware/validators.js";
 
 const router = express.Router();
 

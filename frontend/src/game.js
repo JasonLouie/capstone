@@ -1,6 +1,13 @@
 // Get the generation for that pokemon
 export const generations = {Kanto: [1, 151], Johto: [152, 251], Hoenn: [252, 386], Sinnoh: [387, 493], Unova: [494, 649], Kalos: [650, 721], Alola: [722, 809], "Galar/Hisui": [810, 905], Paldea: [906, 1025]};
 
+export function inchesToFeet(inches) {
+    const newInches = Math.floor(inches);
+    if (newInches < 12) return `${newInches}"`;
+    const feet = Math.floor(inches/12);
+    return `${feet}' ${newInches-(feet*12)}"`;
+}
+
 export function findGeneration(id) {
     for (const key in generations) {
         if (id >= generations[key][0] && id <= generations[key][1]) return key;

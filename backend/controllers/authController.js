@@ -3,35 +3,38 @@ import { createNewGame, deleteGames, getGame } from "../services/gameService.js"
 import * as tokenService from "../services/tokenService.js";
 import { createNewUser, getUserById } from "../services/userService.js";
 
-// Shared function that handles sending cookies, user, and game data upon logging in, signing in, or refreshing token
-function sendCookiesAndData(userDoc, gameDoc, tokens, res) {
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict"
+};
+
+const refreshTokenPath = "/api/auth";
+
+// Shared function that handles sending cookies when user signs up, logs in, or refreshes tokens
+function sendCookies(tokens, res) {
     const { accessToken, refreshToken } = tokens;
-    const { username, profilePicUrl, gamesPlayed, totalGuesses, pokedex, settings } = userDoc;
-    const { state, version } = gameDoc;
 
-    res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 30 * 60 * 1000 // 30m
-    });
+    // Access token expires after 30m 
+    res.cookie("accessToken", accessToken, { ...cookieOptions, maxAge: 30 * 60 * 1000 });
 
-    res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 7 * 24 * 3600 * 1000, // 7d
-        path: "/api/auth/refresh"
-    });
+    // Refresh token expires after 7d
+    res.cookie("refreshToken", refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 3600 * 1000, path: refreshTokenPath });
+}
 
-    res.json({ user: { username, profilePicUrl, gamesPlayed, totalGuesses, pokedex, settings }, game: { state, version } });
+function clearCookies(res) {
+    res.clearCookie("accessToken", cookieOptions);
+
+    res.clearCookie("refreshToken", { ...cookieOptions, path: refreshTokenPath });
 }
 
 // POST /auth/login
 export async function login(req, res, next) {
     try {
-        const [userDoc, gameDoc, tokens] = await Promise.all([getUserById(req.user._id), getGame(req.user._id), tokenService.createNewTokens(req.user._id)]);
-        sendCookiesAndData(userDoc, gameDoc, tokens, res);
+        const [user, tokens] = await Promise.all([getUserById(req.user._id), getGame(req.user._id), tokenService.createNewTokens(req.user._id)]);
+        sendCookies(user, tokens, res);
+        const { username, profilePicUrl, gamesPlayed, totalGuesses, pokedex, settings } = user;
+        res.json({ username, profilePicUrl, gamesPlayed, totalGuesses, pokedex, settings });
     } catch (err) {
         next(err);
     }
@@ -41,8 +44,10 @@ export async function login(req, res, next) {
 export async function signup(req, res, next) {
     try {
         const auth = await authService.createNewAuth(req.body);
-        const [userDoc, gameDoc, tokens] = await Promise.all([createNewUser(auth._id, req.body), createNewGame(auth._id), tokenService.createNewTokens(auth._id)]);
-        sendCookiesAndData(userDoc, gameDoc, tokens, res);
+        const [user, gameDoc, tokens] = await Promise.all([createNewUser(auth._id, req.body), createNewGame(auth._id), tokenService.createNewTokens(auth._id)]);
+        sendCookies(tokens, res);
+        const { username, profilePicUrl, gamesPlayed, totalGuesses, pokedex, settings } = user;
+        res.json({ username, profilePicUrl, gamesPlayed, totalGuesses, pokedex, settings });
     } catch (err) {
         next(err);
     }
@@ -52,18 +57,7 @@ export async function signup(req, res, next) {
 export async function logout(req, res, next) {
     try {
         await tokenService.removeRefreshToken(req.cookies);
-        res.clearCookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict"
-        });
-
-        res.clearCookie("refreshToken", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            path: "/api/auth/refresh"
-        });
+        clearCookies(res);
         res.sendStatus(204);
     } catch (err) {
         next(err);
@@ -73,21 +67,8 @@ export async function logout(req, res, next) {
 // POST /auth/refresh
 export async function generateTokens(req, res, next) {
     try {
-        const { accessToken, refreshToken } = await tokenService.generateNewTokens(req.cookies);
-        res.cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 30 * 60 * 1000
-        });
-
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 7 * 24 * 3600 * 1000,
-            path: "/api/auth"
-        });
+        const tokens = await tokenService.generateNewTokens(req.cookies);
+        sendCookies(tokens, res);
         res.sendStatus(204);
     } catch (err) {
         next(err);
@@ -120,20 +101,7 @@ export async function removeUser(req, res, next) {
         const userId = req.user._id;
         // Delete the auth entry, all refresh tokens, all games, and user info
         await Promise.all([req.user.deleteOne(), tokenService.deleteAllUserTokens(userId), deleteGames(userId), deleteUser(userId)]);
-
-        // Clear cookies
-        res.clearCookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict"
-        });
-
-        res.clearCookie("refreshToken", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            path: "/api/auth/refresh"
-        });
+        clearCookies(res);
         res.sendStatus(204);
     } catch (err) {
         next(err);

@@ -3,13 +3,14 @@ import Logo from "../Logo";
 import "../../styles/navbar.css";
 import Menu from "./Menu";
 import Legal from "./Legal";
-import { useUserStore } from "../../store";
+import { useUserStore } from "../../stores/userStore";
 
 export default function Navbar({top}) {
-    const { tokens } = useUserStore(state => state);
+    // const { tokens } = useUserStore(state => state);
+    const isLoggedIn = false;
     const classes = `${top ? "top" : "bottom"} nav`;
 
-    const renderElements = () => top ? (tokens ? <Menu /> : <Button path="/login" className="nav login">Login</Button>) : <Legal classes={classes}/>;
+    const renderElements = () => top ? (isLoggedIn ? <Menu /> : <Button path="/login" className="nav login">Login</Button>) : <Legal classes={classes}/>;
 
     return (
         <nav className={top ? null : "flex-center"}>

@@ -4,8 +4,8 @@ import Main from "../components/Main";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { validateLogin } from "../utils/validate";
 import { useNavigate } from "react-router";
-import { login } from "../api/userApiCalls";
-import { useUserStore } from "../store";
+import { loginUser } from "../api/userApiCalls";
+import { useUserStore } from "../stores/userStore";
 
 export default function Login() {
     const { setTokens } = useUserStore(state => state);
@@ -24,7 +24,7 @@ export default function Login() {
         if (Object.keys(validationErrors).length > 0) return;
 
         try {
-            const tokens = await login(formData);
+            const tokens = await loginUser(formData);
             navigate("/users/profile");
             setTokens(tokens);
         } catch (err) {

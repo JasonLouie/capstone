@@ -1,40 +1,88 @@
 import userApi from "../configs/userApi";
 // Base endpoint is url/api/...
 
-export async function signup(body) {
-    const { data } = await userApi.post(`/users/signup`, body);
+export async function signupUser(body) {
+    const { data } = await userApi.post("/auth/signup", body);
     return data;
 }
 
-export async function login(body) {
-    const { data } = await userApi.post(`/users/login`, body);
+export async function loginUser(body) {
+    const { data } = await userApi.post("/auth/login", body);
     return data;
 }
 
-export async function logout() {
-    await userApi.post(`/users/logout`, { refreshToken });
+export async function logoutUser() {
+    await userApi.post("/auth/logout");
 }
 
-export async function updateUserFields(fields) {
-
-}
-
-export async function getUser() {
-
-}
-
+// Delete the user's account and all related data in the db
 export async function deleteUser() {
-
+    await userApi.delete("/users/me");
 }
 
+// Update username or profile picture
+export async function updateUserFields(fields) {
+    await userApi.patch("/users/me", fields);
+}
+
+// Get user data (also the way that the app knows the user is logged in)
+export async function getUserData() {
+    const { data } = await userApi.get("/users/me");
+    return data;
+}
+
+// Get the user's pokedex
 export async function getPokedex() {
-
+    const { data } = await userApi.get("/users/me/pokedex");
+    return data;
 }
 
-export async function addToPokedex() {
-
+// Add entry to the user's pokedex
+export async function addToPokedex(pokemon) {
+    await userApi.put("/users/me/pokedex", pokemon);
 }
 
+// Reset the user's pokedex
 export async function resetPokedex() {
+    await userApi.delete("/users/me/pokedex");
+}
 
+// Get the user's settings
+export async function getUserSettings() {
+    const { data } = await userApi.get("/users/me/settings");
+    return data;
+}
+
+// Update the "allGenerations" boolean or the "mode" (when used, proper object must be passed)
+export async function updateBasicSettings(basicSettings) {
+    await userApi.patch("/users/me/settings", basicSettings);
+}
+
+// Add a generation to the user's settings
+export async function addToGenerations(generation) {
+    await userApi.post("/users/me/settings/generations/add", generation);
+}
+
+// Remove a generation from the user's settings
+export async function removeFromGenerations(generation) {
+    await userApi.delete(`/users/me/settings/generations/${generation}`);
+}
+
+
+// GAME API CALLS
+export async function getGameData() {
+    const { data } = await userApi.get("/games/me");
+    return data;
+}
+
+export async function resetGameState() {
+    await userApi.delete("/games/me");
+}
+
+export async function addGuessToDB(guess) {
+    await userApi.post("/games/me/guesses", guess);
+}
+
+export async function updateAnswer(answer) {
+    await userApi.put("/games/me/answer", {answer});
 }

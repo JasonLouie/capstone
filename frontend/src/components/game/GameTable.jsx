@@ -1,4 +1,4 @@
-import { useGameStore } from "../../store";
+import { useGameStore } from "../../stores/gameStore";
 import Guess from "./Guess";
 
 export default function GameTable() {
