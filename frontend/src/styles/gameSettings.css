@@ -4,6 +4,22 @@
     column-gap: 10px;
 }
 
+.game-settings {
+    width: fit-content;
+    margin: auto;
+}
+
+.game-setting:last-child {
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+}
+
+#game-mode {
+    height: 30px;
+    width: 100px;
+}
+
 .generation {
     display: flex;
     width: fit-content;

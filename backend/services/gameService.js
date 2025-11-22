@@ -34,13 +34,19 @@ async function updateGame(_id, version, updates) {
     if (finalUpdate.$addToSet && finalUpdate.$addToSet["guesses"]) {
         if (!userUpdates.$inc) userUpdates.$inc = {};
         userUpdates.$inc.totalGuesses = 1;
+    }
 
-        // Add to pokedex if the user's previous guess was correct
-        if (gameDoc.guesses[0].id === gameDoc.answer.id) {
+    // Check for ending game
+    const resetGameState = finalUpdate.$set && finalUpdate.$set["gameState"];
+    if (resetGameState) {
+        if (!userUpdates.$inc) userUpdates.$inc = {};
+        userUpdates.$inc.gamesPlayed = 1;
+
+        // Add the pokemon to the pokedex if the user successfully made the guess
+        if (gameDoc.gameState === "won"){
             if (!userUpdates.$addToSet) userUpdates.$addToSet = {};
-
-            let img = gameDoc.guesses[0].img;
-            const { id, name } = gameDoc.guesses[0];
+            let img = gameDoc.answer.img;
+            const { id, name } = gameDoc.answer;
             
             const isShiny = (Math.floor(Math.random() * 4096) + 1) === 4096;
             if (isShiny) {
@@ -48,13 +54,6 @@ async function updateGame(_id, version, updates) {
             }
             userUpdates.$addToSet = {pokedex: { id, name, img, isShiny} };
         }
-    }
-
-    // Check for resetting game state (Increment games played by 1)
-    const resetGameState = finalUpdate.$set && finalUpdate.$set["gameState"];
-    if (resetGameState) {
-        if (!userUpdates.$inc) userUpdates.$inc = {};
-        userUpdates.$inc.gamesPlayed = 1;
     }
 
     if (userUpdates.$inc) {
@@ -76,7 +75,7 @@ export async function addNewGuess(userId, body) {
 // Runs when user gives up or wins the game
 export async function modifyGame(userId, body) {
     const { version, guess, gameState } = body;
-    await updateGame(userId, version, { $addToSet: { guesses: guess }, $set: { gameState }});
+    await updateGame(userId, version, { $set: { gameState }});
 }
 
 // Used by auth to remove all game history of the user

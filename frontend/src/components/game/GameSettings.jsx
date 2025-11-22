@@ -11,7 +11,7 @@ export default function GameSettings() {
                 <Generations />
             </div>
             <div className="game-setting">
-                <h2 className="setting-title dropdown">Game Mode</h2>
+                <h2 className="setting-title">Game Mode</h2>
                 <GameMode />
             </div>
         </div>

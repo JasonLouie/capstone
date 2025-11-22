@@ -2,23 +2,16 @@ import { useEffect } from "react";
 import AppRoutes from "./AppRoutes";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
-// import { getUser } from "./api/userApiCalls";
-// import { useUserStore } from "./store";
+import { useUserStore } from "./stores/userStore";
+
 
 export default function App() {
-    // const { loginUser, logoutUser } = useUserStore();
-    // useEffect(() => {
-    //     async function getUserInfo() {
-    //         try {
-    //             // const user = await getUser();
-    //             login(user);
-    //         } catch (err) {
-    //             logout();
-    //         }
-    //     }
-    //     // Run this function each time the app loads to verify that the user is logged in.
-    //     getUserInfo();
-    // }, []);
+    const { checkAuth, authenticated } = useUserStore(state => state);
+    useEffect(() => {
+        if (authenticated) {
+            checkAuth();
+        }
+    }, [authenticated]);
 
     return (
         <>

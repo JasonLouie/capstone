@@ -218,3 +218,20 @@
 .game-error > * {
     margin: 5px 0;
 }
+
+.game-btn {
+    padding: 7px 9px;
+    border-radius: 7px;
+    display: block;
+    margin: auto;
+    margin-bottom: 20px;
+    background-color: #000000AA;
+    color: var(--green);
+    border: 2px solid var(--green);
+    transition: border-color 0.3s ease;
+}
+
+.game-btn:not(:disabled):hover {
+    color: var(--light-green);
+    border-color: var(--light-green);
+}

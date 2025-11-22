@@ -11,21 +11,14 @@ import GameTable from "../components/game/GameTable";
 import { useGameStore } from "../stores/gameStore";
 import Button from "../components/Button";
 import "../styles/game.css";
+import { useUserStore } from "../stores/userStore";
 
-const staticPokemon = {
-    generation: "Kanto",
-    height: 13,
-    color: "Brown",
-    id: 141,
-    img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/141.png",
-    name: "Kabutops",
-    types: ['Rock', 'Water'],
-    weight: 405
-};
+const headingText = {playing: "Guess the Pokémon", won: "Congratulations! You Guessed the Pokémon!", lost: "You Failed to Guess the Pokémon!"};
 
 export default function Game() {
     useDocumentTitle("Game");
-    const {answer, setAnswer, guesses, addToGuesses, settings, resetGame} = useGameStore(state => state);
+    const {answer, guesses, addGuess, gameState, initGame, endGame, resetGame } = useGameStore(state => state);
+    const { settings } = useUserStore(state => state);
     const [invalidGuesses, setInvalidGuesses] = useState([]); // Save API calls! If the API already said the name was invalid, do not allow guessing it again
     const [error, setError] = useState("");
     const [input, setInput] = useState("");
@@ -47,7 +40,7 @@ export default function Game() {
                 } else {
                     try {
                         const guess = await getPokemon(queryName);
-                        addToGuesses(guess);
+                        addGuess(guess);
                     } catch (err) {
                         console.log(err);
                         // Overlay display error that the pokemon is invalid
@@ -61,32 +54,22 @@ export default function Game() {
                 setDisabled(false);
             } else { // User guessed the correct pokemon
                 console.log("Correct!");
-                addToGuesses(answer);
+                addGuess(answer);
+                endGame("won");
             }
             setInput("");
         }
     }
 
     useEffect(() => {
-        async function generateAnswer() {
-            try {
-                const randomId = settings.all ? randomPokemon() : randomPokemon(settings.generations);
-                const pokemon = await getPokemon(randomId);
-                console.log(pokemon);
-                setAnswer(pokemon);
-            } catch (err) {
-                console.log("Error fetching data on random pokemon:", err);
-                setAnswer(staticPokemon);
-            }
-        }
-        if (!answer) generateAnswer();
+        if (!answer) initGame();
     }, [answer]);
 
     return (
         <Main className="game-container">
-            <h1>{guesses[0]?.name === answer?.name ? "Congratulations! You Guessed the Pokémon!" : "Guess the Pokémon"}</h1>
+            <h1>{headingText[gameState]}</h1>
             <GameForm inputState={guesses[0]?.name === answer?.name} {...props} />
-            <Button onClick={() => {}} className="game-btn">{guesses[0]?.name === answer?.name ? "New Game" : "Reset Game"}</Button>
+            <Button onClick={() => resetGame()} className="game-btn" disabled={!settings.allGenerations && settings.generations.length === 0}>{gameState === "playing" ? "New Game" : "Reset Game"}</Button>
             <GameSettings />
             <GameTable />
             {error && <GameError title="Invalid Pokemon" message={`${titleCase(error)} is not a valid pokemon.`} />}

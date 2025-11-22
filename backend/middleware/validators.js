@@ -268,14 +268,11 @@ export function validateNewPokemon(req, res, next) {
 
 // Middleware for setting win state or lose state (appends the pokemon, but on the front end, the background will not be green)
 export function validateUpdateGame(req, res, next) {
-    const { guess=null, answer=null } = req.body;
-    let key = guess ? "guess" : "answer";
-    const pokemonErrors = validatePokemon(pokemonValidations, guess || answer);
     const mainValidations = {
         version: versionRules,
         gameState: gameStateRules
     };
-    validate(mainValidations, req, res, next, (pokemonErrors ? {[key]: pokemonErrors} : null) );
+    validate(mainValidations, req, res, next);
 }
 
 // Middleware for validating pokedex entry before adding

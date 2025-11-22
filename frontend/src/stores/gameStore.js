@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { useUserStore } from "./userStore";
-import { getGameData, updateAnswer } from "../api/userApiCalls";
+import { addToGuesses, getGameData, setGameState, updateAnswer } from "../api/userApiCalls";
 import { randomPokemon } from "../game";
 import { getPokemon } from "../api/pokeApiCalls";
 
@@ -29,9 +29,13 @@ export const useGameStore = create(
                         console.err("Failed to fetch game");
                     }
                 }
-                const state = get();
-                if (!state.answer) {
-                    await state.generateNewAnswer();
+                const { answer, generateNewAnswer } = get();
+                if (!answer) {
+                    try {
+                        await generateNewAnswer();
+                    } catch (err) {
+                        console.err("Failed to generate new answer");
+                    }
                 }
             },
             generateNewAnswer: async () => {
@@ -43,16 +47,39 @@ export const useGameStore = create(
 
                 // Update the answer in db
                 if (authenticated) {
-                    await updateAnswer({answer});
+                    try {
+                        await updateAnswer({answer});
+                    } catch (err) {
+                        console.error("Failed to sync answer");
+                    }
                 }
             },
             resetGame: () => {
-                
+                set({ guesses: [], answer: null, version: 0, gameState: "playing" });
             },
-            addGuess: (guess) => {
+            endGame: async (value) => {
+                set({ gameState: value });
+                const { authenticated } = useUserStore.getState();
+                if (authenticated) {
+                    try {
+                        await setGameState({gameState: value});
+                    } catch(err) {
+                        console.error("Failed to sync the game state");
+                    }
+                }
+            },
+            addGuess: async (guess) => {
                 set((state) => ({
                     guesses: [...state.guesses, guess]
                 }));
+                const { authenticated } = useUserStore.getState();
+                if (authenticated) {
+                    try {
+                        await addToGuesses()
+                    } catch (err) {
+                        console.error("Failed to sync new guess");
+                    }
+                }
             }
         }),
         {

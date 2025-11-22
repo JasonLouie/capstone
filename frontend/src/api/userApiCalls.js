@@ -38,8 +38,8 @@ export async function getPokedex() {
 }
 
 // Add entry to the user's pokedex
-export async function addToPokedex(pokemon) {
-    await userApi.put("/users/me/pokedex", pokemon);
+export async function addToPokedex(pokedexEntry) {
+    await userApi.put("/users/me/pokedex", pokedexEntry);
 }
 
 // Reset the user's pokedex
@@ -75,11 +75,11 @@ export async function getGameData() {
     return data;
 }
 
-export async function resetGameState() {
-    await userApi.delete("/games/me");
+export async function setGameState(gameState) {
+    await userApi.put("/games/me", gameState);
 }
 
-export async function addGuessToDB(guess) {
+export async function addToGuesses(guess) {
     await userApi.post("/games/me/guesses", guess);
 }
 

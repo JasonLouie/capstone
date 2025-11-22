@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { addToGenerations, addToPokedex, logoutUser, removeFromGenerations, resetPokedex, updateBasicSettings } from "../api/userApiCalls";
+import { addToGenerations, addToPokedex, getUserData, logoutUser, removeFromGenerations, resetPokedex, updateBasicSettings } from "../api/userApiCalls";
+import { useGameStore } from "./gameStore";
 
 const defaultSettings = { mode: "regular", allGenerations: true, generations: [] };
 
@@ -14,7 +15,7 @@ export const useUserStore = create(
             checkingAuth: true,
             // Data must persist for guest users
             pokedex: [],
-            settings: {...defaultSettings},
+            settings: { ...defaultSettings },
             login: (userData) => {
                 set({
                     user: userData,
@@ -24,16 +25,32 @@ export const useUserStore = create(
                     pokedex: userData.pokedex || []
                 });
             },
+            checkAuth: async () => {
+                set({checkingAuth: true});
+                try {
+                    const user = await getUserData();
+                    set({
+                        user,
+                        authenticated: true,
+                        checkingAuth: false,
+                        settings: user.settings || get().settings,
+                        pokedex: data.pokedex || []
+                    });
+                } catch (err) {
+                    // Cookie error (missing/invalid) even after refresh req was sent
+                    set({ user: null, authenticated: false, checkingAuth: false });
+                }
+            },
             logout: async () => {
                 try {
                     await logoutUser();
                 } catch (err) {
                     console.log(err);
                 } finally {
-                    set({ user: null, authenticated: false, settings: {...defaultSettings}, pokedex: [] });
+                    set({ user: null, authenticated: false, settings: { ...defaultSettings }, pokedex: [] });
+                    useGameStore.setState({ guesses: [], answer: null, version: 0, gameState: "playing" });
                 }
             },
-            setCheckingAuth: (status) => set({ checkingAuth: status }),
             // Update settings
             addGeneration: async (generation) => {
                 if (!get().settings.generations.includes(generation)) {
@@ -41,7 +58,7 @@ export const useUserStore = create(
 
                     if (get().authenticated) {
                         try {
-                            await addToGenerations({generation});
+                            await addToGenerations({ generation });
                         } catch (err) {
                             console.error("Failed to add generation", err);
                         }
@@ -62,7 +79,7 @@ export const useUserStore = create(
                 }
             },
             toggleAllGenerations: async (value) => {
-                set((state) => ({ settings: { ...state.settings, allGenerations: value }}));
+                set((state) => ({ settings: { ...state.settings, allGenerations: value } }));
                 if (get().authenticated) {
                     try {
                         await updateBasicSettings({ allGenerations: value });
@@ -72,7 +89,7 @@ export const useUserStore = create(
                 }
             },
             updateMode: async (newMode) => {
-                set((state) => ({ settings: { ...state.settings, mode: newMode }}));
+                set((state) => ({ settings: { ...state.settings, mode: newMode } }));
                 if (get().authenticated) {
                     try {
                         await updateBasicSettings({ mode: newMode });
@@ -87,7 +104,7 @@ export const useUserStore = create(
                     set((state) => ({ pokedex: [...state.pokedex, pokemon] }));
                     if (get().authenticated) {
                         try {
-                            await addToPokedex({pokemon});
+                            await addToPokedex({ pokemon });
                         } catch (err) {
                             console.error("Failed to sync pokedex", err);
                         }

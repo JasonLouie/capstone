@@ -20,7 +20,7 @@ export default function GameTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {guesses.map(guess => <Guess key={guess.id} answer={answer} {...guess} />)}
+                    {guesses.toReversed().map(guess => <Guess key={guess.id} answer={answer} {...guess} />)}
                 </tbody>
             </table>
         </div>
