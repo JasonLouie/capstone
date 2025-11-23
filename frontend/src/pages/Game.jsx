@@ -37,22 +37,15 @@ export default function Game() {
         console.log(guess);
         if (input && !guesses.includes(guess.id)) {
             // Add element to the table of guesses
-            if (name !== answer.name.toLowerCase()) {
-                try {
-                    await addGuess(guess._id);
-                } catch (err) {
-                    console.log(err);
-                    // Overlay display error that the pokemon is invalid
-                    if (err.status === 404) {
-                        setInvalidGuesses([...invalidGuesses, input]);
-                        setError(input);
-                        setTimeout(() => setError(""), 3000);
-                    }
-                }
+            try {
+                await addGuess(guess._id);
+            } catch (err) {
+                console.log(err);
+            }
+            if (name !== answer.name) {
                 setDisabled(false);
             } else { // User guessed the correct pokemon
                 console.log("Correct!");
-                await addGuess(answer);
                 endGame("won");
             }
             setInput("");
@@ -60,7 +53,7 @@ export default function Game() {
     }
 
     useEffect(() => {
-        initGame();
+        if (gameState === "playing") initGame();
     }, []);
 
     return (
@@ -68,7 +61,7 @@ export default function Game() {
             <h1>{headingText[gameState]}</h1>
             <GameForm {...props} />
             <div className="game-controls">
-                <Button onClick={() => generateNewAnswer()} className="game-btn" >{gameState === "playing" ? "New Game" : "Play Again"}</Button>
+                <Button onClick={() => gameState === "playing" ? generateNewAnswer() : initGame()} className="game-btn" >{gameState === "playing" ? "New Game" : "Play Again"}</Button>
                 <Button onClick={() => setHidden(!hidden)} className="game-btn" >Settings</Button>
                 {gameState === "playing" && <Button onClick={() => endGame("lost")} className="game-btn">Give Up</Button>}
             </div>

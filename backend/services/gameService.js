@@ -40,13 +40,14 @@ async function updateGame(userId, version, updates) {
     if (finalUpdate.$set && finalUpdate.$set["gameState"]) {
         // Add the pokemon to the pokedex if the user successfully made the guess
         if (gameDoc.gameState === "won"){
+            console.log("Adding to user pokedex");
             if (!userUpdates.$addToSet) userUpdates.$addToSet = {};
             const isShiny = (Math.floor(Math.random() * 4096) + 1) === 4096;
             userUpdates.$addToSet = {pokedex: { id: gameDoc.answer, isShiny} };
         }
     }
 
-    if (userUpdates.$inc) {
+    if (Object.keys(userUpdates).length > 0) {
         await User.findByIdAndUpdate(gameDoc.userId, userUpdates);
     }
     return gameDoc;

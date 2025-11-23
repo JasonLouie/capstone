@@ -27,7 +27,7 @@ export const useGameStore = create(
             version: 0,
             gameState: "playing", // playing, won, or lost,
             initGame: async () => {
-                const { answer, generateNewAnswer } = get();
+                const { generateNewAnswer } = get();
                 const { settings, authenticated } = useUserStore.getState();
                 const { pokemonObject } = usePokemonStore.getState();
                 if (authenticated) {
@@ -37,7 +37,7 @@ export const useGameStore = create(
                             set ({
                                 guesses: gameData.guesses || [],
                                 mode: gameData.mode || "regular",
-                                answer: pokemonObject[gameData.answer] || null,
+                                answer: gameData.answer ? pokemonObject[gameData.answer] : null,
                                 version: gameData.version || 0,
                                 gameState: gameData.gameState || "playing"
                             });
@@ -47,7 +47,7 @@ export const useGameStore = create(
                         console.error(err);
                     }
                 }
-                if (!answer) {
+                if (!get().answer) {
                     try {
                         await generateNewAnswer();
                     } catch (err) {
@@ -57,14 +57,14 @@ export const useGameStore = create(
                 }
             },
             generateNewAnswer: async () => {
-                const { settings, authenticated } = useUserStore.getState();
+                const { settings } = useUserStore.getState();
                 const randomId = settings.allGenerations ? randomPokemon() : randomPokemon(settings.generations);
                 const pokemon = usePokemonStore.getState().pokemonObject[randomId];
                 console.log(pokemon);
                 set({ answer: pokemon, guesses: [], gameState: "playing", mode: settings.mode });
 
                 // Update the answer in db
-                if (authenticated) {
+                if (useUserStore.getState().authenticated) {
                     try {
                         console.log("Attempting to sync answer...");
                         await updateAnswer({answer: pokemon._id, version: get().version});
@@ -77,8 +77,7 @@ export const useGameStore = create(
             },
             endGame: async (value) => {
                 set({ gameState: value });
-                const { authenticated } = useUserStore.getState();
-                if (authenticated) {
+                if (useUserStore.getState().authenticated) {
                     try {
                         await setGameState({gameState: value, version: get().version});
                         set((state) => ({version: state.version+1}));
@@ -88,12 +87,10 @@ export const useGameStore = create(
                 }
             },
             addGuess: async (guess) => {
-                console.log("Adding guess:", guess);
                 set((state) => ({
                     guesses: [...state.guesses, guess]
                 }));
-                const { authenticated } = useUserStore.getState();
-                if (authenticated) {
+                if (useUserStore.getState().authenticated) {
                     try {
                         await addToGuesses({guess, version: get().version});
                         set((state) => ({version: state.version+1}));
