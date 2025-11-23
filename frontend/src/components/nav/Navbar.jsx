@@ -4,6 +4,8 @@ import "../../styles/navbar.css";
 import Menu from "./Menu";
 import Legal from "./Legal";
 import { useUserStore } from "../../stores/userStore";
+import Image from "../Image";
+import pokedex from "../../assets/pokedex-icon.png";
 
 export default function Navbar({top}) {
     const { authenticated } = useUserStore(state => state)
@@ -17,6 +19,7 @@ export default function Navbar({top}) {
             <Button path="/" className={classes}>Home</Button>
             <Button path="/play" className={classes}>Play</Button>
             <Button path="/about" className={classes}>About</Button>
+            <Button path="/pokedex" className={classes}>Pokédex</Button>
             {renderElements()}
         </nav>
     );

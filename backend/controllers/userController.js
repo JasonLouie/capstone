@@ -4,8 +4,8 @@ import * as userService from "../services/userService.js";
 export async function getUser(req, res, next) {
     try {
         const userDoc = await userService.getUserById(req.user._id);
-        const { _id, username, profilePicUrl, gamesPlayed, totalGuesses, pokedex } = userDoc;
-        res.json({ username, email: _id.email, profilePicUrl, gamesPlayed, totalGuesses, pokedex });
+        const { _id, username, profilePicUrl, gamesPlayed, totalGuesses, pokedex, settings } = userDoc;
+        res.json({ username, email: _id.email, profilePicUrl, gamesPlayed, totalGuesses, pokedex, settings });
     } catch (err) {
         next(err);
     }
@@ -45,16 +45,6 @@ export async function addGeneration(req, res, next) {
 export async function removeGeneration(req, res, next) {
     try {
         await userService.deleteFromGenerations(req.user._id, req.params.generation);
-        res.sendStatus(204);
-    } catch (err) {
-        next(err);
-    }
-}
-
-// POST /users/me/pokedex
-export async function addPokedexEntry(req, res, next) {
-    try {
-        await userService.addToPokedex(req.user._id, req.body);
         res.sendStatus(204);
     } catch (err) {
         next(err);

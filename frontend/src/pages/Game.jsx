@@ -2,20 +2,21 @@ import GameForm from "../components/game/GameForm";
 import Main from "../components/Main";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { useEffect, useState } from "react";
+import { useGameStore } from "../stores/gameStore";
+import { usePokemonStore } from "../stores/pokemonStore";
+import { useUserStore } from "../stores/userStore";
 import { titleCase } from "../utils/funcs";
 import GameError from "../components/game/GameError";
 import GameSettings from "../components/game/GameSettings";
 import GameTable from "../components/game/GameTable";
-import { useGameStore } from "../stores/gameStore";
 import Button from "../components/Button";
+import { headingText } from "../game";
 import "../styles/game.css";
-import { usePokemonStore } from "../stores/pokemonStore";
-
-const headingText = { playing: "Guess the Pokémon", won: "Congratulations! You guessed the pokémon!", lost: "Better luck next time! You failed to guess the pokémon." };
 
 export default function Game() {
     useDocumentTitle("Game");
     const { pokemonObject } = usePokemonStore(state => state);
+    const { settings } = useUserStore(state => state);
     const { answer, guesses, addGuess, gameState, initGame, endGame, generateNewAnswer } = useGameStore(state => state);
     const [error, setError] = useState("");
     const [input, setInput] = useState("");
@@ -34,7 +35,6 @@ export default function Game() {
             setDisabled(false);
             return;
         }
-        console.log(guess);
         if (input && !guesses.includes(guess.id)) {
             // Add element to the table of guesses
             try {
@@ -61,7 +61,7 @@ export default function Game() {
             <h1>{headingText[gameState]}</h1>
             <GameForm {...props} />
             <div className="game-controls">
-                <Button onClick={() => gameState === "playing" ? generateNewAnswer() : initGame()} className="game-btn" >{gameState === "playing" ? "New Game" : "Play Again"}</Button>
+                <Button onClick={() => gameState === "playing" ? generateNewAnswer() : initGame()} disabled={!settings.allGenerations && settings.generations.length === 0} className="game-btn" >{gameState === "playing" ? "New Game" : "Play Again"}</Button>
                 <Button onClick={() => setHidden(!hidden)} className="game-btn" >Settings</Button>
                 {gameState === "playing" && <Button onClick={() => endGame("lost")} className="game-btn">Give Up</Button>}
             </div>

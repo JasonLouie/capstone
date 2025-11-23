@@ -82,7 +82,8 @@ userSchema.post(/^find/, async function (docs, next) {
         if (docs) {
             // Turn the docs into an array for consistent syntax (result can be 1 or more)
             const userDocs = Array.isArray(docs) ? docs : [docs];
-            const userIds = userDocs.map(doc => doc._id);
+            // User docs are populated with the auth's email field
+            const userIds = userDocs.map(doc => doc._id._id);
 
             // Find the number of games played
             const gameCounts = await Game.aggregate([
@@ -90,6 +91,9 @@ userSchema.post(/^find/, async function (docs, next) {
                     $match: {
                         userId: {
                             $in: userIds
+                        },
+                        gameState: {
+                            $ne: "playing"
                         }
                     }
                 },
@@ -107,8 +111,9 @@ userSchema.post(/^find/, async function (docs, next) {
             const gameCountsObj = {};
             gameCounts.forEach(g => gameCountsObj[g._id] = g.gamesPlayed);
 
+            // Set the gamesPlayed field
             userDocs.forEach(doc => {
-                doc.set("gamesPlayed", gameCountsObj[doc._id] || 0, { strict: false });
+                doc.set("gamesPlayed", gameCountsObj[doc._id._id] || 0, { strict: false });
             });
         }
         next();

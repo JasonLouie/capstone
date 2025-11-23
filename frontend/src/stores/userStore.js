@@ -14,10 +14,9 @@ export const useUserStore = create(
             checkingAuth: false,
             pokedex: [],
             settings: { ...defaultSettings },
-            
             resetUser: () => {
                 set({ user: null, authenticated: false, settings: { ...defaultSettings }, pokedex: [] });
-                useGameStore.getState().resetGame();
+                useGameStore.getState().initGame();
             },
             login: (userData) => {
                 const { settings, pokedex, ...user } = userData;
@@ -28,7 +27,7 @@ export const useUserStore = create(
                     settings: settings || get().settings,
                     pokedex: pokedex || []
                 });
-                useGameStore.getState().resetGame();
+                useGameStore.getState().initGame();
             },
             checkAuth: async () => {
                 set({ checkingAuth: true });

@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Outlet, Route, Routes } from "react-router";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -23,8 +23,10 @@ export default function AppRoutes() {
                 <Route path="/signup" element={<Signup />} />
             </Route>
             <Route element={<AuthRoutes />}>
-                <Route path="/users/profile" element={<Profile />} />
-                <Route path="/users/settings" element={<Settings />} />
+                <Route path="/users" element={<Outlet />}>
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="settings" element={<Settings />} />
+                </Route>
             </Route>
             <Route path="*" element={<NoMatch />} />
         </Routes>

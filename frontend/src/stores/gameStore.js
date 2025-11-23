@@ -5,18 +5,6 @@ import { addToGuesses, getOrCreateGameData, setGameState, updateAnswer } from ".
 import { randomPokemon } from "../game";
 import { usePokemonStore } from "./pokemonStore";
 
-const staticMon = {
-    color: "Blue",
-    generation: "Hoenn",
-    height: 59.055,
-    id: 295,
-    img: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/295.png",
-    name: "Exploud",
-    stage: 3,
-    types: ['Normal', 'None'],
-    weight: 185.1
-};
-
 // Updates UI and localStorage (usage of persist middleware)
 export const useGameStore = create(
     persist(

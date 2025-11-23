@@ -13,8 +13,6 @@ router.patch("/me/settings", validateBasicGameSettings, userController.updateBas
 router.post("/me/settings/generations/add", validateGeneration, userController.addGeneration);
 router.delete("/me/settings/generations/:generation", userController.removeGeneration);
 
-router.route("/me/pokedex")
-    .post(validatePokedexEntry, userController.addPokedexEntry)
-    .delete(userController.resetPokedex);
+router.delete("/me/pokedex", userController.resetPokedex);
 
 export default router;

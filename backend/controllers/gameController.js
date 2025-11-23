@@ -1,4 +1,5 @@
 import * as gameService from "../services/gameService.js";
+import { addToPokedex, incrementTotalGuesses } from "../services/userService.js";
 
 // GET /game/me
 export async function getOrCreateGameData(req, res, next) {
@@ -25,6 +26,7 @@ export async function updateAnswer(req, res, next) {
 export async function addGuess(req, res, next) {
     try {
         await gameService.addNewGuess(req.user._id, req.body);
+        await incrementTotalGuesses(req.user._id);
         res.sendStatus(204);
     } catch (err) {
         next(err);
@@ -35,6 +37,7 @@ export async function addGuess(req, res, next) {
 export async function updateGame(req, res, next) {
     try {
         await gameService.modifyGame(req.user._id, req.body);
+        await addToPokedex(req.user._id, req.body.answer);
         res.sendStatus(204);
     } catch(err) {
         next(err);

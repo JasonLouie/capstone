@@ -26,30 +26,6 @@ async function updateGame(userId, version, updates) {
     const gameDoc = await Game.findOneAndUpdate({ userId, version, gameState: "playing" }, finalUpdate, { new: true, runValidators: true });
 
     if (!gameDoc) throw new EndpointError(400, "Version mismatch or game does not exist.");
-
-    // Handle updating the user stats
-    const userUpdates = {};
-
-    // Check if client added a guess to the guesses array (Increment total guesses by 1)
-    if (finalUpdate.$addToSet && finalUpdate.$addToSet["guesses"]) {
-        if (!userUpdates.$inc) userUpdates.$inc = {};
-        userUpdates.$inc.totalGuesses = 1;
-    }
-
-    // Check for ending game
-    if (finalUpdate.$set && finalUpdate.$set["gameState"]) {
-        // Add the pokemon to the pokedex if the user successfully made the guess
-        if (gameDoc.gameState === "won"){
-            console.log("Adding to user pokedex");
-            if (!userUpdates.$addToSet) userUpdates.$addToSet = {};
-            const isShiny = (Math.floor(Math.random() * 4096) + 1) === 4096;
-            userUpdates.$addToSet = {pokedex: { id: gameDoc.answer, isShiny} };
-        }
-    }
-
-    if (Object.keys(userUpdates).length > 0) {
-        await User.findByIdAndUpdate(gameDoc.userId, userUpdates);
-    }
     return gameDoc;
 }
 
