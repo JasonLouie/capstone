@@ -41,14 +41,8 @@ async function updateGame(userId, version, updates) {
         // Add the pokemon to the pokedex if the user successfully made the guess
         if (gameDoc.gameState === "won"){
             if (!userUpdates.$addToSet) userUpdates.$addToSet = {};
-            let img = gameDoc.answer.img;
-            const { id, name } = gameDoc.answer;
-            
             const isShiny = (Math.floor(Math.random() * 4096) + 1) === 4096;
-            if (isShiny) {
-                img = img.replace(id, `shiny/${id}`);
-            }
-            userUpdates.$addToSet = {pokedex: { id, name, img, isShiny} };
+            userUpdates.$addToSet = {pokedex: { id: gameDoc.answer, isShiny} };
         }
     }
 

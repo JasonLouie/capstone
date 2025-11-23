@@ -79,3 +79,9 @@ export async function updateAnswer(answer) {
 export async function addPokemon(pokemon) {
     await userApi.post("/pokemon", pokemon);
 }
+
+// Get all pokemon
+export async function getAllPokemon(pokemon) {
+    const { data } = await userApi.get("/pokemon", pokemon);
+    return data;
+}

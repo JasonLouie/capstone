@@ -1,8 +1,8 @@
 import * as pokemonService from "../services/pokemonService.js";
 
-export function getPokemon(req, res, next) {
+export async function getPokemon(req, res, next) {
     try {
-        const pokemon = pokemonService.getAllPokemon();
+        const pokemon = await pokemonService.getAllPokemon();
         res.json(pokemon);
     } catch (err) {
         next(err);

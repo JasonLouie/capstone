@@ -1,9 +1,12 @@
 import { compareGenerations, compareGuessAndAnswer, compareMeasurements, inchesToFeet } from "../../game";
 import { useGameStore } from "../../stores/gameStore";
+import { usePokemonStore } from "../../stores/pokemonStore";
 import Image from "../Image";
 
-export default function Guess({ guess }) {
+export default function Guess({ guessId }) {
     const { answer } = useGameStore(state => state);
+    const { pokemonObject } = usePokemonStore(state => state);
+    const guess = pokemonObject[guessId];
 
     const renderAnswer = () => {
         const { name, img, generation, types, color, stage, height, weight } = answer;
