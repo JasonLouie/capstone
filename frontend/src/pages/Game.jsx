@@ -12,12 +12,13 @@ import GameTable from "../components/game/GameTable";
 import Button from "../components/Button";
 import { headingText } from "../game";
 import "../styles/game.css";
+import Image from "../components/Image";
 
 export default function Game() {
     useDocumentTitle("Game");
     const { pokemonObject } = usePokemonStore(state => state);
     const { settings } = useUserStore(state => state);
-    const { answer, guesses, addGuess, gameState, initGame, endGame, generateNewAnswer } = useGameStore(state => state);
+    const { answer, mode, guesses, addGuess, gameState, initGame, endGame, generateNewAnswer } = useGameStore(state => state);
     const [error, setError] = useState("");
     const [input, setInput] = useState("");
     const [hidden, setHidden] = useState(true);
@@ -52,6 +53,10 @@ export default function Game() {
         }
     }
 
+    function showSilhouette() {
+        return <Image src={answer.img} size="large"/>;
+    }
+
     useEffect(() => {
         if (gameState === "playing") initGame();
     }, []);
@@ -66,6 +71,7 @@ export default function Game() {
                 {gameState === "playing" && <Button onClick={() => endGame("lost")} className="game-btn">Give Up</Button>}
             </div>
             <GameSettings hidden={hidden} />
+            {mode === "silhouette" && answer && showSilhouette()}
             <GameTable />
             {error && <GameError title="Invalid Pokemon" message={`${titleCase(error)} is not a valid pokemon.`} />}
         </Main>

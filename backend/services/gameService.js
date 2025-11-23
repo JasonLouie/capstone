@@ -1,6 +1,5 @@
 import EndpointError from "../classes/EndpointError.js";
 import Game from "../models/gameModel.js";
-import User from "../models/userModel.js";
 
 export async function createNewGame(userId) {
     const game = await Game.create({ userId });

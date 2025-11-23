@@ -5,7 +5,7 @@ export default function Button({disabled, path, onClick, className, toggle, chil
 
     const renderButton = () => !toggle ? <button className={classes} type={buttonType ? buttonType : "button"} disabled={disabled} onClick={onClick}>{children}</button> : <button className={classes} type={buttonType} disabled={disabled} onMouseEnter={toggle} onMouseLeave={toggle}>{children}</button>
 
-    const renderLink = () => disabled ? <button className={classes} disabled={disabled}>{children}</button> : <Link to={path} className={classes}>{children}</Link>
+    const renderLink = () => disabled ? <button className={classes} disabled={disabled}>{children}</button> : <Link to={path} className={classes} onClick={onClick}>{children}</Link>
 
     return path ? renderLink() : renderButton();
 }

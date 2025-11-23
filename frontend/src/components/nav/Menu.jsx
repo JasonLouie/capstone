@@ -13,10 +13,6 @@ export default function Menu() {
         if (divRef.current && !divRef.current.contains(e.target)) setHidden(true);
     }
 
-    const handleLogout = () => {
-        logout();
-    }
-
     useEffect(() => {
         if (!hidden && divRef.current) document.body.addEventListener("click", closeMenu);
         else document.body.removeEventListener("click", closeMenu);
@@ -30,7 +26,7 @@ export default function Menu() {
             <div inert={hidden} className={`menu${hidden ? " hidden" : ""}`}>
                 <Button path="/users/profile" className="menu-item" buttonType="button" >Profile</Button>
                 <Button path="/users/settings" className="menu-item" buttonType="button" >Settings</Button>
-                <Button className="menu-item" buttonType="button" onClick={handleLogout}>Logout</Button>
+                <Button className="menu-item" buttonType="button" onClick={() => logout()}>Logout</Button>
             </div>
         </div>
     );

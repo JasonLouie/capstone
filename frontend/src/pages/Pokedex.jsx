@@ -17,7 +17,7 @@ export default function Pokedex() {
             img = img.replace(id, `shiny/${id}`);
         }
         return (
-            <div>
+            <div key={p.id}>
                 <Image src={img} size="medium"/>
             </div>
         );

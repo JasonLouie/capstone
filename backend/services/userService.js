@@ -31,9 +31,7 @@ export async function modifyUser(userId, body) {
 
 // Note: Middleware will validate the fields in the body before reaching this step.
 export async function modifySettings(userId, body) {
-    console.log(body);
     const user = await getUserById(userId, false);
-    console.log(user);
     const { mode = "", allGenerations = null } = body;
     if (mode) user.settings.mode = mode;
     if (allGenerations !== null) user.settings.allGenerations = allGenerations;

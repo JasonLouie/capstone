@@ -102,6 +102,20 @@ img.pic.medium {
     height: 90px;
 }
 
+img.pic.large {
+    display: block;
+    max-height: 200px;
+    height: auto;
+    min-height: 50vw;
+    margin: 10px auto;
+    border: 2px solid yellow;
+    border-radius: 4%;
+}
+
+img.pic.silhouette {
+    
+}
+
 .content {
     padding: 0 8%;
     position: relative;
