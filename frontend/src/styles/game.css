@@ -45,7 +45,7 @@
     border-radius: 0 8px 8px 0;
 }
 
-.submit-guess:not(.game-end):hover {
+.submit-guess:not(:disabled):hover {
     color: white;
 }
 

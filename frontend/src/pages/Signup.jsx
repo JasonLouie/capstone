@@ -4,13 +4,11 @@ import Main from "../components/Main";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { validateSignUp } from "../utils/validate";
 import { signupUser } from "../api/userApiCalls";
-import { useNavigate } from "react-router";
 import { useUserStore } from "../stores/userStore";
 
 export default function Signup() {
     const { login } = useUserStore(state => state);
     useDocumentTitle("Sign Up");
-    const navigate = useNavigate();
     const [formData, setFormData] = useState({username: "", email: "", password: "", confirmPassword: ""});
     const [formErrors, setFormErrors] = useState({});
     const formInfo = { formData, setFormData, formErrors };
@@ -26,7 +24,6 @@ export default function Signup() {
         try {
             const user = await signupUser(formData);
             login(user);
-            navigate("/users/profile");
         } catch (err) {
             if (err.status === 400 || err.status === 409) {
                 const { message = [] } = err.response.data;

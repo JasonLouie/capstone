@@ -15,7 +15,7 @@ export async function deleteUser(userId) {
 }
 
 export async function getUserById(userId) {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate({path: "_id", select: "email"});
     if (!user) throw new EndpointError(404, "User");
     return user;
 }

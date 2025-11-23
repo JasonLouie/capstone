@@ -9,6 +9,7 @@ import { protect } from "./middleware/userAuth.js";
 import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
 import gameRouter from "./routes/gameRouter.js";
+import pokemonRouter from "./routes/pokemonRouter.js";
 import logRequest from "./middleware/requestLogger.js";
 import handleServerErrors from "./middleware/errorHandler.js";
 
@@ -31,6 +32,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+
+app.use("/api/pokemon", pokemonRouter);
 
 app.use("/api/users", protect, userRouter);
 

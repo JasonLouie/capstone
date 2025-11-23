@@ -18,7 +18,7 @@ userApi.interceptors.response.use((response) => response, async(err) => {
 
         try {
             // Attempt to refresh the token using axios.post to prevent an infinite loop
-            await axios.post(`${BASE_URL}/api/users/refresh`, {}, { withCredentials: true });
+            await axios.post(`${BASE_URL}/auth/refresh`, {}, { withCredentials: true });
             
             // Try the req again
             return userApi(req);

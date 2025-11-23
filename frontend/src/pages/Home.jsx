@@ -22,7 +22,7 @@ export default function Home() {
             </Section>
             <Section title="How to Play">
                 <p>PokéGuesser</p>
-                <Button buttonType="button" className="game-btn" onClick={handleClick}>{answer ? "Continue Playing" : "Start Game"}</Button>
+                <Button buttonType="button" className="game-btn home-btn" onClick={handleClick}>{answer ? "Continue Playing" : "Start Game"}</Button>
             </Section>
         </Main>
     );

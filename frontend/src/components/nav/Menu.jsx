@@ -1,13 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "../Button";
-import defaultAvatar from "/images/default-avatar.png";
 import Image from "../Image";
-import { useNavigate } from "react-router";
 import { useUserStore } from "../../stores/userStore";
 
 export default function Menu() {
-    const navigate = useNavigate();
-    const { user } = useUserStore(state => state);
+    const { user, logout } = useUserStore(state => state);
     const [hidden, setHidden] = useState(true);
     const divRef = useRef(null);
 
@@ -17,23 +14,19 @@ export default function Menu() {
     }
 
     const handleLogout = () => {
-        // logoutUser();
-        navigate("/login");
+        logout();
     }
 
     useEffect(() => {
         if (!hidden && divRef.current) document.body.addEventListener("click", closeMenu);
         else document.body.removeEventListener("click", closeMenu);
         // Clean up for rendering different page without clicking on a link/button
-        return () => {
-            document.body.removeEventListener("click", closeMenu);
-            setHidden(true);
-        }
+        return () => document.body.removeEventListener("click", closeMenu);
     }, [hidden]);
 
     return (
         <div className="menu-container" onClick={() => setHidden(!hidden) } ref={divRef}>
-            <Button className="show-menu-btn"><Image src={user.profilePicUrl || defaultAvatar} alt="User's profile picture" size="smaller" /></Button>
+            <Button className="show-menu-btn"><Image src={user.profilePicUrl} alt="User's profile picture" size="smaller" /></Button>
             <div inert={hidden} className={`menu${hidden ? " hidden" : ""}`}>
                 <Button path="/users/profile" className="menu-item" buttonType="button" >Profile</Button>
                 <Button path="/users/settings" className="menu-item" buttonType="button" >Settings</Button>

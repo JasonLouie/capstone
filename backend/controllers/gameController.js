@@ -1,10 +1,11 @@
 import * as gameService from "../services/gameService.js";
 
 // GET /game/me
-export async function getGameInfo(req, res, next) {
+export async function getOrCreateGameData(req, res, next) {
     try {
-        const { state } = await gameService.getGame(req.user._id);
-        res.json(state);
+        const game = await gameService.getOrCreateGame(req.user._id, req.body.mode);
+        const { gameState, guesses, mode, answer, version } = game;
+        res.json({ gameState, guesses, mode, answer, version });
     } catch(err) {
         next(err);
     }
@@ -13,7 +14,7 @@ export async function getGameInfo(req, res, next) {
 // PUT /game/me/answer
 export async function updateAnswer(req, res, next) {
     try {
-        await gameService.modifyAnswer(req.user, req.body);
+        await gameService.modifyAnswer(req.user._id, req.body);
         res.sendStatus(204);
     } catch (err) {
         next(err);

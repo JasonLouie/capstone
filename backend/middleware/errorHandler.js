@@ -18,6 +18,7 @@ export default function handleServerErrors(err, req, res, next) {
         messages[err.path] = err.kind === "ObjectId" ? "Invalid user id." : err.message;
     } else if (err.code && err.code === 11000) { // If validator fails to catch a uniqueness error from the validator, expect a MongoDB error
         console.log("MongoDB UniqueError thrown");
+        console.log(err);
         const field = Object.keys(err.keyValue)[0];
         messages[field] = [`${titleCase(field)} is taken`];
     }

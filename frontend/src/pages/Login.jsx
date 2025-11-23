@@ -3,14 +3,12 @@ import AuthForm from "../components/forms/AuthForm";
 import Main from "../components/Main";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { validateLogin } from "../utils/validate";
-import { useNavigate } from "react-router";
 import { loginUser } from "../api/userApiCalls";
 import { useUserStore } from "../stores/userStore";
 
 export default function Login() {
     const { login } = useUserStore(state => state);
     useDocumentTitle("Login");
-    const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [formErrors, setFormErrors] = useState({});
     const formInfo = { formData, setFormData, formErrors };
@@ -26,7 +24,6 @@ export default function Login() {
         try {
             const user = await loginUser(formData);
             login(user);
-            navigate("/users/profile");
         } catch (err) {
             console.log(err);
             if (err.status === 400) {

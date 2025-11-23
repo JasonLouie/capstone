@@ -1,9 +1,9 @@
 import EndpointError from "../classes/EndpointError.js";
 import { titleCase } from "../utils/utils.js";
 
-function validate(validations, req, res, next, additionalErrors = null) {
+function validate(validations, req, res, next) {
     if (!req.body) return res.status(400).json(new EndpointError(400, "Request body is required."));
-    const validationErrors = additionalErrors ? {...additionalErrors} : { };
+    const validationErrors = {};
 
     for (const field in validations) {
         const fieldName = titleCase(field);
@@ -13,6 +13,12 @@ function validate(validations, req, res, next, additionalErrors = null) {
 
         if (rules.required && !value) {
             errors.push(`${fieldName} is required.`);
+        }
+
+        if (rules.isObject && value) {
+            const objErrors = validateObject(rules.isObject, value);
+            if (objErrors) validationErrors[field] = [objErrors];
+            continue;
         }
 
         // Handle multiple regex tests
@@ -75,12 +81,12 @@ function validate(validations, req, res, next, additionalErrors = null) {
     }
 }
 
-function validatePokemon(validations, pokemon) {
+function validateObject(validations, obj) {
     const validationErrors = {};
     for (const field in validations) {
         const fieldName = titleCase(field);
         const rules = validations[field];
-        const value = pokemon[field];
+        const value = obj[field];
         const errors = [];
 
         if (rules.required && !value) {
@@ -175,7 +181,7 @@ const pokemonIdRules = {
 };
 
 const typeRules = {
-    enum: ["None", "Normal", "Fighting", "Ghost", "Water", "Fire", "Grass", "Ghost", "Fairy", "Dark", "Steel", "Ground", "Dragon", "Rock", "Poison", "Ice", "Psychic", "Electric", "Bug"]
+    enum: ["None", "Normal", "Fighting", "Ghost", "Water", "Fire", "Grass", "Fairy", "Dark", "Steel", "Ground", "Dragon", "Rock", "Poison", "Ice", "Psychic", "Electric", "Bug", "Flying"]
 };
 
 const gameStateRules = {
@@ -195,7 +201,6 @@ const measurementRules = {
 };
 
 const pokemonValidations = {
-    id: pokemonIdRules,
     name: {required: true},
     img: {required: true},
     generation: {...generationRules, required: true},
@@ -204,7 +209,7 @@ const pokemonValidations = {
     stage: stageRules,
     height: measurementRules,
     weight: measurementRules,
-}
+};
 
 // Needed for validating game state changes
 const versionRules = {
@@ -212,6 +217,7 @@ const versionRules = {
     min: 1
 };
 
+// AUTH AND USER VALIDATORS
 export function validateSignUp(req, res, next) {
     const confirmPassword = req.body?.confirmPassword || "";
     const validations = {
@@ -247,32 +253,13 @@ export function validatePassword(req, res, next) {
     validate(validations, req, res, next);
 }
 
+// Middleware for validating email before changing it
 export function validateEmail(req, res, next) {
     const validations = {
         newEmail: emailRules,
         password: {required: true}
     };
     validate(validations, req, res, next);
-}
-
-// Middleware for validating pokemon before adding it to guesses or as an answer
-export function validateNewPokemon(req, res, next) {
-    const { guess=null, answer=null } = req.body;
-    let key = guess ? "guess" : "answer";
-    const pokemonErrors = validatePokemon(pokemonValidations, guess || answer);
-    const mainValidations = {
-        version: versionRules
-    };
-    validate(mainValidations, req, res, next, {[key]: pokemonErrors});
-}
-
-// Middleware for setting win state or lose state (appends the pokemon, but on the front end, the background will not be green)
-export function validateUpdateGame(req, res, next) {
-    const mainValidations = {
-        version: versionRules,
-        gameState: gameStateRules
-    };
-    validate(mainValidations, req, res, next);
 }
 
 // Middleware for validating pokedex entry before adding
@@ -296,6 +283,50 @@ export function validateBasicGameSettings(req, res, next) {
 export function validateGeneration(req, res, next) {
     const validations = {
         generation: generationRules
+    };
+    validate(validations, req, res, next);
+}
+
+
+// GAME VALIDATORS
+
+// Middleware for validating pokemon before adding it to guesses
+export function validateGuess(req, res, next) {
+    const validations = {
+        guess: pokemonIdRules,
+        version: versionRules
+    };
+    validate(validations, req, res, next);
+}
+
+// Middleware for validating pokemon before updating answer
+export function validateAnswer(req, res, next) {
+    const validations = {
+        answer: pokemonIdRules,
+        version: versionRules
+    };
+    validate(validations, req, res, next);
+}
+
+export function validatePokemon(req, res, next) {
+    const validations = {
+        pokemon: {isObject: pokemonValidations, required: true},
+    };
+    validate(validations, req, res, next);
+}
+
+// Middleware for setting win state or lose state (appends the pokemon, but on the front end, the background will not be green)
+export function validateUpdateGame(req, res, next) {
+    const mainValidations = {
+        version: versionRules,
+        gameState: gameStateRules
+    };
+    validate(mainValidations, req, res, next);
+}
+
+export function validateGameMode(req, res, next) {
+    const validations = {
+        mode: modeRules
     };
     validate(validations, req, res, next);
 }

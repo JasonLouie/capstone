@@ -14,30 +14,38 @@ export const useUserStore = create(
             checkingAuth: false,
             pokedex: [],
             settings: { ...defaultSettings },
+            
+            resetUser: () => {
+                set({ user: null, authenticated: false, settings: { ...defaultSettings }, pokedex: [] });
+                useGameStore.getState().resetGame();
+            },
             login: (userData) => {
+                const { settings, pokedex, ...user } = userData;
                 set({
-                    user: userData,
+                    user,
                     authenticated: true,
                     checkingAuth: false,
-                    settings: userData.settings || get().settings,
-                    pokedex: userData.pokedex || []
+                    settings: settings || get().settings,
+                    pokedex: pokedex || []
                 });
+                useGameStore.getState().resetGame();
             },
             checkAuth: async () => {
-                set({checkingAuth: true});
+                set({ checkingAuth: true });
                 try {
-                    const user = await getUserData();
+                    const userData = await getUserData();
+                    const { settings, pokedex, ...user } = userData;
                     set({
                         user,
                         authenticated: true,
                         checkingAuth: false,
-                        settings: user.settings || get().settings,
-                        pokedex: user.pokedex || []
+                        settings: settings || get().settings,
+                        pokedex: pokedex || []
                     });
                 } catch (err) {
                     console.log(err);
                     // Cookie error (missing/invalid) even after refresh req was sent
-                    set({ user: null, authenticated: false, checkingAuth: false });
+                    get().resetUser();
                 }
             },
             logout: async () => {
@@ -46,8 +54,7 @@ export const useUserStore = create(
                 } catch (err) {
                     console.log(err);
                 } finally {
-                    set({ user: null, authenticated: false, settings: { ...defaultSettings }, pokedex: [] });
-                    useGameStore.setState({ guesses: [], answer: null, version: 0, gameState: "playing" });
+                    get().resetUser();
                 }
             },
             // Update settings

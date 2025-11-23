@@ -1,7 +1,6 @@
 import GameForm from "../components/game/GameForm";
 import Main from "../components/Main";
 import useDocumentTitle from "../hooks/useDocumentTitle";
-import { randomPokemon } from "../game";
 import { getPokemon } from "../api/pokeApiCalls";
 import { useEffect, useState } from "react";
 import { titleCase } from "../utils/funcs";
@@ -11,14 +10,12 @@ import GameTable from "../components/game/GameTable";
 import { useGameStore } from "../stores/gameStore";
 import Button from "../components/Button";
 import "../styles/game.css";
-import { useUserStore } from "../stores/userStore";
 
-const headingText = {playing: "Guess the Pokémon", won: "Congratulations! You Guessed the Pokémon!", lost: "You Failed to Guess the Pokémon!"};
+const headingText = {playing: "Guess the Pokémon", won: "Congratulations! You guessed the pokémon!", lost: "Better luck next time! You failed to guess the pokémon."};
 
 export default function Game() {
     useDocumentTitle("Game");
-    const {answer, guesses, addGuess, gameState, initGame, endGame, resetGame } = useGameStore(state => state);
-    const { settings } = useUserStore(state => state);
+    const {answer, guesses, addGuess, gameState, initGame, endGame, generateNewAnswer } = useGameStore(state => state);
     const [invalidGuesses, setInvalidGuesses] = useState([]); // Save API calls! If the API already said the name was invalid, do not allow guessing it again
     const [error, setError] = useState("");
     const [input, setInput] = useState("");
@@ -41,7 +38,7 @@ export default function Game() {
                 } else {
                     try {
                         const guess = await getPokemon(queryName);
-                        addGuess(guess);
+                        await addGuess(guess);
                     } catch (err) {
                         console.log(err);
                         // Overlay display error that the pokemon is invalid
@@ -55,7 +52,7 @@ export default function Game() {
                 setDisabled(false);
             } else { // User guessed the correct pokemon
                 console.log("Correct!");
-                addGuess(answer);
+                await addGuess(answer);
                 endGame("won");
             }
             setInput("");
@@ -63,17 +60,17 @@ export default function Game() {
     }
 
     useEffect(() => {
-        if (!answer) initGame();
-    }, [answer]);
+        initGame();
+    }, []);
 
     return (
         <Main className="game-container">
             <h1>{headingText[gameState]}</h1>
-            <GameForm inputState={guesses[0]?.name === answer?.name} {...props} />
+            <GameForm {...props} />
             <div className="game-controls">
-                <Button onClick={() => resetGame()} className="game-btn" disabled={!settings.allGenerations && settings.generations.length === 0}>{gameState === "playing" ? "New Game" : "Reset Game"}</Button>
+                <Button onClick={() => generateNewAnswer()} className="game-btn" >{gameState === "playing" ? "New Game" : "Play Again"}</Button>
                 <Button onClick={() => setHidden(!hidden)} className="game-btn" >Settings</Button>
-                <Button onClick={() => endGame("lost")} className="game-btn" disabled={gameState !== "playing"}>Give Up</Button>
+                {gameState === "playing" && <Button onClick={() => endGame("lost")} className="game-btn">Give Up</Button>}
             </div>
             <GameSettings hidden={hidden} />
             <GameTable />

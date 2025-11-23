@@ -8,15 +8,12 @@ router.route("/me")
     .get(userController.getUser)
     .patch(validateModifyUser, userController.updateUser)
 
-router.route("/me/settings")
-    .get(userController.getUserSettings)
-    .patch(validateBasicGameSettings, userController.updateBasicSettings);
+router.patch("/me/settings", validateBasicGameSettings, userController.updateBasicSettings);
 
 router.post("/me/settings/generations/add", validateGeneration, userController.addGeneration);
-router.post("/me/settings/generations/:generation", userController.removeGeneration);
+router.delete("/me/settings/generations/:generation", userController.removeGeneration);
 
 router.route("/me/pokedex")
-    .get(userController.getUserPokedex)
     .post(validatePokedexEntry, userController.addPokedexEntry)
     .delete(userController.resetPokedex);
 

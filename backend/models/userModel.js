@@ -1,10 +1,47 @@
 import mongoose from "mongoose";
-import { pokedexEntrySchema, settingsSchema } from "../schemas/schemas.js";
+import Game from "./gameModel.js";
+import { pokemonGenerations, pokemonIdMax, pokemonIdMin } from "./pokemonModel.js";
+
+export const pokedexEntrySchema = new mongoose.Schema({
+    id: {
+        type: Number,
+        required: true,
+        min: pokemonIdMin,
+        max: pokemonIdMax
+    },
+    isShiny: {
+        type: Boolean,
+        default: false
+    },
+    time_added: {
+        type: Date,
+        default: Date.now()
+    }
+}, { versionKey: false, _id: false });
+
+export const settingsSchema = new mongoose.Schema({
+    mode: {
+        type: String,
+        enum: ["regular", "silhouette"],
+        default: "regular"
+    },
+    generations: {
+        type: [String],
+        enums: pokemonGenerations,
+        default: [],
+        validate: [(val) => val.length <= 9, "Generations array can only contain at most nine generations."]
+    },
+    allGenerations: {
+        type: Boolean,
+        default: true
+    }
+}, { versionKey: false, _id: false });
 
 const userSchema = new mongoose.Schema({
     _id: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: "Auth"
     },
     username: {
         type: String,
@@ -35,9 +72,51 @@ const userSchema = new mongoose.Schema({
         type: settingsSchema,
         default: () => ({})
     },
-    gamesPlayed: { type: Number, default: 0 },
     totalGuesses: { type: Number, default: 0 },
-}, { optimisticConcurrency: true, versionKey: "version" });
+}, { optimisticConcurrency: true, versionKey: "version", toJSON: { virtuals: true }, toObject: { virtuals: true } });
+
+userSchema.virtual("gamesPlayed");
+
+userSchema.post(/^find/, async function (docs, next) {
+    try {
+        if (docs) {
+            // Turn the docs into an array for consistent syntax (result can be 1 or more)
+            const userDocs = Array.isArray(docs) ? docs : [docs];
+            const userIds = userDocs.map(doc => doc._id);
+
+            // Find the number of games played
+            const gameCounts = await Game.aggregate([
+                {
+                    $match: {
+                        userId: {
+                            $in: userIds
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$userId",
+                        gamesPlayed: {
+                            $sum: 1
+                        }
+                    }
+                }
+            ]);
+
+            // Store game count in an obj for easy access (multiple finds = slower performance)
+            const gameCountsObj = {};
+            gameCounts.forEach(g => gameCountsObj[g._id] = g.gamesPlayed);
+
+            userDocs.forEach(doc => {
+                doc.set("gamesPlayed", gameCountsObj[doc._id] || 0, { strict: false });
+            });
+        }
+        next();
+    } catch (err) {
+        console.log(e);
+        next(e);
+    }
+})
 
 const User = mongoose.model("User", userSchema, "users");
 export default User;

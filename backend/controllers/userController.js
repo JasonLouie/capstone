@@ -4,8 +4,8 @@ import * as userService from "../services/userService.js";
 export async function getUser(req, res, next) {
     try {
         const userDoc = await userService.getUserById(req.user._id);
-        const { username, profilePicUrl, gamesPlayed, totalGuesses, pokedex } = userDoc;
-        res.json({ username, profilePicUrl, gamesPlayed, totalGuesses, pokedex });
+        const { _id, username, profilePicUrl, gamesPlayed, totalGuesses, pokedex } = userDoc;
+        res.json({ username, email: _id.email, profilePicUrl, gamesPlayed, totalGuesses, pokedex });
     } catch (err) {
         next(err);
     }
@@ -16,16 +16,6 @@ export async function updateUser(req, res, next) {
     try {
         await userService.modifyUser(req.user._id, req.body);
         res.sendStatus(204);
-    } catch (err) {
-        next(err);
-    }
-}
-
-// GET /users/me/settings
-export async function getUserSettings(req, res, next) {
-    try {
-        const settings = await userService.getUserField(req.user._id, "settings");
-        res.json(settings);
     } catch (err) {
         next(err);
     }
@@ -56,16 +46,6 @@ export async function removeGeneration(req, res, next) {
     try {
         await userService.deleteFromGenerations(req.user._id, req.params.generation);
         res.sendStatus(204);
-    } catch (err) {
-        next(err);
-    }
-}
-
-// GET /users/me/pokedex
-export async function getUserPokedex(req, res, next) {
-    try {
-        const pokedex = await userService.getUserField(req.user._id, "pokedex");
-        res.json(pokedex);
     } catch (err) {
         next(err);
     }

@@ -70,6 +70,7 @@ export async function logout(req, res, next) {
 // POST /auth/refresh
 export async function generateTokens(req, res, next) {
     try {
+        console.log("Refreshing token...");
         const tokens = await tokenService.generateNewTokens(req.cookies);
         sendCookies(tokens, res);
         res.sendStatus(204);

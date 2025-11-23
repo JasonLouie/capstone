@@ -7,13 +7,13 @@ export async function createNewGame(userId) {
     return game;
 }
 
-export async function getGame(userId) {
-    const game = await Game.findOne({ userId, gameState: "playing" });
+export async function getOrCreateGame(userId, mode) {
+    const game = await Game.findOneAndUpdate({ userId, gameState: "playing", mode }, { mode }, { new: true, upsert: true });
     if (!game) new EndpointError(404, "Game");
     return game;
 }
 
-async function updateGame(_id, version, updates) {
+async function updateGame(userId, version, updates) {
     // Shallow copy so that the original update object isn't modified
     const finalUpdate = { ...updates };
 
@@ -23,7 +23,7 @@ async function updateGame(_id, version, updates) {
     // Add the version increment
     finalUpdate.$inc.version = 1;
 
-    const gameDoc = await Game.findOneAndUpdate({ _id, version }, finalUpdate, { new: true, runValidators: true });
+    const gameDoc = await Game.findOneAndUpdate({ userId, version, gameState: "playing" }, finalUpdate, { new: true, runValidators: true });
 
     if (!gameDoc) throw new EndpointError(400, "Version mismatch or game does not exist.");
 
@@ -37,11 +37,7 @@ async function updateGame(_id, version, updates) {
     }
 
     // Check for ending game
-    const resetGameState = finalUpdate.$set && finalUpdate.$set["gameState"];
-    if (resetGameState) {
-        if (!userUpdates.$inc) userUpdates.$inc = {};
-        userUpdates.$inc.gamesPlayed = 1;
-
+    if (finalUpdate.$set && finalUpdate.$set["gameState"]) {
         // Add the pokemon to the pokedex if the user successfully made the guess
         if (gameDoc.gameState === "won"){
             if (!userUpdates.$addToSet) userUpdates.$addToSet = {};
@@ -64,7 +60,7 @@ async function updateGame(_id, version, updates) {
 
 export async function modifyAnswer(userId, body) {
     const { version, answer } = body;
-    await updateGame(userId, version, { $set: { answer } });
+    await updateGame(userId, version, { $set: { answer, guesses: [] } });
 }
 
 export async function addNewGuess(userId, body) {

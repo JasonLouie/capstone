@@ -28,13 +28,6 @@ export async function updateUserFields(fields) {
 // Get user data (also the way that the app knows the user is logged in)
 export async function getUserData() {
     const { data } = await userApi.get("/users/me");
-    console.log(data);
-    return data;
-}
-
-// Get the user's pokedex
-export async function getPokedex() {
-    const { data } = await userApi.get("/users/me/pokedex");
     return data;
 }
 
@@ -46,12 +39,6 @@ export async function addToPokedex(pokedexEntry) {
 // Reset the user's pokedex
 export async function resetPokedex() {
     await userApi.delete("/users/me/pokedex");
-}
-
-// Get the user's settings
-export async function getUserSettings() {
-    const { data } = await userApi.get("/users/me/settings");
-    return data;
 }
 
 // Update the "allGenerations" boolean or the "mode" (when used, proper object must be passed)
@@ -71,8 +58,8 @@ export async function removeFromGenerations(generation) {
 
 
 // GAME API CALLS
-export async function getGameData() {
-    const { data } = await userApi.get("/games/me");
+export async function getOrCreateGameData(mode) {
+    const { data } = await userApi.post("/games/me", mode);
     return data;
 }
 
@@ -85,5 +72,10 @@ export async function addToGuesses(guess) {
 }
 
 export async function updateAnswer(answer) {
-    await userApi.put("/games/me/answer", {answer});
+    await userApi.put("/games/me/answer", answer);
+}
+
+// Adding pokemon
+export async function addPokemon(pokemon) {
+    await userApi.post("/pokemon", pokemon);
 }

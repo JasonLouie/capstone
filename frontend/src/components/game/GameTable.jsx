@@ -2,7 +2,7 @@ import { useGameStore } from "../../stores/gameStore";
 import Guess from "./Guess";
 
 export default function GameTable() {
-    const {answer, guesses } = useGameStore(state => state);
+    const {answer, guesses, gameState } = useGameStore(state => state);
     return (
         <div className="table-container">
             <table className="game-table">
@@ -20,7 +20,8 @@ export default function GameTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {guesses.toReversed().map(guess => <Guess key={guess.id} answer={answer} {...guess} />)}
+                    {gameState === "lost" && <Guess key={answer.id} {...answer} />}
+                    {guesses.toReversed().map(g => <Guess key={g.id} guess={g} />)}
                 </tbody>
             </table>
         </div>

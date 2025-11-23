@@ -1,25 +1,28 @@
 import mongoose from "mongoose";
-import { pokemonSchema } from "../schemas/schemas.js";
 
 const gameSchema = new mongoose.Schema({
     guesses: {
-        value: [pokemonSchema],
+        type: [Number],
         default: []
     },
     answer: {
-        type: pokemonSchema,
+        type: Number,
         default: null
-    },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        unique: true,
-        ref: "User"
     },
     gameState: {
         type: String,
         enum: ["playing", "won", "lost"],
         default: "playing"
+    },
+    mode: {
+        type: String,
+        enum: ["regular", "silhouette"],
+        default: "regular"
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "User"
     }
 }, { versionKey: "version", timestamps: true });
 
