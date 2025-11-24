@@ -25,9 +25,10 @@ export default function Login() {
             const user = await loginUser(formData);
             login(user);
         } catch (err) {
-            console.log(err);
             if (err.status === 400) {
-                setFormErrors(err);
+                setFormErrors(err.response.data);
+            } else if (err.status === 401) {
+                setFormErrors({email: [err.response.data.message]})
             } else { // Handle server or frontend error
                 console.log("Server error");
             }

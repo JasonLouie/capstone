@@ -22,7 +22,7 @@ export function protect(req, res, next) {
 
         // Send token error messages to the client if conditions are met
         const tokenErrors = { TokenExpiredError: "Your token has expired. Please log in again.", JsonWebTokenError: "Invalid token.", NotFound: "Unauthorized. User not found." };
-        if (info?.name && tokenErrors[info.name]) return res.status(401).json(new EndpointError(401, tokenErrors[info.name]));
+        if (info?.name && tokenErrors[info.name]) return res.status(401).json(new EndpointError(401, tokenErrors[info.name], info.name));
         if (!user) return res.status(401).json(new EndpointError(tokenErrors.NotFound));
 
         // User is valid and found. Attach the user to the request and move onto the next middleware.
