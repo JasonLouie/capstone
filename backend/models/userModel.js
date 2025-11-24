@@ -71,11 +71,11 @@ const userSchema = new mongoose.Schema({
     settings: {
         type: settingsSchema,
         default: () => ({})
-    },
-    totalGuesses: { type: Number, default: 0 },
+    }
 }, { optimisticConcurrency: true, versionKey: "version", toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
 userSchema.virtual("gamesPlayed");
+userSchema.virtual("totalGuesses");
 
 userSchema.post(/^find/, async function (docs, next) {
     try {
@@ -85,15 +85,12 @@ userSchema.post(/^find/, async function (docs, next) {
             // User docs are populated with the auth's email field
             const userIds = userDocs.map(doc => doc._id._id);
 
-            // Find the number of games played
+            // Find the number of games played and total guesses made
             const gameCounts = await Game.aggregate([
                 {
                     $match: {
                         userId: {
                             $in: userIds
-                        },
-                        gameState: {
-                            $ne: "playing"
                         }
                     }
                 },
@@ -101,7 +98,16 @@ userSchema.post(/^find/, async function (docs, next) {
                     $group: {
                         _id: "$userId",
                         gamesPlayed: {
-                            $sum: 1
+                            $sum: {
+                                $cond: [
+                                    { $ne: ["$gameState", "playing"] },
+                                    1, // Count games that are finished
+                                    0 // Exclude games that are being played
+                                ]
+                            }
+                        },
+                        totalGuesses: {
+                            $sum: { $size: "$guesses" }
                         }
                     }
                 }
@@ -109,11 +115,12 @@ userSchema.post(/^find/, async function (docs, next) {
 
             // Store game count in an obj for easy access (multiple finds = slower performance)
             const gameCountsObj = {};
-            gameCounts.forEach(g => gameCountsObj[g._id] = g.gamesPlayed);
+            gameCounts.forEach(g => gameCountsObj[g._id] = {gamesPlayed: g.gamesPlayed, totalGuesses: g.totalGuesses});
 
             // Set the gamesPlayed field
             userDocs.forEach(doc => {
-                doc.set("gamesPlayed", gameCountsObj[doc._id._id] || 0, { strict: false });
+                doc.set("gamesPlayed", gameCountsObj[doc._id._id]?.gamesPlayed || 0, { strict: false });
+                doc.set("totalGuesses", gameCountsObj[doc._id._id]?.totalGuesses || 0, { strict: false } );
             });
         }
         next();

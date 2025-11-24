@@ -13,8 +13,7 @@ const userApi = axios.create({
 // Interceptor to refresh the access token
 userApi.interceptors.response.use((response) => response, async(err) => {
     const req = err.config;
-    console.log(err);
-    if (err.response.status === 401 && !req._retry) {
+    if (err.response?.status === 401 && err.response?.data?.name === "TokenExpiredError" && !req._retry) {
         req._retry = true;
 
         try {

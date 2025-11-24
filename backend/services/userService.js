@@ -70,12 +70,6 @@ export async function resetUserPokedex(userId) {
     user.pokedex = []; // Set this back to the default value
     await user.save();
 }
-// Used by game to increment user's total guess count
-export async function incrementTotalGuesses(userId) {
-    const user = await getUserById(userId, false);
-    user.totalGuesses++;
-    await user.save();
-}
 
 // Used by game to add to pokedex
 export async function addToPokedex(userId, answer) {
