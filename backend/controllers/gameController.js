@@ -48,8 +48,9 @@ export async function addGuess(req, res, next) {
 export async function updateGame(req, res, next) {
     try {
         const game = await gameService.modifyGame(req.user._id, req.body);
-        await addToPokedex(req.user._id, game.answer);
-        res.sendStatus(204);
+        const entry = await addToPokedex(req.user._id, game.answer);
+        console.log(entry);
+        res.status(201).json(entry);
     } catch(err) {
         next(err);
     }

@@ -105,7 +105,7 @@ export const useUserStore = create(
             },
             updateUsername: async (username) => {
                 if (get().authenticated) {
-                    set((state) => ({ user: {...state.user, username }}));
+                    set((state) => ({ user: { ...state.user, username } }));
                     try {
                         await updateUserFields({ username });
                     } catch (err) {
@@ -113,11 +113,11 @@ export const useUserStore = create(
                         if (err.status === 400) return err;
                     }
                 }
-                
+
             },
             updateEmail: async (newEmail, password) => {
                 if (get().authenticated) {
-                    set((state) => ({ user: {...state.user, email: newEmail }}));
+                    set((state) => ({ user: { ...state.user, email: newEmail } }));
                     try {
                         await modifyEmail({ newEmail, password });
                     } catch (err) {
@@ -125,7 +125,7 @@ export const useUserStore = create(
                         if (err.status === 400) return err;
                     }
                 }
-                
+
             },
             updatePassword: async (oldPassword, newPassword) => {
                 if (get().authenticated) {
@@ -136,8 +136,31 @@ export const useUserStore = create(
                         if (err.status === 400) return err;
                     }
                 }
-                
+
             },
+            addToPokedex: () => {
+                const { pokedex, updateShinyStatus } = get();
+                const { answer } = useGameStore.getState();
+                const isShiny = (Math.floor(Math.random() * 4096) + 1) === 4096;
+                const foundPokemon = pokedex.find(p => {
+                    if (p.id === answer._id && isShiny && p.isShiny !== true) {
+                        updateShinyStatus(answer);
+                        return true;
+                    }
+                });
+                if (!foundPokemon) {
+                    set((state) => ({ pokedex: [...state.pokedex, { id: answer._id, isShiny, time_added: Date.now() }]}));
+                }
+                console.log(get().pokedex);
+            },
+            updateShinyStatus: (answer) => set((state) => ({
+                pokedex: state.pokedex.map(p => {
+                    if (p.id === answer._id && p.isShiny !== true) {
+                        return {...p, isShiny: true};
+                    }
+                    return p;
+                })
+            })),
             // Reset pokedex
             resetUserPokedex: async () => {
                 set({ pokedex: [] });

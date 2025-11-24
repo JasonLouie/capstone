@@ -91,4 +91,5 @@ export async function addToPokedex(userId, answer) {
         user.pokedex.push({ id: answer, isShiny });
     }
     await user.save();
+    return user.pokedex.find(p => p.id === answer);
 }

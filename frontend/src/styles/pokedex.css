@@ -1,0 +1,10 @@
+.pokedex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pokedex-entry {
+    background-color: #444;
+    border-radius: 50%;
+}

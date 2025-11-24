@@ -15,7 +15,7 @@ export const useGameStore = create(
             gameState: "playing", // playing, won, or lost
             settings: useUserStore.getState().settings,
             createNewGame: async () => {
-                const { generateNewAnswer, setGame } = get();
+                const { generateNewAnswer, setGame, saveGame } = get();
                 const { authenticated, settings } = useUserStore.getState();
                 generateNewAnswer();
                 if (authenticated) {
@@ -29,10 +29,13 @@ export const useGameStore = create(
                         console.error(err);
                     }
                 } else {
-                    const { guesses = [], answer, gameState, settings, version = 0 } = get();
-                    const newGame = {guesses, answer, gameState, settings, version};
-                    localStorage.setItem(`guest-game-${settings.mode}`, JSON.stringify(newGame));
+                    saveGame();
                 }
+            },
+            saveGame: () => {
+                const { guesses = [], answer, gameState, settings, version = 0 } = get();
+                const newGame = { guesses, answer, gameState, settings, version };
+                localStorage.setItem(`guest-game-${settings.mode}`, JSON.stringify(newGame));
             },
             setGame: (gameData) => {
                 set({
@@ -58,9 +61,9 @@ export const useGameStore = create(
                     }
                 } else {
                     const savedData = localStorage.getItem(`guest-game-${settings.mode}`);
-                    const localGame = savedData ? JSON.parse(savedData) : null;
+                    const localGame = (savedData && savedData != "undefined") ? JSON.parse(savedData) : null;
 
-                    if (localGame && localGame.gameState === "playing") {
+                    if (localGame) {
                         setGame(localGame);
                     } else {
                         createNewGame();
@@ -87,8 +90,9 @@ export const useGameStore = create(
                 set({ answer: pokemon, guesses: [], gameState: "playing", settings: { ...settings } });
             },
             endGame: async (value) => {
+                const { authenticated, addToPokedex } = useUserStore.getState();
                 set({ gameState: value });
-                if (useUserStore.getState().authenticated) {
+                if (authenticated) {
                     try {
                         await setGameState({ gameState: value, version: get().version });
                         set((state) => ({ version: state.version + 1 }));
@@ -96,6 +100,9 @@ export const useGameStore = create(
                         console.error("Failed to sync the game state");
                         console.log(err);
                     }
+                } else if (value === "won") {
+                    addToPokedex();
+                    get().saveGame();
                 }
             },
             addGuess: async (guess) => {
@@ -110,6 +117,8 @@ export const useGameStore = create(
                         console.error("Failed to sync new guess");
                         console.log(err);
                     }
+                } else {
+                    get().saveGame();
                 }
             }
         }),

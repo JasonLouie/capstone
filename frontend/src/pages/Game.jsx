@@ -24,6 +24,11 @@ export default function Game() {
     const [disabled, setDisabled] = useState(false);
     const props = { handleSubmit, disabled, input, setInput };
 
+    async function handleNewGame() {
+        setDisabled(false);
+        await createNewGame();
+    }
+
     async function handleSubmit(e) {
         e.preventDefault();
         setDisabled(true);
@@ -63,7 +68,7 @@ export default function Game() {
             <h1>{headingText[gameState]}</h1>
             <GameForm {...props} />
             <div className="game-controls">
-                <Button onClick={() => createNewGame()} disabled={!settings.allGenerations && settings.generations.length === 0} className="game-btn" >{gameState === "playing" ? "New Game" : "Play Again"}</Button>
+                <Button onClick={handleNewGame} disabled={!settings.allGenerations && settings.generations.length === 0} className="game-btn" >{gameState === "playing" ? "New Game" : "Play Again"}</Button>
                 <Button onClick={() => setHidden(!hidden)} className="game-btn" >Settings</Button>
                 {gameState === "playing" && <Button onClick={() => endGame("lost")} className="game-btn">Give Up</Button>}
             </div>
