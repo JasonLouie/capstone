@@ -15,8 +15,8 @@ const refreshTokenPath = "/api/auth";
 function sendCookies(tokens, res) {
     const { accessToken, refreshToken } = tokens;
 
-    // Access token expires after 30m 
-    res.cookie("accessToken", accessToken, { ...cookieOptions, maxAge: 30 * 60 * 1000 });
+    // Access token expires after 15m 
+    res.cookie("accessToken", accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 });
 
     // Refresh token expires after 7d
     res.cookie("refreshToken", refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 3600 * 1000, path: refreshTokenPath });

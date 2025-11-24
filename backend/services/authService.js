@@ -7,9 +7,9 @@ export async function createNewAuth(body) {
     return auth;
 }
 
-export async function getAuthById(id) {
+export async function getAuthById(id, allowThrow = true) {
     const user = await Auth.findById(id);
-    if (!user) throw new EndpointError(404, "User");
+    if (!user && allowThrow) throw new EndpointError(404, "User");
     return user;
 }
 

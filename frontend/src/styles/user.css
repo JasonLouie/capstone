@@ -1,3 +1,27 @@
+/* Styling for profile */
+.profile {
+    border-radius: 14px;
+    width: 400px;
+    height: 400px;
+    margin: auto;
+    background-color: #333;
+}
+
+.profile-title {
+    margin-top: 0;
+    padding-top: 30px;
+}
+
+.profile-pic {
+    display: block;
+    margin: auto;
+}
+
+.profile-field {
+    width: 100%;
+}
+
+
 /* Styling for settings (change profile pic, username, email, password) and profile */
 
 .settings-page {

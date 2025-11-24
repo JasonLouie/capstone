@@ -8,13 +8,17 @@ export default function Profile() {
     const { username, profilePicUrl, gamesPlayed, totalGuesses } = user;
     useDocumentTitle(`${username}'s Profile`);
     return (
-        <Main>
-            <h1>Profile</h1>
-            <Image src={profilePicUrl} size="medium"/>
-            <p>Username: {username}</p>
-            <p>Games Played: {gamesPlayed}</p>
-            <p>Total Guesses: {totalGuesses}</p>
-            <p>Pokemon Guessed: {pokedex.length}</p>
+        <Main mainClass="flex-center">
+            <div className="profile">
+                <h1 className="profile-title text-center">Profile</h1>
+                <Image src={profilePicUrl} size="medium profile-pic" />
+                <div className="profile-info">
+                    <p className="profile-field text-center">Username: {username}</p>
+                    <p className="profile-field text-center">Games Played: {gamesPlayed}</p>
+                    <p className="profile-field text-center">Total Guesses: {totalGuesses}</p>
+                    <p className="profile-field text-center">Pokedex Count: {pokedex.length}</p>
+                </div>
+            </div>
         </Main>
     );
 }
