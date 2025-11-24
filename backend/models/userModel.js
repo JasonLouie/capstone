@@ -82,8 +82,7 @@ userSchema.post(/^find/, async function (docs, next) {
         if (docs) {
             // Turn the docs into an array for consistent syntax (result can be 1 or more)
             const userDocs = Array.isArray(docs) ? docs : [docs];
-            // User docs are populated with the auth's email field
-            const userIds = userDocs.map(doc => doc._id._id);
+            const userIds = userDocs.map(doc => doc._id);
 
             // Find the number of games played and total guesses made
             const gameCounts = await Game.aggregate([
@@ -119,8 +118,8 @@ userSchema.post(/^find/, async function (docs, next) {
 
             // Set the gamesPlayed field
             userDocs.forEach(doc => {
-                doc.set("gamesPlayed", gameCountsObj[doc._id._id]?.gamesPlayed || 0, { strict: false });
-                doc.set("totalGuesses", gameCountsObj[doc._id._id]?.totalGuesses || 0, { strict: false } );
+                doc.set("gamesPlayed", gameCountsObj[doc._id]?.gamesPlayed || 0, { strict: false });
+                doc.set("totalGuesses", gameCountsObj[doc._id]?.totalGuesses || 0, { strict: false } );
             });
         }
         next();

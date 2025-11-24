@@ -5,6 +5,8 @@
 }
 
 .pokedex-entry {
+    height: 90px;
+    width: 90px;
     background-color: #444;
     border-radius: 50%;
 }

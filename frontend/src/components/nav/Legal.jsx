@@ -3,8 +3,8 @@ import Button from "../Button";
 export default function Legal({classes}) {
     return (
         <>
-            <Button className={classes}>Terms of Use</Button>
-            <Button className={classes}>Privacy Policy</Button>
+            <Button className={classes} path="/terms">Terms of Use</Button>
+            <Button className={classes} path="/privacy">Privacy Policy</Button>
         </>
     );
 }

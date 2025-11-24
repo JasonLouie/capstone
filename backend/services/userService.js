@@ -14,17 +14,15 @@ export async function deleteUser(userId) {
     await User.findByIdAndDelete(userId);
 }
 
-export async function getUserById(userId, populate=true) {
-    let user = null;
-    if (populate) user = await User.findById(userId).populate({path: "_id", select: "email"});
-    else user = await User.findById(userId);
+export async function getUserById(userId) {
+    const user = await User.findById(userId);
     if (!user) throw new EndpointError(404, "User");
     return user;
 }
 
 // Note: Middleware will validate the fields in the body before reaching this step.
 export async function modifyUser(userId, body) {
-    const user = await getUserById(userId, false);
+    const user = await getUserById(userId);
     const { username = null, profilePicUrl = null} = body;
     if (username) user.username = username;
     if (profilePicUrl) user.profilePicUrl = profilePicUrl;
@@ -33,7 +31,7 @@ export async function modifyUser(userId, body) {
 
 // Note: Middleware will validate the fields in the body before reaching this step.
 export async function modifySettings(userId, body) {
-    const user = await getUserById(userId, false);
+    const user = await getUserById(userId);
     const { mode = "", allGenerations = null } = body;
     if (mode) user.settings.mode = mode;
     if (allGenerations !== null) user.settings.allGenerations = allGenerations;
@@ -42,7 +40,7 @@ export async function modifySettings(userId, body) {
 
 // Note: Middleware will validate the fields in the body before reaching this step.
 export async function addToGenerations(userId, generation) {
-    const user = await getUserById(userId, false);
+    const user = await getUserById(userId);
     if (user.settings.generations.includes(generation)) {
         throw new EndpointError(409, "Generation is already in the user's user setting.");
     }
@@ -52,7 +50,7 @@ export async function addToGenerations(userId, generation) {
 
 // Note: Middleware will validate the fields in the body before reaching this step.
 export async function deleteFromGenerations(userId, generation) {
-    const user = await getUserById(userId, false);
+    const user = await getUserById(userId);
     if (!user.settings.generations.includes(generation)) return; // The generation is already gone. No error.
 
     user.settings.generations.find((g, i) => {
@@ -65,14 +63,14 @@ export async function deleteFromGenerations(userId, generation) {
 }
 
 export async function resetUserPokedex(userId) {
-    const user = await getUserById(userId, false);
+    const user = await getUserById(userId);
     user.pokedex = []; // Set this back to the default value
     await user.save();
 }
 
 // Used by game to add to pokedex
 export async function addToPokedex(userId, answer) {
-    const user = await getUserById(userId, false);
+    const user = await getUserById(userId);
     const isShiny = (Math.floor(Math.random() * 4096) + 1) === 4096;
     const foundPokemon = user.pokedex.find((p, i) => {
         if (p.id === answer) {

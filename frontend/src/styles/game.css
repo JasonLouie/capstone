@@ -71,7 +71,7 @@
 }
 
 .pokemon-name {
-    min-width: 114px;
+    min-width: 128px;
 }
 
 .pokemon-generation {
@@ -87,7 +87,7 @@
 }
 
 .pokemon-stage {
-    min-width: 80px;
+    min-width: 86px;
 }
 
 .pokemon-height {
@@ -110,6 +110,18 @@
 
 .info-th:last-child {
     border-radius: 0 7px 0 0;
+}
+
+.guess {
+    border-top: 2px solid #555;
+}
+
+.info-td {
+    border-right: 2px solid #555;
+}
+
+.info-td:last-child {
+    border-right: none;
 }
 
 .guess:last-child > .info-td:first-child {

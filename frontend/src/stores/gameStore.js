@@ -90,30 +90,33 @@ export const useGameStore = create(
                 set({ answer: pokemon, guesses: [], gameState: "playing", settings: { ...settings } });
             },
             endGame: async (value) => {
-                const { authenticated, addToPokedex } = useUserStore.getState();
+                const { authenticated, addToPokedex, incrementGamesPlayed } = useUserStore.getState();
                 set({ gameState: value });
                 if (authenticated) {
                     try {
                         const entry = await setGameState({ gameState: value, version: get().version });
                         set((state) => ({ version: state.version + 1 }));
-                        if (entry) addToPokedex(entry.isShiny, entry.time_added);
+                        if (entry && value == "won") addToPokedex(entry.isShiny, entry.time_added);
+                        incrementGamesPlayed();
                     } catch (err) {
                         console.error("Failed to sync the game state");
                         console.log(err);
                     }
-                } else {
+                } else if (value == "won") {
                     addToPokedex();
                     get().saveGame(); // Save guest game
                 }
             },
             addGuess: async (guess) => {
+                const { authenticated, incrementGuessCount } = useUserStore.getState();
                 set((state) => ({
                     guesses: [...state.guesses, guess]
                 }));
-                if (useUserStore.getState().authenticated) {
+                if (authenticated) {
                     try {
                         await addToGuesses({ guess, version: get().version });
                         set((state) => ({ version: state.version + 1 }));
+                        incrementGuessCount();
                     } catch (err) {
                         console.error("Failed to sync new guess");
                         console.log(err);

@@ -49,7 +49,6 @@ export async function updateGame(req, res, next) {
         const game = await gameService.modifyGame(req.user._id, req.body);
         if (game.gameState === "won"){
             const entry = await addToPokedex(req.user._id, game.answer);
-            console.log(entry);
             res.status(201).json(entry);
         } else {
             res.sendStatus(204);

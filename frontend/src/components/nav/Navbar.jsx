@@ -16,8 +16,8 @@ export default function Navbar({ top }) {
         <nav className={top ? "top" : "flex-center"}>
             {top && <Logo size="small" text={top} />}
             <Button path="/" className={classes}>Home</Button>
-            <Button path="/play" className={classes}>Play</Button>
             <Button path="/about" className={classes}>About</Button>
+            <Button path="/play" className={classes}>Play</Button>
             <Button path="/pokedex" className={classes}>Pokédex</Button>
             {top && <HamburgerMenu />}
             {renderRightElements()}
