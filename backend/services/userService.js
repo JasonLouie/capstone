@@ -82,8 +82,8 @@ export async function addToPokedex(userId, answer) {
     const user = await getUserById(userId, false);
     const isShiny = (Math.floor(Math.random() * 4096) + 1) === 4096;
     const foundPokemon = user.pokedex.find((p, i) => {
-        if (p.id === answer && isShiny && p.isShiny !== true) {
-            p[i].isShiny = true;
+        if (p.id === answer) {
+            if (isShiny && p.isShiny !== true) p[i].isShiny = true;
             return true;
         }
     });

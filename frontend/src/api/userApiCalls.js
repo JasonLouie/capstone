@@ -75,7 +75,8 @@ export async function newGame(settings) {
 }
 
 export async function setGameState(gameState) {
-    await userApi.put("/games/me", gameState);
+    const { data } = await userApi.put("/games/me", gameState);
+    return data;
 }
 
 export async function addToGuesses(guess) {

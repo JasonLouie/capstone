@@ -13,7 +13,8 @@ const userApi = axios.create({
 // Interceptor to refresh the access token
 userApi.interceptors.response.use((response) => response, async(err) => {
     const req = err.config;
-    if (err.response.status === 401 && err.response.data.name.toLowerCase().includes("token") && !req._retry) {
+    console.log(err);
+    if (err.response.status === 401 && !req._retry) {
         req._retry = true;
 
         try {

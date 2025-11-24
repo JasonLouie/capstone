@@ -94,15 +94,16 @@ export const useGameStore = create(
                 set({ gameState: value });
                 if (authenticated) {
                     try {
-                        await setGameState({ gameState: value, version: get().version });
+                        const entry = await setGameState({ gameState: value, version: get().version });
                         set((state) => ({ version: state.version + 1 }));
+                        if (entry) addToPokedex(entry.isShiny, entry.time_added);
                     } catch (err) {
                         console.error("Failed to sync the game state");
                         console.log(err);
                     }
-                } else if (value === "won") {
+                } else {
                     addToPokedex();
-                    get().saveGame();
+                    get().saveGame(); // Save guest game
                 }
             },
             addGuess: async (guess) => {
@@ -118,7 +119,7 @@ export const useGameStore = create(
                         console.log(err);
                     }
                 } else {
-                    get().saveGame();
+                    get().saveGame(); // Save guest game
                 }
             }
         }),

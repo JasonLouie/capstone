@@ -138,20 +138,19 @@ export const useUserStore = create(
                 }
 
             },
-            addToPokedex: () => {
+            addToPokedex: (shiny, time_added) => {
                 const { pokedex, updateShinyStatus } = get();
                 const { answer } = useGameStore.getState();
-                const isShiny = (Math.floor(Math.random() * 4096) + 1) === 4096;
+                const isShiny = shiny || (Math.floor(Math.random() * 4096) + 1) === 4096;
                 const foundPokemon = pokedex.find(p => {
-                    if (p.id === answer._id && isShiny && p.isShiny !== true) {
-                        updateShinyStatus(answer);
+                    if (p.id === answer._id) {
+                        if(isShiny && p.isShiny !== true) updateShinyStatus(answer);
                         return true;
                     }
                 });
                 if (!foundPokemon) {
-                    set((state) => ({ pokedex: [...state.pokedex, { id: answer._id, isShiny, time_added: Date.now() }]}));
+                    set((state) => ({ pokedex: [...state.pokedex, { id: answer._id, isShiny, time_added: time_added || Date.now() }]}));
                 }
-                console.log(get().pokedex);
             },
             updateShinyStatus: (answer) => set((state) => ({
                 pokedex: state.pokedex.map(p => {
