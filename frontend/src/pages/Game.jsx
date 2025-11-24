@@ -11,11 +11,13 @@ import { usePokemonStore } from "../stores/pokemonStore";
 import { titleCase } from "../utils/funcs";
 import { headingText } from "../game";
 import "../styles/game.css";
+import { useUserStore } from "../stores/userStore";
 
 export default function Game() {
     useDocumentTitle("Game");
     const { pokemonObject } = usePokemonStore(state => state);
-    const { settings } = useGameStore(state => state);
+    const { settings } = useUserStore(state => state);
+    const gameSettings = useGameStore(state => state.settings);
     const { answer, mode, guesses, addGuess, gameState, initGame, endGame, createNewGame } = useGameStore(state => state);
     const [input, setInput] = useState("");
     const [hidden, setHidden] = useState(true);
@@ -49,12 +51,12 @@ export default function Game() {
     }
 
     function showSilhouette() {
-        return <Image src={answer.img} size="large silhouette"/>;
+        return <div className="silhouette-background"><Image src={answer.img} size="large silhouette"/></div>;
     }
 
     useEffect(() => {
         if (gameState === "playing") initGame();
-    }, []);
+    }, [settings.mode]);
 
     return (
         <Main className="game-container">
@@ -66,7 +68,7 @@ export default function Game() {
                 {gameState === "playing" && <Button onClick={() => endGame("lost")} className="game-btn">Give Up</Button>}
             </div>
             <GameSettings hidden={hidden} />
-            {mode === "silhouette" && answer && showSilhouette()}
+            {gameSettings.mode === "silhouette" && answer && showSilhouette()}
             <GameTable />
         </Main>
     );

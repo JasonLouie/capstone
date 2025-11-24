@@ -13,60 +13,72 @@ export const useGameStore = create(
             answer: null,
             version: 0,
             gameState: "playing", // playing, won, or lost
-            settings: null,
+            settings: useUserStore.getState().settings,
             createNewGame: async () => {
-                get().generateNewAnswer();
+                const { generateNewAnswer, setGame } = get();
                 const { authenticated, settings } = useUserStore.getState();
-                const { pokemonObject } = usePokemonStore.getState();
+                generateNewAnswer();
                 if (authenticated) {
                     try {
                         const gameData = await newGame({ settings, answer: get().answer._id });
                         if (gameData) {
-                            set({
-                                guesses: gameData.guesses,
-                                answer: gameData.answer ? pokemonObject[gameData.answer] : null,
-                                version: gameData.version,
-                                gameState: gameData.gameState,
-                                settings: gameData.settings
-                            });
+                            setGame(gameData);
                         }
                         console.log(settings);
                     } catch (err) {
                         console.error("Failed to create game");
                         console.error(err);
                     }
+                } else {
+                    const { guesses = [], answer, gameState, settings, version = 0 } = get();
+                    const newGame = {guesses, answer, gameState, settings, version};
+                    localStorage.setItem(`guest-game-${settings.mode}`, JSON.stringify(newGame));
                 }
             },
+            setGame: (gameData) => {
+                set({
+                    guesses: gameData.guesses || [],
+                    answer: gameData.answer ? usePokemonStore.getState().pokemonObject[gameData.answer] || gameData.answer : null,
+                    version: gameData.version || 0,
+                    gameState: gameData.gameState || "playing",
+                    settings: gameData.settings || useUserStore.getState().settings
+                });   
+            },
             initGame: async () => {
-                const { generateNewAnswer } = get();
+                const { generateNewAnswer, setGame, createNewGame } = get();
                 const { authenticated, settings } = useUserStore.getState();
-                const { pokemonObject } = usePokemonStore.getState();
                 if (authenticated) {
                     try {
                         const gameData = await getOrResumeGame({ settings });
                         if (gameData) {
-                            set({
-                                guesses: gameData.guesses,
-                                answer: gameData.answer ? pokemonObject[gameData.answer] : null,
-                                version: gameData.version,
-                                gameState: gameData.gameState,
-                                settings: gameData.settings
-                            });
+                            setGame(gameData);
                         }
                     } catch (err) {
                         console.error("Failed to fetch game");
                         console.error(err);
                     }
+                } else {
+                    const savedData = localStorage.getItem(`guest-game-${settings.mode}`);
+                    const localGame = savedData ? JSON.parse(savedData) : null;
+
+                    if (localGame && localGame.gameState === "playing") {
+                        setGame(localGame);
+                    } else {
+                        createNewGame();
+                        return;
+                    }
                 }
                 if (!get().answer) {
                     generateNewAnswer();
-                    try {
-                        console.log("Attempting to sync answer...");
-                        await updateAnswer({ answer: pokemon._id, version: get().version });
-                        set((state) => ({ version: state.version + 1 }));
-                    } catch (err) {
-                        console.error("Failed to sync answer");
-                        console.log(err);
+                    if (authenticated) {
+                        try {
+                            console.log("Attempting to sync answer...");
+                            await updateAnswer({ answer: get().answer._id, version: get().version });
+                            set((state) => ({ version: state.version + 1 }));
+                        } catch (err) {
+                            console.error("Failed to sync answer");
+                            console.log(err);
+                        }
                     }
                 }
             },
@@ -74,7 +86,6 @@ export const useGameStore = create(
                 const { settings } = useUserStore.getState();
                 const randomId = settings.allGenerations ? randomPokemon() : randomPokemon(settings.generations);
                 const pokemon = usePokemonStore.getState().pokemonObject[randomId];
-                console.log(pokemon);
                 set({ answer: pokemon, guesses: [], gameState: "playing", settings: { ...settings } });
             },
             endGame: async (value) => {
