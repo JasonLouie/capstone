@@ -42,7 +42,7 @@ export async function addNewGuess(userId, body) {
 // Runs when user gives up or wins the game
 export async function modifyGame(userId, body) {
     const { version, gameState } = body;
-    await updateGame(userId, version, { $set: { gameState }});
+    return await updateGame(userId, version, { $set: { gameState }});
 }
 
 // Used by auth to remove all game history of the user

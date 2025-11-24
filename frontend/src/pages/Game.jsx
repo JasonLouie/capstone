@@ -31,6 +31,7 @@ export default function Game() {
         const name = titleCase(input);
         const guess = pokemonList.find(p => p.name === name );
         if (!guess) {
+            setDisabled(false);
             return;
         }
         if (input && !guesses.includes(guess.id)) {
@@ -55,7 +56,7 @@ export default function Game() {
     }
 
     useEffect(() => {
-        if (gameState === "playing") initGame();
+        initGame();
     }, [settings.mode]);
 
     return (

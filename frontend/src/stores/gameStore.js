@@ -42,7 +42,7 @@ export const useGameStore = create(
                     version: gameData.version || 0,
                     gameState: gameData.gameState || "playing",
                     settings: gameData.settings || useUserStore.getState().settings
-                });   
+                });
             },
             initGame: async () => {
                 const { generateNewAnswer, setGame, createNewGame } = get();
@@ -72,7 +72,6 @@ export const useGameStore = create(
                     generateNewAnswer();
                     if (authenticated) {
                         try {
-                            console.log("Attempting to sync answer...");
                             await updateAnswer({ answer: get().answer._id, version: get().version });
                             set((state) => ({ version: state.version + 1 }));
                         } catch (err) {
@@ -96,6 +95,7 @@ export const useGameStore = create(
                         set((state) => ({ version: state.version + 1 }));
                     } catch (err) {
                         console.error("Failed to sync the game state");
+                        console.log(err);
                     }
                 }
             },

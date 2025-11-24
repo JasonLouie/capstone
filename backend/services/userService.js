@@ -67,7 +67,7 @@ export async function deleteFromGenerations(userId, generation) {
 
 export async function resetUserPokedex(userId) {
     const user = await getUserById(userId, false);
-    user.pokedex = undefined; // Set this back to the default value
+    user.pokedex = []; // Set this back to the default value
     await user.save();
 }
 // Used by game to increment user's total guess count
@@ -80,16 +80,15 @@ export async function incrementTotalGuesses(userId) {
 // Used by game to add to pokedex
 export async function addToPokedex(userId, answer) {
     const user = await getUserById(userId, false);
-    const { id, name } = answer;
     const isShiny = (Math.floor(Math.random() * 4096) + 1) === 4096;
     const foundPokemon = user.pokedex.find((p, i) => {
-        if (p.name === name && isShiny && p.isShiny !== true) {
+        if (p.id === answer && isShiny && p.isShiny !== true) {
             p[i].isShiny = true;
             return true;
         }
     });
     if (!foundPokemon) {
-        user.pokedex.push({ id, name, img, isShiny });
+        user.pokedex.push({ id: answer, isShiny });
     }
     await user.save();
 }
