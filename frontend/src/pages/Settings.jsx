@@ -8,15 +8,28 @@ import SettingsField from "../components/SettingsField";
 import { validateChangeUsername } from "../utils/validate";
 import EmailForm from "../components/forms/EmailForm";
 import PasswordForm from "../components/forms/PasswordForm";
+import Overlay from "../components/Overlay";
 
 export default function Settings() {
     useDocumentTitle("Settings");
     const { user, updateUsername, resetUserPokedex, pokedex } = useUserStore(state => state);
     const [username, setUsername] = useState(user.username);
     const [errors, setErrors] = useState({ username: "" });
-    const [hiddenStates, setHiddenStates] = useState({ emailForm: true, passwordForm: true })
+    const [hiddenStates, setHiddenStates] = useState({ emailForm: true, passwordForm: true, deleteAccount: true, deletePokedex: true })
 
     const handleChange = (e) => setUsername(e.target.value);
+
+    const closeOverlay = (e) => e.target === e.currentTarget && setHiddenStates({ emailForm: true, passwordForm: true, deleteAccount: true, deletePokedex: true });
+
+    const toggleHidden = (e) => setHiddenStates({...hiddenStates, [e.target.id]: !hiddenStates[e.target.id]});
+
+    const checkOtherStates = (exclude) => {
+        for (const key in hiddenStates) {
+            if (key != exclude && !hiddenStates[key]) {
+                return true; // Another overlay is rendered at the moment
+            }
+        }
+    }
 
     async function handleUsername() {
         const validationErrors = validateChangeUsername(username);
@@ -37,13 +50,17 @@ export default function Settings() {
                 <div className="user-settings-container">
                     <Image src={user.profilePicUrl} size="medium settings" />
                     <SettingsField fieldName="username" value={username} setValue={setUsername} onClick={handleUsername} errors={errors} handleChange={handleChange} />
-                    <Button className="user-settings-btn" onClick={() => setHiddenStates({ ...hiddenStates, emailForm: !hiddenStates.emailForm })} disabled={!hiddenStates.passwordForm}>Change Email</Button>
-                    <Button className="user-settings-btn" onClick={() => setHiddenStates({ ...hiddenStates, passwordForm: !hiddenStates.passwordForm })} disabled={!hiddenStates.emailForm}>Change Password</Button>
-                    <Button className="user-settings-btn" onClick={() => resetUserPokedex()} disabled={pokedex.length === 0}>Reset Pokédex</Button>
-                    <Button className="user-settings-btn">Delete Account</Button>
+                    <Button className="user-settings-btn" id="emailForm" onClick={toggleHidden} disabled={checkOtherStates("emailForm")}>Change Email</Button>
+                    <Button className="user-settings-btn" id="passwordForm" onClick={toggleHidden} disabled={checkOtherStates("passwordForm")}>Change Password</Button>
+                    <Button className="user-settings-btn" id="deletePokedex" onClick={() => resetUserPokedex()} disabled={pokedex.length === 0}>Reset Pokédex</Button>
+                    <Button className="user-settings-btn" id="deleteAccount">Delete Account</Button>
                 </div>
-                <EmailForm hidden={hiddenStates.emailForm} />
-                <PasswordForm hidden={hiddenStates.passwordForm} />
+                <Overlay hidden={hiddenStates.emailForm && hiddenStates.passwordForm && hiddenStates.deleteAccount && hiddenStates.deletePokedex} closeOverlay={closeOverlay}>
+                    {!hiddenStates.emailForm && <EmailForm />}
+                    {!hiddenStates.passwordForm && <PasswordForm />}
+                </Overlay>
+                
+                
             </div>
         </Main>
     )

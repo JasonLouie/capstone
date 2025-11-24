@@ -133,14 +133,10 @@
 /* Email and Password Forms */
 
 .form-container.auth.settings {
-    top: 40%;
-    left: 50%;
-    background-color: #000;
-    transform: translateX(-50%);
-    position: absolute;
+    background-color: #333;
 }
 
-.form-submit.email {
+.form-submit.settings {
     width: fit-content;
 }
 

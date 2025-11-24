@@ -1,8 +1,7 @@
 import { useState } from "react";
-import Field from "./Field";
-import Button from "../Button";
 import { validateChangeEmail } from "../../utils/validate";
 import { useUserStore } from "../../stores/userStore";
+import SettingsForm from "./SettingsForm";
 
 export default function EmailForm({hidden}) {
     const { updateEmail } = useUserStore(state => state);
@@ -30,15 +29,6 @@ export default function EmailForm({hidden}) {
     }
 
     return (
-        <div inert={hidden} className={`form-container auth settings ${hidden ? "hidden" : ""}`}>
-            <h1 className="form-title auth">Change Email</h1>
-            <p className={`email-message ${msg ? "" : "hidden"}`}>{msg}</p>
-            <form className="form auth" onSubmit={handleSubmit} noValidate={true}>
-                {Object.keys(formData).map(field => <Field key={field} fieldName={field} {...formInfo} />)}
-                <div className="btn-container">
-                    <Button className={`form-submit email`} buttonType="submit">Change Email</Button>
-                </div>
-            </form>
-        </div>
+        <SettingsForm msg={msg} hidden={hidden} title="Change Email" formInfo={formInfo} handleSubmit={handleSubmit}/>
     );
 }

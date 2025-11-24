@@ -41,6 +41,8 @@ passport.use(new JWTStrategy(jwtOptions, async(jwt_payload, done) => {
         const user = await getAuthById(jwt_payload.sub, false);
         return done(null, user);
     } catch (err) { // err is either the custom not found error or a server error
+        console.log("Some error!");
+        console.log(err);
         return err instanceof EndpointError ? done(null, false) : done(err, false);
     }
 }));

@@ -32,3 +32,16 @@
 .setting-title.dropdown {
     width: fit-content;
 }
+
+.overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: #000000AA;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+}
