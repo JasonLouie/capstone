@@ -8,7 +8,7 @@ export async function getOrResumeGame(userId, settings) {
 }
 
 export async function createNewGame(userId, settings, answer) {
-    const game = await Game.findOneAndUpdate({ userId, gameState: "playing" }, { settings, answer, guesses: [], gameState: "playing", version: 0 });
+    const game = await Game.findOneAndUpdate({ userId, gameState: "playing" }, { $set: { settings, answer, guesses: [], gameState: "playing", version: 0 }});
     if (!game) new EndpointError(404, "Game");
     return game;
 }

@@ -1,25 +1,22 @@
-import GameForm from "../components/game/GameForm";
 import Main from "../components/Main";
+import GameForm from "../components/game/GameForm";
+import GameSettings from "../components/game/GameSettings";
+import GameTable from "../components/game/GameTable";
+import Button from "../components/Button";
+import Image from "../components/Image";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { useEffect, useState } from "react";
 import { useGameStore } from "../stores/gameStore";
 import { usePokemonStore } from "../stores/pokemonStore";
-import { useUserStore } from "../stores/userStore";
 import { titleCase } from "../utils/funcs";
-import GameError from "../components/game/GameError";
-import GameSettings from "../components/game/GameSettings";
-import GameTable from "../components/game/GameTable";
-import Button from "../components/Button";
 import { headingText } from "../game";
 import "../styles/game.css";
-import Image from "../components/Image";
 
 export default function Game() {
     useDocumentTitle("Game");
     const { pokemonObject } = usePokemonStore(state => state);
     const { settings } = useGameStore(state => state);
     const { answer, mode, guesses, addGuess, gameState, initGame, endGame, createNewGame } = useGameStore(state => state);
-    const [error, setError] = useState("");
     const [input, setInput] = useState("");
     const [hidden, setHidden] = useState(true);
     const [disabled, setDisabled] = useState(false);
@@ -32,9 +29,6 @@ export default function Game() {
         const name = titleCase(input);
         const guess = pokemonList.find(p => p.name === name );
         if (!guess) {
-            setError(name);
-            setTimeout(() => setError(""), 3000);
-            setDisabled(false);
             return;
         }
         if (input && !guesses.includes(guess.id)) {
@@ -74,7 +68,6 @@ export default function Game() {
             <GameSettings hidden={hidden} />
             {mode === "silhouette" && answer && showSilhouette()}
             <GameTable />
-            {error && <GameError title="Invalid Pokemon" message={`${titleCase(error)} is not a valid pokemon.`} />}
         </Main>
     );
 }

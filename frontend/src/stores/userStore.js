@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { addToGenerations, getUserData, logoutUser, removeFromGenerations, resetPokedex, updateBasicSettings } from "../api/userApiCalls";
+import { addToGenerations, getUserData, logoutUser, modifyEmail, modifyPassword, removeFromGenerations, resetPokedex, updateBasicSettings, updateUserFields } from "../api/userApiCalls";
 import { useGameStore } from "./gameStore";
 
 export const defaultSettings = { mode: "regular", allGenerations: true, generations: [] };
@@ -103,18 +103,40 @@ export const useUserStore = create(
                     }
                 }
             },
-            // Add entry pokedex
-            addPokedexEntry: async (pokemon) => {
-                if (!get().pokedex.includes(pokemon)) {
-                    set((state) => ({ pokedex: [...state.pokedex, pokemon] }));
-                    if (get().authenticated) {
-                        try {
-                            await addToPokedex({ pokemon });
-                        } catch (err) {
-                            console.error("Failed to sync pokedex", err);
-                        }
+            updateUsername: async (username) => {
+                if (get().authenticated) {
+                    set((state) => ({ user: {...state.user, username }}));
+                    try {
+                        await updateUserFields({ username });
+                    } catch (err) {
+                        console.error("Failed to sync username when updating to db");
+                        if (err.status === 400) return err;
                     }
                 }
+                
+            },
+            updateEmail: async (newEmail, password) => {
+                if (get().authenticated) {
+                    set((state) => ({ user: {...state.user, email: newEmail }}));
+                    try {
+                        await modifyEmail({ newEmail, password });
+                    } catch (err) {
+                        console.error("Failed to sync email when updating to db");
+                        if (err.status === 400) return err;
+                    }
+                }
+                
+            },
+            updatePassword: async (oldPassword, newPassword) => {
+                if (get().authenticated) {
+                    try {
+                        await modifyPassword({ oldPassword, newPassword });
+                    } catch (err) {
+                        console.error("Failed to update password.");
+                        if (err.status === 400) return err;
+                    }
+                }
+                
             },
             // Reset pokedex
             resetUserPokedex: async () => {

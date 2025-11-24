@@ -25,7 +25,10 @@ export async function getUserById(userId, populate=true) {
 // Note: Middleware will validate the fields in the body before reaching this step.
 export async function modifyUser(userId, body) {
     const user = await getUserById(userId, false);
-    ["username", "profilePicUrl"].forEach(key => { if (body[key]) user[key] = body[key] })
+    const { username = null, profilePicUrl = null} = body;
+    if (username) user.username = username;
+    if (profilePicUrl) user.profilePicUrl = profilePicUrl;
+    console.log(user);
     await user.save();
 }
 

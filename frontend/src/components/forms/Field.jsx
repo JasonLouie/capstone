@@ -5,14 +5,14 @@ import PasswordInput from "./PasswordInput";
 const inputTypes = { username: "text", email: "email", confirmPassword: "password" };
 const autoCompleteTypes = { username: "username", email: "email", confirmPassword: "password" };
 
-export default function Field({ fieldName, formData, setFormData, formErrors }) {
+export default function Field({ fieldName, formData, setFormData, formErrors, type }) {
     const label = camelCaseToTitleCase(fieldName);
     const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     return (
         <>
             <div className="form-input">
-                {fieldName === "password" ? <PasswordInput handleChange={handleChange} value={formData[fieldName]}/> : <input type={inputTypes[fieldName]} className="field" name={fieldName} id={fieldName} value={formData[fieldName]} onChange={handleChange} placeholder={label} autoComplete={autoCompleteTypes[fieldName]}/>}
+                {fieldName === "password" ? <PasswordInput handleChange={handleChange} value={formData[fieldName]}/> : <input type={type || inputTypes[fieldName]} className="field" name={fieldName} id={fieldName} value={formData[fieldName]} onChange={handleChange} placeholder={label} autoComplete={autoCompleteTypes[fieldName]}/>}
             </div>
             {formErrors[fieldName]?.length > 0 && <FieldErrors errors={formErrors[fieldName]}/>}
         </>

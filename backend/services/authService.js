@@ -40,8 +40,8 @@ export async function modifyEmail(userId, body) {
 
     const correct = await user.comparePassword(password);
     if(!correct) throw new EndpointError(401, "Invalid password.");
-    
-    const emailTaken = await getAuthByEmail(newEmail);
+
+    const emailTaken = await Auth.findOne({ email: newEmail });
     if (emailTaken) throw new EndpointError(400, "Email is taken.");
     user.email = newEmail;
     await user.save();

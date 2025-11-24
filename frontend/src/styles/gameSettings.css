@@ -7,14 +7,10 @@
 .game-settings {
     width: fit-content;
     margin: auto;
-    transition: opacity 0.3s ease-in;
-    position: relative;
-    left: 0;
-    transition: left 0.3s ease;
 }
 
 .game-settings.hidden {
-    left: -800px;
+    position: absolute;
 }
 
 .game-setting:last-child {

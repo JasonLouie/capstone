@@ -1,1 +1,44 @@
 /* Styling for settings (change profile pic, username, email, password) and profile */
+
+.settings-page {
+    display: flex;
+    justify-content: center;
+}
+
+.settings-title {
+    text-align: center;
+}
+
+img.pic.medium.settings {
+    display: block;
+    margin: auto;
+}
+
+.user-setting-container {
+    display: flex;
+    align-items: center;
+}
+
+.field.settings {
+    display: inline-flex;
+}
+
+.settings-label {
+    margin: 10px 0;
+}
+
+.settings-btn {
+    display: block;
+    background-color: #444;
+    margin: 0 auto;
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+
+.user-settings-btn {
+    display: block;
+    background-color: #444;
+    margin: 15px auto;
+    padding: 6px 8px;
+    border-radius: 6px;
+}

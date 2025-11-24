@@ -7,7 +7,7 @@ export default function PasswordInput({ handleChange, value }) {
 
     return (
         <>
-            <input className="field" type={hidden ? "password" : "text"} name="password" id="password" value={value} onChange={handleChange} placeholder="Password"/>
+            <input className="field" type={hidden ? "password" : "text"} name="password" value={value} onChange={handleChange} placeholder="Password"/>
             <Button className={`password-icon-btn${hidden ? " line" : ""}`} buttonType="button" onClick={() => setHidden(!hidden)}>
                 <img src={passwordIcon} alt="Password icon" className="password-icon" />
             </Button>

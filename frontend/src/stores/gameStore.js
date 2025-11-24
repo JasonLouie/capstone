@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { defaultSettings, useUserStore } from "./userStore";
+import { useUserStore } from "./userStore";
 import { addToGuesses, getOrResumeGame, newGame, setGameState, updateAnswer } from "../api/userApiCalls";
 import { randomPokemon } from "../game";
 import { usePokemonStore } from "./pokemonStore";
@@ -53,7 +53,6 @@ export const useGameStore = create(
                                 settings: gameData.settings
                             });
                         }
-                        console.log(gameData.settings);
                     } catch (err) {
                         console.error("Failed to fetch game");
                         console.error(err);

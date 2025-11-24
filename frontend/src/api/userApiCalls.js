@@ -17,11 +17,22 @@ export async function logoutUser() {
 
 // Delete the user's account and all related data in the db
 export async function deleteUser() {
-    await userApi.delete("/users/me");
+    await userApi.delete("/auth/delete");
+}
+
+// Update email (fields are newEmail, password)
+export async function modifyEmail(fields) {
+    await userApi.post("/auth/email", fields);
+}
+
+// Update password (fields are oldPassword, newPassword)
+export async function modifyPassword(fields) {
+    await userApi.post("/auth/password", fields);
 }
 
 // Update username or profile picture
 export async function updateUserFields(fields) {
+    console.log(fields);
     await userApi.patch("/users/me", fields);
 }
 

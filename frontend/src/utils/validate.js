@@ -1,10 +1,10 @@
-import { titleCase } from "./funcs.js";
+import { camelCaseToTitleCase } from "./funcs.js";
 
 function validate(validations, formData ) {
     const validationErrors = {};
 
     for (const field in validations) {
-        const fieldName = titleCase(field);
+        const fieldName = camelCaseToTitleCase(field);
         const rules = validations[field];
         const value = formData[field];
         const errors = [];
@@ -121,4 +121,24 @@ export function validateNewPokedexEntry(pokemon) {
         imgUrl: {required: true}
     };
     return validate(validations, pokemon);
+}
+
+export function validateChangeUsername(username) {
+    return validate({username: usernameRules}, {username});
+}
+
+export function validateChangePassword(formData) {
+    const validations = {
+        password: {required: true},
+        newPassword: passwordRules
+    };
+    return validate(validations, formData);
+}
+
+export function validateChangeEmail(formData) {
+    const validations = {
+        newEmail: emailRules,
+        password: {required: true}
+    };
+    return validate(validations, formData);
 }

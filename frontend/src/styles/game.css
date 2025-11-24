@@ -20,6 +20,7 @@
     width: max-content;
     margin: auto;
     margin-bottom: 20px;
+    position: relative;
 }
 
 .form-game {
