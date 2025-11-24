@@ -18,7 +18,7 @@ export default function Game() {
     const { pokemonObject } = usePokemonStore(state => state);
     const { settings } = useUserStore(state => state);
     const gameSettings = useGameStore(state => state.settings);
-    const { answer, mode, guesses, addGuess, gameState, initGame, endGame, createNewGame } = useGameStore(state => state);
+    const { answer, guesses, addGuess, gameState, initGame, endGame, createNewGame } = useGameStore(state => state);
     const [input, setInput] = useState("");
     const [hidden, setHidden] = useState(true);
     const [disabled, setDisabled] = useState(false);
@@ -44,7 +44,6 @@ export default function Game() {
             if (name !== answer.name) {
                 setDisabled(false);
             } else { // User guessed the correct pokemon
-                console.log("Correct!");
                 endGame("won");
             }
             setInput("");

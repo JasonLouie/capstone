@@ -24,7 +24,6 @@ export const useGameStore = create(
                         if (gameData) {
                             setGame(gameData);
                         }
-                        console.log(settings);
                     } catch (err) {
                         console.error("Failed to create game");
                         console.error(err);

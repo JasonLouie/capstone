@@ -2,13 +2,13 @@ import EndpointError from "../classes/EndpointError.js";
 import Game from "../models/gameModel.js";
 
 export async function getOrResumeGame(userId, settings) {
-    const game = await Game.findOneAndUpdate({ userId, gameState: "playing", "settings.mode": settings.mode }, { $setOnInsert: { settings } }, { new: true, upsert: true });
+    const game = await Game.findOneAndUpdate({ userId, "settings.mode": settings.mode }, { $setOnInsert: { settings } }, { new: true, upsert: true }).sort({ updatedAt: -1 });
     if (!game) new EndpointError(404, "Game");
     return game;
 }
 
 export async function createNewGame(userId, settings, answer) {
-    const game = await Game.findOneAndUpdate({ userId, gameState: "playing" }, { $set: { settings, answer, guesses: [], gameState: "playing", version: 0 }});
+    const game = await Game.findOneAndUpdate({ userId, gameState: "playing" }, { $set: { settings, answer, guesses: [], gameState: "playing", version: 0 } }, { new: true, upsert: true });
     if (!game) new EndpointError(404, "Game");
     return game;
 }
