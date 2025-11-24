@@ -1,15 +1,14 @@
 .home {
     flex-wrap: wrap;
-    padding: 0 min(32px, 4%);
     margin: auto;
+    width: 90%;
 }
 
 .section-info {
-    width: min(800px, 100%);
     margin: auto;
 }
 
 .game-btn.home-btn {
     display: block;
-    margin: auto;
+    margin: 20px auto;
 }
