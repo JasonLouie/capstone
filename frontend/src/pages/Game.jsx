@@ -17,8 +17,8 @@ import Image from "../components/Image";
 export default function Game() {
     useDocumentTitle("Game");
     const { pokemonObject } = usePokemonStore(state => state);
-    const { settings } = useUserStore(state => state);
-    const { answer, mode, guesses, addGuess, gameState, initGame, endGame, generateNewAnswer } = useGameStore(state => state);
+    const { settings } = useGameStore(state => state);
+    const { answer, mode, guesses, addGuess, gameState, initGame, endGame, createNewGame } = useGameStore(state => state);
     const [error, setError] = useState("");
     const [input, setInput] = useState("");
     const [hidden, setHidden] = useState(true);
@@ -28,8 +28,9 @@ export default function Game() {
     async function handleSubmit(e) {
         e.preventDefault();
         setDisabled(true);
+        const pokemonList = settings.allGenerations ? Object.values(pokemonObject) : Object.values(pokemonObject).filter(p => settings.generations.includes(p.generation));
         const name = titleCase(input);
-        const guess = Object.values(pokemonObject).find(p => p.name === name);
+        const guess = pokemonList.find(p => p.name === name );
         if (!guess) {
             setError(name);
             setTimeout(() => setError(""), 3000);
@@ -54,7 +55,7 @@ export default function Game() {
     }
 
     function showSilhouette() {
-        return <Image src={answer.img} size="large"/>;
+        return <Image src={answer.img} size="large silhouette"/>;
     }
 
     useEffect(() => {
@@ -66,7 +67,7 @@ export default function Game() {
             <h1>{headingText[gameState]}</h1>
             <GameForm {...props} />
             <div className="game-controls">
-                <Button onClick={() => gameState === "playing" ? generateNewAnswer() : initGame()} disabled={!settings.allGenerations && settings.generations.length === 0} className="game-btn" >{gameState === "playing" ? "New Game" : "Play Again"}</Button>
+                <Button onClick={() => createNewGame()} disabled={!settings.allGenerations && settings.generations.length === 0} className="game-btn" >{gameState === "playing" ? "New Game" : "Play Again"}</Button>
                 <Button onClick={() => setHidden(!hidden)} className="game-btn" >Settings</Button>
                 {gameState === "playing" && <Button onClick={() => endGame("lost")} className="game-btn">Give Up</Button>}
             </div>

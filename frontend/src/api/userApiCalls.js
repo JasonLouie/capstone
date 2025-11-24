@@ -31,11 +31,6 @@ export async function getUserData() {
     return data;
 }
 
-// Add entry to the user's pokedex
-export async function addToPokedex(pokedexEntry) {
-    await userApi.put("/users/me/pokedex", pokedexEntry);
-}
-
 // Reset the user's pokedex
 export async function resetPokedex() {
     await userApi.delete("/users/me/pokedex");
@@ -58,8 +53,13 @@ export async function removeFromGenerations(generation) {
 
 
 // GAME API CALLS
-export async function getOrCreateGameData(mode) {
-    const { data } = await userApi.post("/games/me", mode);
+export async function getOrResumeGame(settings) {
+    const { data } = await userApi.post("/games/me", settings);
+    return data;
+}
+
+export async function newGame(settings) {
+    const { data } = await userApi.post("/games/me/new", settings);
     return data;
 }
 

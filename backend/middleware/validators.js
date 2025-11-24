@@ -324,9 +324,9 @@ export function validateUpdateGame(req, res, next) {
     validate(mainValidations, req, res, next);
 }
 
-export function validateGameMode(req, res, next) {
+export function validateGameSettings(req, res, next) {
     const validations = {
-        mode: modeRules
+        settings: {isObject: { mode: modeRules, generations: generationRules, allGenerations: allGenerationsRules }}
     };
     validate(validations, req, res, next);
 }

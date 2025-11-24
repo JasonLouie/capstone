@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { addToGenerations, addToPokedex, getUserData, logoutUser, removeFromGenerations, resetPokedex, updateBasicSettings } from "../api/userApiCalls";
+import { addToGenerations, getUserData, logoutUser, removeFromGenerations, resetPokedex, updateBasicSettings } from "../api/userApiCalls";
 import { useGameStore } from "./gameStore";
 
-const defaultSettings = { mode: "regular", allGenerations: true, generations: [] };
+export const defaultSettings = { mode: "regular", allGenerations: true, generations: [] };
 
 // Create the store and generate the hook
 export const useUserStore = create(

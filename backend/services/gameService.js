@@ -1,13 +1,14 @@
 import EndpointError from "../classes/EndpointError.js";
 import Game from "../models/gameModel.js";
 
-export async function createNewGame(userId) {
-    const game = await Game.create({ userId });
+export async function getOrResumeGame(userId, settings) {
+    const game = await Game.findOneAndUpdate({ userId, gameState: "playing", "settings.mode": settings.mode }, { $setOnInsert: { settings } }, { new: true, upsert: true });
+    if (!game) new EndpointError(404, "Game");
     return game;
 }
 
-export async function getOrCreateGame(userId, mode) {
-    const game = await Game.findOneAndUpdate({ userId, gameState: "playing", mode }, { mode }, { new: true, upsert: true });
+export async function createNewGame(userId, settings, answer) {
+    const game = await Game.findOneAndUpdate({ userId, gameState: "playing" }, { settings, answer, guesses: [], gameState: "playing", version: 0 });
     if (!game) new EndpointError(404, "Game");
     return game;
 }
@@ -40,7 +41,7 @@ export async function addNewGuess(userId, body) {
 
 // Runs when user gives up or wins the game
 export async function modifyGame(userId, body) {
-    const { version, guess, gameState } = body;
+    const { version, gameState } = body;
     await updateGame(userId, version, { $set: { gameState }});
 }
 

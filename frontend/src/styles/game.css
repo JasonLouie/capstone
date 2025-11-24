@@ -58,10 +58,11 @@
 .game-table {
     width: fit-content;
     margin: auto;
+    border-collapse: collapse;
 }
 
 .pokemon-img {
-    width: 102px;
+    min-width: 102px;
 }
 
 .info-td.pokemon-img {
@@ -69,27 +70,31 @@
 }
 
 .pokemon-name {
-    width: 114px;
+    min-width: 114px;
 }
 
 .pokemon-generation {
-    width: 108px;
+    min-width: 108px;
 }
 
 .pokemon-types {
-    width: 110px;
+    min-width: 110px;
 }
 
 .pokemon-color {
-    width: 100px;
+    min-width: 100px;
 }
 
 .pokemon-stage {
-    width: 80px;
+    min-width: 80px;
 }
 
-.pokemon-height, .pokemon-weight {
-    width: 90px;
+.pokemon-height {
+    min-width: 90px;
+}
+
+.pokemon-weight {
+    min-width: 100px;
 }
 
 .info-th {

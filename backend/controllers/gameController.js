@@ -1,12 +1,23 @@
 import * as gameService from "../services/gameService.js";
 import { addToPokedex, incrementTotalGuesses } from "../services/userService.js";
 
-// GET /game/me
-export async function getOrCreateGameData(req, res, next) {
+// POST /game/me
+export async function getOrResumeGameData(req, res, next) {
     try {
-        const game = await gameService.getOrCreateGame(req.user._id, req.body.mode);
-        const { gameState, guesses, mode, answer, version } = game;
-        res.json({ gameState, guesses, mode, answer, version });
+        const game = await gameService.getOrResumeGame(req.user._id, req.body.settings);
+        const { gameState, guesses, mode, answer, version, settings } = game;
+        res.json({ gameState, guesses, mode, answer, version, settings });
+    } catch(err) {
+        next(err);
+    }
+}
+
+// POST /game/me/new
+export async function createGame(req, res, next) {
+    try {
+        const game = await gameService.createNewGame(req.user._id, req.body.settings, req.body.answer);
+        const { gameState, guesses, mode, answer, version, settings } = game;
+        res.json({ gameState, guesses, mode, answer, version, settings });
     } catch(err) {
         next(err);
     }

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { settingsSchema } from "./userModel.js";
 
 const gameSchema = new mongoose.Schema({
     guesses: {
@@ -14,15 +15,14 @@ const gameSchema = new mongoose.Schema({
         enum: ["playing", "won", "lost"],
         default: "playing"
     },
-    mode: {
-        type: String,
-        enum: ["regular", "silhouette"],
-        default: "regular"
-    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "User"
+    },
+    settings: {
+        type: settingsSchema,
+        default: () => ({})
     }
 }, { versionKey: "version", timestamps: true });
 

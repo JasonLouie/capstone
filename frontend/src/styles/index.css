@@ -104,16 +104,14 @@ img.pic.medium {
 
 img.pic.large {
     display: block;
-    max-height: 200px;
-    height: auto;
-    min-height: 50vw;
+    height: 200px;
     margin: 10px auto;
     border: 2px solid yellow;
     border-radius: 4%;
 }
 
 img.pic.silhouette {
-    
+    background-color: #444;
 }
 
 .content {
