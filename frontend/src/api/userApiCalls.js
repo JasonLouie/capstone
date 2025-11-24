@@ -32,7 +32,6 @@ export async function modifyPassword(fields) {
 
 // Update username or profile picture
 export async function updateUserFields(fields) {
-    console.log(fields);
     await userApi.patch("/users/me", fields);
 }
 

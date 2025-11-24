@@ -1,7 +1,7 @@
 import * as authService from "../services/authService.js";
 import * as tokenService from "../services/tokenService.js";
 import { deleteGames } from "../services/gameService.js";
-import { createNewUser, getUserById } from "../services/userService.js";
+import { createNewUser, deleteUser, getUserById } from "../services/userService.js";
 
 const cookieOptions = {
     httpOnly: true,

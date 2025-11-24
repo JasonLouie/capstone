@@ -130,17 +130,40 @@
     margin-top: 10px;
 }
 
-/* Email and Password Forms */
+/* Email, Password, and Confirm Forms */
 
 .form-container.auth.settings {
+    width: 420px;
     background-color: #333;
+}
+
+.form-submit:disabled {
+    cursor: default;
 }
 
 .form-submit.settings {
     width: fit-content;
 }
 
+.form-submit.confirm {
+    width: fit-content;
+    margin: 0;
+    border-color: #51d351;
+    color: #51d351;
+}
+
+.form-submit.confirm.cancel {
+    color: #d35151;
+    border-color: #d35151;
+}
+
 .form-message {
     text-align: center;
     color: #51d351;
+}
+
+.confirm-btn-container {
+    display: flex;
+    justify-content: center;
+    column-gap: 40px;
 }

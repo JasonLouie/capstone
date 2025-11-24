@@ -88,10 +88,10 @@ nav {
 
 .menu-item:first-child::before {
     position: absolute;
-    right: 11px;
-    top: -38px;
+    right: 20px;
+    top: -20px;
     content: " ";
-    border-width: 20px;
+    border-width: 10px;
     border-style: solid;
     border-color: transparent transparent #3d3d3d transparent;
     z-index: 4;

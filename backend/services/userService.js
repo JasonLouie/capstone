@@ -28,7 +28,6 @@ export async function modifyUser(userId, body) {
     const { username = null, profilePicUrl = null} = body;
     if (username) user.username = username;
     if (profilePicUrl) user.profilePicUrl = profilePicUrl;
-    console.log(user);
     await user.save();
 }
 

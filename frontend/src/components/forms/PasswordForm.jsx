@@ -14,7 +14,6 @@ export default function PasswordForm({ hidden }) {
         e.preventDefault();
         const { password, newPassword } = formData;
         const validationErrors = validateChangePassword({ password, newPassword });
-        console.log(validationErrors);
         setFormErrors(validationErrors);
         if (Object.keys(validationErrors).length > 0) return;
 

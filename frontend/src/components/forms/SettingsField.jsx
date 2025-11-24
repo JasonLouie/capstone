@@ -1,8 +1,8 @@
-import { camelCaseToTitleCase } from "../utils/funcs";
-import Button from "./Button";
-import FieldErrors from "./forms/FieldErrors";
+import { camelCaseToTitleCase } from "../../utils/funcs";
+import Button from "../Button";
+import FieldErrors from "./FieldErrors";
 import { useState } from "react";
-import "../styles/user.css";
+import "../../styles/user.css";
 
 const inputTypes = { username: "text", email: "email" };
 const autoCompleteTypes = { username: "username", email: "email" };

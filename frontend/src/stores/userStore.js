@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { addToGenerations, getUserData, logoutUser, modifyEmail, modifyPassword, removeFromGenerations, resetPokedex, updateBasicSettings, updateUserFields } from "../api/userApiCalls";
+import { addToGenerations, deleteUser, getUserData, logoutUser, modifyEmail, modifyPassword, removeFromGenerations, resetPokedex, updateBasicSettings, updateUserFields } from "../api/userApiCalls";
 import { useGameStore } from "./gameStore";
 
 export const defaultSettings = { mode: "regular", allGenerations: true, generations: [] };
@@ -168,6 +168,19 @@ export const useUserStore = create(
                         await resetPokedex();
                     } catch (err) {
                         console.error("Failed to sync pokedex", err);
+                    }
+                }
+            },
+            // Delete account
+            deleteAccount: async () => {
+                const { authenticated } = get();
+                set({ user: null, authenticated: false, settings: { ...defaultSettings }, pokedex: [] });
+                // If user was authenticated, handle deleting the account and cascade delete refresh tokens, auth, user, and games
+                if (authenticated) {
+                    try {
+                        await deleteUser();
+                    } catch (err) {
+                        console.error("Error deleting account", err);
                     }
                 }
             }

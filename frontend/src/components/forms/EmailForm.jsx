@@ -6,21 +6,20 @@ import SettingsForm from "./SettingsForm";
 export default function EmailForm({hidden}) {
     const { updateEmail } = useUserStore(state => state);
     const [msg, setMsg] = useState("");
-    const [formData, setFormData] = useState({ email: "", password: "" });
+    const [formData, setFormData] = useState({ newEmail: "", password: "" });
     const [formErrors, setFormErrors] = useState({});
     const formInfo = { formData, setFormData, formErrors };
 
     async function handleSubmit(e) {
         e.preventDefault();
-        const { email, password } = formData;
-        const validationErrors = validateChangeEmail({newEmail: email, password });
-        console.log(validationErrors);
+        const { newEmail, password } = formData;
+        const validationErrors = validateChangeEmail({ newEmail, password });
         setFormErrors(validationErrors);
         if (Object.keys(validationErrors).length > 0) return;
 
         try {
-            await updateEmail(email, password);
-            setFormData({ email: "", password: "" });
+            await updateEmail(newEmail, password);
+            setFormData({ newEmail: "", password: "" });
             setMsg("Email successfully changed.");
             setTimeout(() => setMsg(""), 3000);
         } catch (err) {
