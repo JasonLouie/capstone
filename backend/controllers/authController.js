@@ -6,7 +6,7 @@ import { createNewUser, deleteUser, getUserById } from "../services/userService.
 const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict"
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
 };
 
 const refreshTokenPath = "/api/auth";

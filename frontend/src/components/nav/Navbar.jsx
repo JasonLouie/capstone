@@ -13,7 +13,7 @@ export default function Navbar({ top }) {
     const renderRightElements = () => top ? (authenticated ? <Menu /> : <Button path="/login" className="nav login">Login</Button>) : <Legal classes={classes} />;
 
     return (
-        <nav className={top ? "top" : "flex-center"}>
+        <nav className={top ? "top" : "bottom flex-center"}>
             {top && <Logo size="small" text={top} />}
             <Button path="/" className={classes}>Home</Button>
             <Button path="/about" className={classes}>About</Button>

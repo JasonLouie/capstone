@@ -17,8 +17,8 @@
 }
 
 .form-container.game {
-    width: max-content;
     margin: auto;
+    max-width: fit-content;
     margin-bottom: 20px;
     position: relative;
 }
@@ -36,7 +36,7 @@
     left: 0;
     overflow-x: none;
     overflow-y: auto;
-    width: 300px;
+    width: calc(100% - 69px);
     height: 300px;
     scroll-behavior: smooth;
     scrollbar-width: none;
@@ -73,6 +73,7 @@
 .submit-guess {
     color: #999;
     background-color: #101010;
+    width: 69px;
     height: 36px;
     padding: 12px 10px;
     display: flex;

@@ -4,6 +4,11 @@
     column-gap: 10px;
 }
 
+input[type="checkbox"] {
+    accent-color: #249673;
+    
+}
+
 .game-settings {
     width: fit-content;
     margin: auto;

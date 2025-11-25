@@ -6,7 +6,12 @@ nav {
     color: var(--green);
     margin-left: 10px;
     margin-right: 20px;
-    column-gap: 24px;
+    column-gap: 20px;
+}
+
+nav.bottom.flex-center {
+    flex-wrap: wrap;
+    row-gap: 5px;
 }
 
 .hamburger-btn {
