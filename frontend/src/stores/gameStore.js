@@ -33,7 +33,7 @@ export const useGameStore = create(
                 }
             },
             saveGame: () => { // Only for guests
-                const { guesses = [], answer, gameState, settings, version = 0 } = get();
+                const { guesses = [], answer, settings, gameState, version = 0 } = get();
                 const newGame = { guesses, answer, gameState, settings, version };
                 localStorage.setItem(`guest-game-${settings.mode}`, JSON.stringify(newGame));
             },
@@ -102,8 +102,8 @@ export const useGameStore = create(
                         console.error("Failed to sync the game state");
                         console.log(err);
                     }
-                } else if (value == "won") {
-                    addToPokedex();
+                } else {
+                    if (value === "won") addToPokedex();
                     get().saveGame(); // Save guest game
                 }
             },

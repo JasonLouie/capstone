@@ -64,7 +64,7 @@ export default function Game() {
 
     useEffect(() => {
         initGame();
-    }, [settings.mode]);
+    }, [settings.mode, gameState]);
 
     return (
         <Main className="game-container">
