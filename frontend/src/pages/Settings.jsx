@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "../components/Image";
 import Main from "../components/Main";
-import useDocumentTitle from "../hooks/useDocumentTitle";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useUserStore } from "../stores/userStore";
 import Button from "../components/Button";
 import SettingsField from "../components/forms/SettingsField";

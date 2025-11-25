@@ -13,7 +13,7 @@ export async function createNewGame(userId, settings, answer) {
     return game;
 }
 
-async function updateGame(userId, version, updates) {
+async function updateGame(userId, version, mode, updates) {
     // Shallow copy so that the original update object isn't modified
     const finalUpdate = { ...updates };
 
@@ -23,26 +23,26 @@ async function updateGame(userId, version, updates) {
     // Add the version increment
     finalUpdate.$inc.version = 1;
 
-    const gameDoc = await Game.findOneAndUpdate({ userId, version, gameState: "playing" }, finalUpdate, { new: true, runValidators: true });
+    const gameDoc = await Game.findOneAndUpdate({ userId, version, gameState: "playing", "settings.mode": mode }, finalUpdate, { new: true, runValidators: true });
 
     if (!gameDoc) throw new EndpointError(400, "Version mismatch or game does not exist.");
     return gameDoc;
 }
 
 export async function modifyAnswer(userId, body) {
-    const { version, answer } = body;
-    await updateGame(userId, version, { $set: { answer, guesses: [] } });
+    const { version, answer, mode } = body;
+    await updateGame(userId, version, mode, { $set: { answer, guesses: [] } });
 }
 
 export async function addNewGuess(userId, body) {
-    const { version, guess } = body;
-    await updateGame(userId, version, { $addToSet: { guesses: guess } });
+    const { version, guess, mode } = body;
+    await updateGame(userId, version, mode, { $addToSet: { guesses: guess } });
 }
 
 // Runs when user gives up or wins the game
 export async function modifyGame(userId, body) {
-    const { version, gameState } = body;
-    return await updateGame(userId, version, { $set: { gameState }});
+    const { version, gameState, mode } = body;
+    return await updateGame(userId, version, mode, { $set: { gameState }});
 }
 
 // Used by auth to remove all game history of the user

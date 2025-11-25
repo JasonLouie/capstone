@@ -150,7 +150,6 @@ export const useUserStore = create(
                 });
                 if (!foundPokemon) {
                     set((state) => ({ pokedex: [...state.pokedex, { id: answer._id, isShiny, time_added: time_added || Date.now() }]}));
-                    
                 }
             },
             updateShinyStatus: (answer) => set((state) => ({
@@ -161,10 +160,10 @@ export const useUserStore = create(
                     return p;
                 })
             })),
-            incrementGuessCount: () => set((state) => ({
+            incrementGuessCount: () => set((state) => ({ // Increment on the front end
                 user: {...state.user, totalGuesses: state.user.totalGuesses + 1 }
             })),
-            incrementGamesPlayed: () => set((state) => ({
+            incrementGamesPlayed: () => set((state) => ({ // Increment on the front end
                 user: {...state.user, gamesPlayed: state.user.gamesPlayed + 1 }
             })),
             // Reset pokedex

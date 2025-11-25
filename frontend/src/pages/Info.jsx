@@ -1,5 +1,5 @@
 import Main from "../components/Main";
-import useDocumentTitle from "../hooks/useDocumentTitle";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 export default function Info({ title, text }) {
     useDocumentTitle(title);

@@ -1,7 +1,7 @@
 import Button from "../components/Button";
 import Main from "../components/Main";
 import Section from "../components/Section";
-import useDocumentTitle from "../hooks/useDocumentTitle";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useGameStore } from "../stores/gameStore";
 import "../styles/home.css";
 import { useNavigate } from "react-router";

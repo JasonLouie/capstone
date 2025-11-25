@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { useUserStore } from "./userStore";
 import { addToGuesses, getOrResumeGame, newGame, setGameState, updateAnswer } from "../api/userApiCalls";
-import { randomPokemon } from "../game";
+import { randomPokemon } from "../utils/game";
 import { usePokemonStore } from "./pokemonStore";
 
 // Updates UI and localStorage (usage of persist middleware)
@@ -32,7 +32,7 @@ export const useGameStore = create(
                     saveGame();
                 }
             },
-            saveGame: () => {
+            saveGame: () => { // Only for guests
                 const { guesses = [], answer, gameState, settings, version = 0 } = get();
                 const newGame = { guesses, answer, gameState, settings, version };
                 localStorage.setItem(`guest-game-${settings.mode}`, JSON.stringify(newGame));
@@ -74,7 +74,7 @@ export const useGameStore = create(
                     generateNewAnswer();
                     if (authenticated) {
                         try {
-                            await updateAnswer({ answer: get().answer._id, version: get().version });
+                            await updateAnswer({ answer: get().answer._id, version: get().version, mode: get().settings.mode });
                             set((state) => ({ version: state.version + 1 }));
                         } catch (err) {
                             console.error("Failed to sync answer");
@@ -94,7 +94,7 @@ export const useGameStore = create(
                 set({ gameState: value });
                 if (authenticated) {
                     try {
-                        const entry = await setGameState({ gameState: value, version: get().version });
+                        const entry = await setGameState({ gameState: value, version: get().version, mode: get().settings.mode });
                         set((state) => ({ version: state.version + 1 }));
                         if (entry && value == "won") addToPokedex(entry.isShiny, entry.time_added);
                         incrementGamesPlayed();
@@ -114,7 +114,7 @@ export const useGameStore = create(
                 }));
                 if (authenticated) {
                     try {
-                        await addToGuesses({ guess, version: get().version });
+                        await addToGuesses({ guess, version: get().version, mode: get().settings.mode });
                         set((state) => ({ version: state.version + 1 }));
                         incrementGuessCount();
                     } catch (err) {

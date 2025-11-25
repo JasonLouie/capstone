@@ -116,8 +116,8 @@ img.pic.silhouette {
     margin: 10px auto;
     border-radius: 4%;
     width: max-content;
-    background: #444;
-    border: 2px solid yellow;
+    background: #555;
+    border: 2px solid var(--dark-green);
 }
 
 .content {

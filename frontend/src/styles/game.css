@@ -27,6 +27,42 @@
     display: flex;
     align-items: center;
     gap: 0;
+    position: relative;
+}
+
+.poke-results {
+    position: absolute;
+    top: 38px;
+    left: 0;
+    overflow-x: none;
+    overflow-y: auto;
+    width: 300px;
+    height: 300px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    border-radius: 10px;
+    z-index: 20;
+}
+
+.poke-results::-webkit-scrollbar {
+    display: none;
+}
+
+.poke-result {
+    display: flex;
+    padding-left: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    background-color: #333;
+    column-gap: 10px;
+    overflow-x: none;
+    width: 100%;
+    border-top: 2px solid #444;
+}
+
+.poke-result:first-child {
+    border-top: none;
 }
 
 .form-container.game:focus-within {
@@ -114,6 +150,10 @@
 
 .guess {
     border-top: 2px solid #555;
+}
+
+.guess:first-child {
+    border-top: none;
 }
 
 .info-td {

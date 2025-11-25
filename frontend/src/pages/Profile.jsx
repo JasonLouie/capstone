@@ -1,6 +1,6 @@
 import Image from "../components/Image";
 import Main from "../components/Main";
-import useDocumentTitle from "../hooks/useDocumentTitle";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useUserStore } from "../stores/userStore";
 
 export default function Profile() {

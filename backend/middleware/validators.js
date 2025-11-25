@@ -294,7 +294,8 @@ export function validateGeneration(req, res, next) {
 export function validateGuess(req, res, next) {
     const validations = {
         guess: pokemonIdRules,
-        version: versionRules
+        version: versionRules,
+        mode: modeRules
     };
     validate(validations, req, res, next);
 }
@@ -303,7 +304,8 @@ export function validateGuess(req, res, next) {
 export function validateAnswer(req, res, next) {
     const validations = {
         answer: pokemonIdRules,
-        version: versionRules
+        version: versionRules,
+        mode: modeRules
     };
     validate(validations, req, res, next);
 }
@@ -319,7 +321,8 @@ export function validatePokemon(req, res, next) {
 export function validateUpdateGame(req, res, next) {
     const mainValidations = {
         version: versionRules,
-        gameState: gameStateRules
+        gameState: gameStateRules,
+        mode: modeRules
     };
     validate(mainValidations, req, res, next);
 }
@@ -327,6 +330,14 @@ export function validateUpdateGame(req, res, next) {
 export function validateGameSettings(req, res, next) {
     const validations = {
         settings: {isObject: { mode: modeRules, generations: generationRules, allGenerations: allGenerationsRules }}
+    };
+    validate(validations, req, res, next);
+}
+
+export function validateCreateNewGame(req, res, next) {
+    const validations = {
+        settings: {isObject: { mode: modeRules, generations: generationRules, allGenerations: allGenerationsRules }},
+        answer: pokemonIdRules
     };
     validate(validations, req, res, next);
 }

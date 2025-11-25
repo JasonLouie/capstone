@@ -1,6 +1,6 @@
 import Image from "../components/Image";
 import Main from "../components/Main";
-import useDocumentTitle from "../hooks/useDocumentTitle";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { usePokemonStore } from "../stores/pokemonStore";
 import { useUserStore } from "../stores/userStore";
 import "../styles/pokedex.css";
@@ -14,7 +14,7 @@ export default function Pokedex() {
         const pokemon = pokemonObject[p.id];
         let img = pokemon.img;
         if (p.isShiny) {
-            img = img.replace(id, `shiny/${id}`);
+            img = img.replace(p.id, `shiny/${p.id}`);
         }
         return (
             <div key={p.id} className="pokedex-entry">

@@ -1,4 +1,4 @@
-import { generations } from "../../game";
+import { generations } from "../../utils/game";
 import { useUserStore } from "../../stores/userStore";
 
 export default function Generations() {

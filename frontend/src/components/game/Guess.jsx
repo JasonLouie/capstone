@@ -1,4 +1,4 @@
-import { compareGenerations, compareGuessAndAnswer, compareMeasurements, inchesToFeet } from "../../game";
+import { compareGenerations, compareGuessAndAnswer, compareMeasurements, inchesToFeet } from "../../utils/game";
 import { useGameStore } from "../../stores/gameStore";
 import { usePokemonStore } from "../../stores/pokemonStore";
 import Image from "../Image";
