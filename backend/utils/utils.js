@@ -15,11 +15,3 @@ export function filterObject(keys, body) {
 export function titleCase(string) {
     return string.split(" ").map(word => word[0].toUpperCase() + word.slice(1)).join("");
 }
-
-// Strict validation that ensures the object only contains the expected keys
-export function validateObject(expectedKeys, obj) {
-    expectedKeys.forEach(key => {
-        if (!obj[key]) return false;
-    });
-    return expectedKeys.length === Object.keys(obj).length;
-} 
