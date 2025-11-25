@@ -247,7 +247,7 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    height: 60px;
+    height: 70px;
     width: 50px;
     background-color: #772626 ;
     z-index: -1;
