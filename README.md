@@ -122,6 +122,13 @@ This is a non-profit, fan-made project created for educational and portfolio pur
 
 Pokémon and Pokémon character names are trademarks of Nintendo. No copyright infringement is intended. All assets (sprites, names) are property of their respective owners. The dataset was retrieved using [PokéApi](https://pokeapi.co/).
 
+## ⚠️ Known Issues
+
+* **Runtime Storage Clearance:** If a user manually clears their browser data (Application/Local Storage) while the game tab is currently active, the application does not currently listen for these external deletion events. Interacting with the game in this state may cause unexpected crashes or undefined behavior until the page is refreshed.
+* **LocalStorage Restrictions (Incognito/Private Mode):** The application relies heavily on `localStorage` to cache the 1,000+ Pokémon list and persist game state. If the browser is in a strict "Incognito" mode or has storage disabled:
+    * The application may fail to load the game board entirely.
+    * You may encounter "undefined property" errors because the application expects cached data to be present immediately after the initial fetch.
+
 ## 👨‍💻 Author
 Jason Louie
 
