@@ -1,7 +1,7 @@
 import pokeApi from "../configs/pokeApi";
 import { findGeneration } from "../game";
 import { titleCase } from "../utils/funcs";
-import { addPokemon } from "./userApiCalls";
+// import { addPokemon } from "./userApiCalls";
 
 async function filterPokemonData(info, species) {
     const pokemon = {

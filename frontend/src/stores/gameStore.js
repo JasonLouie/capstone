@@ -34,8 +34,8 @@ export const useGameStore = create(
             },
             saveGame: () => { // Only for guests
                 const { guesses = [], answer, settings, gameState, version = 0 } = get();
-                const newGame = { guesses, answer, gameState, settings, version };
-                localStorage.setItem(`guest-game-${settings.mode}`, JSON.stringify(newGame));
+                const game = { guesses, answer, gameState, settings, version };
+                localStorage.setItem(`guest-game-${settings.mode}`, JSON.stringify(game));
             },
             setGame: (gameData) => {
                 set({

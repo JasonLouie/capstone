@@ -68,28 +68,32 @@ export async function getOrResumeGame(settings) {
     return data;
 }
 
+// Force create a new game/overwrite existing game by passing new game settings and answer id
 export async function newGame(settings) {
     const { data } = await userApi.post("/games/me/new", settings);
     return data;
 }
 
+// Sets the game state to either won or lost
 export async function setGameState(gameState) {
     const { data } = await userApi.put("/games/me", gameState);
     return data;
 }
 
+// Sends guess (pokemon id), current version, and the mode
 export async function addToGuesses(guess) {
     await userApi.post("/games/me/guesses", guess);
 }
 
+// Sends answer (pokemon id), current version, and the mode
 export async function updateAnswer(answer) {
     await userApi.put("/games/me/answer", answer);
 }
 
-// Adding pokemon
-export async function addPokemon(pokemon) {
-    await userApi.post("/pokemon", pokemon);
-}
+// Adding pokemon (Removed because all pokemon data has already been added to the database)
+// export async function addPokemon(pokemon) {
+//     await userApi.post("/pokemon", pokemon);
+// }
 
 // Get all pokemon
 export async function getAllPokemon(pokemon) {

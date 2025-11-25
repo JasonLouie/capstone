@@ -299,3 +299,7 @@
     color: var(--light-green);
     border-color: var(--light-green);
 }
+
+.game-btn:disabled {
+    cursor: not-allowed;
+}
