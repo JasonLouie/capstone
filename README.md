@@ -58,7 +58,7 @@ To run this project locally, you will need to set up both the backend and fronte
 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/capstone.git
+git clone https://github.com/JasonLouie/capstone.git
 cd pokeguesser
 ```
 
